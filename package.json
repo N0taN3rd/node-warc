@@ -24,6 +24,7 @@
   "devDependencies": {
     "ava": "^0.19.1",
     "esdoc": "^0.5.2",
+    "pretty-time": "^0.2.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.2"
   }
