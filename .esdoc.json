@@ -1,0 +1,21 @@
+{
+  "source": "./lib",
+  "destination": "./docs",
+  "access": [
+    "public",
+    "protected",
+    "private"
+  ],
+  "unexportIdentifier": true,
+  "undocumentIdentifier": true,
+  "experimentalProposal": {
+    "classProperties": true,
+    "objectRestSpread": true,
+    "decorators": true,
+    "doExpressions": true,
+    "functionBind": true,
+    "asyncGenerators": true,
+    "exportExtensions": true,
+    "dynamicImport": true
+  }
+}
