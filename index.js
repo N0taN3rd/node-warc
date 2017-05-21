@@ -1,1 +1,1 @@
-module.exports = require('./lib/warcParser')
+module.exports = require('./lib/parsers')
