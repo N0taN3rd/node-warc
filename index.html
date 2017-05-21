@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
+  <link type="text/css" rel="stylesheet" href="docs/css/style.css">
+  <link type="text/css" rel="stylesheet" href="docs/css/prettify-tomorrow.css">
+  <script src="docs/script/prettify/prettify.js"></script>
+  
+  
+  <script src="docs/script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="docs">Home</a>
+  
+  <a href="docs/identifiers.html">Reference</a>
+  <a href="docs/source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="docs/image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcParser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcParser/index.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="docs/class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="docs/function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="docs/function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="docs/variable/index.html#static-variable-recIdRE">recIdRE</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1>
+<p>Parse Web ARChive  (WARC) files with node.js. </p>
+<ul>
+<li>This project is currently under active development but does not support parsing of warc.gz at the moment. master@<a href="https://github.com/N0taN3rd/node-warc/commit/93973417b648045549db3784df0889d8e28ae4c7">9397341</a>.      </li>
+</ul>
+<h2 id="example-usage">Example usage</h2>
+<h3 id="example-1">Example 1</h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCParser = require(&apos;node-warc&apos;)
+
+const parser = new WARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.start()</code>
+</code></pre>
+<h3 id="example-2">Example 2</h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCParser = require(&apos;node-warc&apos;)
+
+const parser = new WARCParser()
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.parseWARC(&apos;&lt;path-to-warcfile&gt;&apos;)</code>
+</code></pre>
+<h2 id="api">API</h2>
+<h2 id="benchmark">Benchmark</h2>
+<p>Parsing 145.9MB UN-GZIPPED WARC took 2s.  Node process memory usage 27.2mb</p>
+<p>Parsing 2GB UN-GZIPPED WARC took 21s. Node process memory usage 85mb</p>
+<p><a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg" alt="JavaScript Style Guide"></a></p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="docs/image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="docs/script/search_index.js"></script>
+<script src="docs/script/search.js"></script>
+<script src="docs/script/pretty-print.js"></script>
+<script src="docs/script/inherited-summary.js"></script>
+<script src="docs/script/test-summary.js"></script>
+<script src="docs/script/inner-link.js"></script>
+<script src="docs/script/patch-for-local.js"></script>
+</body>
+</html>
