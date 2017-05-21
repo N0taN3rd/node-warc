@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/warcParser/fieldIdentifiers.js | API Document</title>
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -51,26 +51,36 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/warcParser/fieldIdentifiers.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
- * @desc Buffers from hex strings representing the a WARC records WARC-TYPE or record/record-section separator
- * as seen by the parser. Due to the large size of WARC files and the binary data contained within it is more efficient
- * to parse the files contents looking for these sentinels than converting the buffer to an UTF-8 string first
- * @type {{begin: Buffer, info: Buffer, mdata: Buffer, req: Buffer, res: Buffer, crlf: Buffer, empty: Buffer}}
- */
-const fieldIdentifiers = {
-  begin: Buffer.from(&apos;574152432f312e300d&apos;, &apos;hex&apos;),
-  info: Buffer.from(&apos;574152432d547970653a2077617263696e666f0d&apos;, &apos;hex&apos;),
-  mdata: Buffer.from(&apos;574152432d547970653a206d657461646174610d&apos;, &apos;hex&apos;),
-  req: Buffer.from(&apos;574152432d547970653a20726571756573740d&apos;, &apos;hex&apos;),
-  res: Buffer.from(&apos;574152432d547970653a20726573706f6e73650d&apos;, &apos;hex&apos;),
-  crlf: Buffer.from(&apos;0d0a&apos;, &apos;hex&apos;),
-  empty: Buffer.from(&apos;0d&apos;, &apos;hex&apos;)
-}
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1>
+<p>Parse Web ARChive  (WARC) files with node.js. </p>
+<ul>
+<li>This project is currently under active development and does not support parsing of warc.gz. master@<a href="https://github.com/N0taN3rd/node-warc/commit/93973417b648045549db3784df0889d8e28ae4c7">9397341</a>.      </li>
+</ul>
+<h2 id="example-usage">Example usage</h2>
+<h3 id="example-1">Example 1</h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCParse = require(&apos;node-warc&apos;)
 
-module.exports = fieldIdentifiers
+const parser = new WARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.start()</code>
 </code></pre>
+<h3 id="example-2">Example 2</h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCParse = require(&apos;node-warc&apos;)
 
+const parser = new WARCParser()
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.parseWARC(&apos;&lt;path-to-warcfile&gt;&apos;)</code>
+</code></pre>
+<h2 id="api">API</h2>
+<h2 id="benchmark">Benchmark</h2>
+<p>Parsing 145.9MB UN-GZIPPED WARC took 2s.  Node process memory usage 27.2mb</p>
+<p>Parsing 2GB UN-GZIPPED WARC took 21s. Node process memory usage 85mb</p>
+<p><a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg" alt="JavaScript Style Guide"></a></p>
+</div>
 </div>
 
 <footer class="footer">
