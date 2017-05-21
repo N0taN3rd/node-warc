@@ -1,0 +1,3571 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "lib/warcParser/fieldIdentifiers.js",
+    "content": "/**\n * @desc Buffers from hex strings representing the a WARC records WARC-TYPE or record/record-section separator\n * as seen by the parser. Due to the large size of WARC files and the binary data contained within it is more efficient\n * to parse the files contents looking for these sentinels than converting the buffer to an UTF-8 string first\n * @type {{begin: Buffer, info: Buffer, mdata: Buffer, req: Buffer, res: Buffer, crlf: Buffer, empty: Buffer}}\n */\nconst fieldIdentifiers = {\n  begin: Buffer.from('574152432f312e300d', 'hex'),\n  info: Buffer.from('574152432d547970653a2077617263696e666f0d', 'hex'),\n  mdata: Buffer.from('574152432d547970653a206d657461646174610d', 'hex'),\n  req: Buffer.from('574152432d547970653a20726571756573740d', 'hex'),\n  res: Buffer.from('574152432d547970653a20726573706f6e73650d', 'hex'),\n  crlf: Buffer.from('0d0a', 'hex'),\n  empty: Buffer.from('0d', 'hex')\n}\n\nmodule.exports = fieldIdentifiers\n",
+    "static": true,
+    "longname": "lib/warcParser/fieldIdentifiers.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "variable",
+    "name": "fieldIdentifiers",
+    "memberof": "lib/warcParser/fieldIdentifiers.js",
+    "static": true,
+    "longname": "lib/warcParser/fieldIdentifiers.js~fieldIdentifiers",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/fieldIdentifiers.js",
+    "importStyle": null,
+    "description": "Buffers from hex strings representing the a WARC records WARC-TYPE or record/record-section separator\nas seen by the parser. Due to the large size of WARC files and the binary data contained within it is more efficient\nto parse the files contents looking for these sentinels than converting the buffer to an UTF-8 string first",
+    "lineNumber": 7,
+    "type": {
+      "nullable": null,
+      "types": [
+        "{begin: Buffer, info: Buffer, mdata: Buffer, req: Buffer, res: Buffer, crlf: Buffer, empty: Buffer}"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 2,
+    "kind": "file",
+    "name": "lib/warcParser/index.js",
+    "content": "/** @ignore */\nconst bsplit = require('binary-split')\n/** @ignore */\nconst untildify = require('untildify')\n/** @ignore */\nconst fs = require('fs-extra')\nconst EventEmitter = require('eventemitter3')\nconst WARCRecorderBuilder = require('../warcRecordBuilder')\nconst warcFieldIdentifiers = require('./fieldIdentifiers')\n\n/**\n * @desc Parse a WARC file\n * @extends {EventEmitter}\n * @example\n *  const parser = new WARCParser('<path-to-warcfile>')\n *  parser.on('record', record => { console.log(record) })\n *  parser.on('done', finalRecord => { console.log(finalRecord) })\n *  parser.on('error', error => { console.error(error) })\n *  parser.start()\n * @example\n *  const parser = new WARCParser()\n *  parser.on('record', record => { console.log(record) })\n *  parser.on('done', finalRecord => { console.log(finalRecord) })\n *  parser.on('error', error => { console.error(error) })\n *  parser.parseWARC('<path-to-warcfile>')\n */\nclass WARCParser extends EventEmitter {\n  /**\n   * @desc Create a new WARCParser\n   * @param {string} wp path to the warc file tobe parsed\n   */\n  constructor (wp) {\n    super()\n    /**\n     * @type {string} the path to the WARC file to be parsed\n     * @private\n     */\n    this._wp = wp\n\n    /**\n     * @type {ReadStream} the underlying ReadStream\n     * @private\n     */\n    this._readStream = null\n\n    /**\n     * @type {boolean} should the parser check the current lines buffer for the warctype\n     * @private\n     */\n    this._checkRecType = false\n\n    /**\n     * @type {boolean} have we identified the records correct WARC-Type for the record\n     * @private\n     */\n    this._foundType = false\n\n    /**\n     * @type {boolean} is the parser just starting to parse the WARC file\n     * @private\n     */\n    this._starting = true\n\n    /**\n     * @type {boolean} is the parser currently parsing the WARC\n     * @private\n     */\n    this._parsing = false\n\n    /**\n     * @type {{count: number, increment: function, reset: function}}\n     * @private\n     */\n    this._crlfCounter = {\n      count: 0,\n      increment () {\n        this.count += 1\n      },\n      reset () {\n        this.count = 0\n      }\n    }\n    /**\n     * @type {WARCRecorderBuilder}\n     * @private\n     */\n    this._builder = new WARCRecorderBuilder()\n  }\n\n  /**\n   * @desc Begin parsing the WARC file. Once the start method has been called the parser will begin emitting\n   * @emits {record} emitted when the parser has parsed a full record, the argument supplied to the listener will be the parsed record\n   * @emits {done} emitted when the WARC file has been completely parsed, the argument supplied to the listener will be last record\n   * @emits {error} emitted if an exception occurs, the argument supplied to the listener will be the error that occurred.\n   * @return {boolean} indication if the parser has begun or is currently parsing a WARC file\n   * - true: indicates the parser has begun parsing the WARC file true\n   * - false: indicated the parser is currently parsing a WARC file\n   * @throws {Error} if the path to the WARC file is null or undefined\n   */\n  start () {\n    if (!this._parsing) {\n      if (this._wp === null || this._wp === undefined) {\n        throw new Error('The path to the WARC file is undefined')\n      }\n      this._parsing = true\n      let lastBegin\n      let buildKey\n      let isEmptyLine\n      this._readStream = fs.createReadStream(untildify(this._wp))\n      this._readStream.pipe(bsplit())\n        .on('data', (line) => {\n          if (warcFieldIdentifiers.begin.equals(line)) {\n            if (!this._starting) {\n              this.emit('record', this._builder.buildRecord(buildKey))\n            } else {\n              this._starting = false\n            }\n            this._crlfCounter.reset()\n            this._checkRecType = true\n            lastBegin = line\n          } else {\n            isEmptyLine = warcFieldIdentifiers.empty.equals(line)\n            if (this._checkRecType && !isEmptyLine) {\n              buildKey = this._checkType(line, lastBegin)\n            } else if (isEmptyLine) {\n              this._crlfCounter.increment()\n            } else {\n              this._builder.addLineTo(buildKey, this._crlfCounter.count, line)\n            }\n          }\n        })\n        .on('error', error => {\n          this.emit('error', error)\n        })\n        .on('end', () => {\n          this._parsing = false\n          this.emit('done', this._builder.buildRecord(buildKey))\n          this._readStream.destroy()\n        })\n    } else {\n      return false\n    }\n  }\n\n  /**\n   * @desc Alias for {@link start} except that you can supply the path to the WARC file to be parsed\n   * if one was not supplied via the constructor or to parse another WARC file. If the path to WARC file\n   * to be parsed was supplied via the constructor and you supply a different path to this method.\n   * It will override the one supplied via the constructor\n   * @param {?string} wp the path to the WARC file to be parsed\n   * @return {boolean} indication if the parser has begun or is currently parsing a WARC file\n   * @throws {Error} if the path to the WARC file is null or undefined\n   */\n  parseWARC (wp) {\n    if (!this._parsing) {\n      this._wp = wp || this._wp\n    }\n    return this.start()\n  }\n\n  /**\n   * @desc determine the WARC-Type for the record\n   * @param {Buffer} line the WARC-Type line\n   * @param {Buffer} lastBegin the WARC/1.0 line (WARC record begin)\n   * @return {Symbol} the record key that identifies the WARC-Type being parsed\n   * @private\n   */\n  _checkType (line, lastBegin) {\n    this._checkRecType = false\n    this._foundType = warcFieldIdentifiers.req.equals(line)\n    if (this._foundType) {\n      return this._builder.initReq(lastBegin, line)\n    } else {\n      this._foundType = warcFieldIdentifiers.res.equals(line)\n      if (this._foundType) {\n        return this._builder.initRes(lastBegin, line)\n      } else {\n        this._foundType = warcFieldIdentifiers.info.equals(line)\n        if (this._foundType) {\n          return this._builder.initInfo(lastBegin, line)\n        } else {\n          this._foundType = warcFieldIdentifiers.mdata.equals(line)\n          if (this._foundType) {\n            return this._builder.initMdata(lastBegin, line)\n          } else {\n            // console.log('unknown warc type', line.toString())\n          }\n        }\n      }\n    }\n\n    this._foundType = false\n  }\n}\n\nmodule.exports = WARCParser\n",
+    "static": true,
+    "longname": "lib/warcParser/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 3,
+    "kind": "variable",
+    "name": "bsplit",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~bsplit",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "variable",
+    "name": "untildify",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~untildify",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "variable",
+    "name": "fs",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~fs",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 6,
+    "kind": "variable",
+    "name": "EventEmitter",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~EventEmitter",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "variable",
+    "name": "WARCRecorderBuilder",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~WARCRecorderBuilder",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 8,
+    "kind": "variable",
+    "name": "warcFieldIdentifiers",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~warcFieldIdentifiers",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "class",
+    "name": "WARCParser",
+    "memberof": "lib/warcParser/index.js",
+    "static": true,
+    "longname": "lib/warcParser/index.js~WARCParser",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcParser/index.js",
+    "importStyle": null,
+    "description": "Parse a WARC file",
+    "examples": [
+      " const parser = new WARCParser('<path-to-warcfile>')\n parser.on('record', record => { console.log(record) })\n parser.on('done', finalRecord => { console.log(finalRecord) })\n parser.on('error', error => { console.error(error) })\n parser.start()",
+      " const parser = new WARCParser()\n parser.on('record', record => { console.log(record) })\n parser.on('done', finalRecord => { console.log(finalRecord) })\n parser.on('error', error => { console.error(error) })\n parser.parseWARC('<path-to-warcfile>')"
+    ],
+    "lineNumber": 27,
+    "interface": false,
+    "extends": [
+      "EventEmitter"
+    ]
+  },
+  {
+    "__docId__": 10,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#constructor",
+    "access": null,
+    "description": "Create a new WARCParser",
+    "lineNumber": 32,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "wp",
+        "description": "path to the warc file tobe parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 11,
+    "kind": "member",
+    "name": "_wp",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_wp",
+    "access": "private",
+    "description": "",
+    "lineNumber": 38,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 12,
+    "kind": "member",
+    "name": "_readStream",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_readStream",
+    "access": "private",
+    "description": "",
+    "lineNumber": 44,
+    "type": {
+      "nullable": null,
+      "types": [
+        "ReadStream"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "member",
+    "name": "_checkRecType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_checkRecType",
+    "access": "private",
+    "description": "",
+    "lineNumber": 50,
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": "private",
+    "description": "",
+    "lineNumber": 56,
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "member",
+    "name": "_starting",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_starting",
+    "access": "private",
+    "description": "",
+    "lineNumber": 62,
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 16,
+    "kind": "member",
+    "name": "_parsing",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_parsing",
+    "access": "private",
+    "description": "",
+    "lineNumber": 68,
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 17,
+    "kind": "member",
+    "name": "_crlfCounter",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_crlfCounter",
+    "access": "private",
+    "description": "",
+    "lineNumber": 74,
+    "type": {
+      "nullable": null,
+      "types": [
+        "{count: number, increment: function, reset: function}"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 18,
+    "kind": "member",
+    "name": "count",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#count",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 19,
+    "kind": "member",
+    "name": "count",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#count",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 20,
+    "kind": "member",
+    "name": "_builder",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_builder",
+    "access": "private",
+    "description": "",
+    "lineNumber": 87,
+    "type": {
+      "nullable": null,
+      "types": [
+        "WARCRecorderBuilder"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 21,
+    "kind": "method",
+    "name": "start",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#start",
+    "access": null,
+    "description": "Begin parsing the WARC file. Once the start method has been called the parser will begin emitting",
+    "lineNumber": 100,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "indication if the parser has begun or is currently parsing a WARC file\n- true: indicates the parser has begun parsing the WARC file true\n- false: indicated the parser is currently parsing a WARC file"
+    },
+    "throws": [
+      {
+        "types": [
+          "Error"
+        ],
+        "description": "if the path to the WARC file is null or undefined"
+      }
+    ],
+    "emits": [
+      {
+        "types": [
+          "record"
+        ],
+        "description": "emitted when the parser has parsed a full record, the argument supplied to the listener will be the parsed record"
+      },
+      {
+        "types": [
+          "done"
+        ],
+        "description": "emitted when the WARC file has been completely parsed, the argument supplied to the listener will be last record"
+      },
+      {
+        "types": [
+          "error"
+        ],
+        "description": "emitted if an exception occurs, the argument supplied to the listener will be the error that occurred."
+      }
+    ]
+  },
+  {
+    "__docId__": 22,
+    "kind": "member",
+    "name": "_parsing",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_parsing",
+    "access": null,
+    "description": null,
+    "lineNumber": 105,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "member",
+    "name": "_readStream",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_readStream",
+    "access": null,
+    "description": null,
+    "lineNumber": 109,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 24,
+    "kind": "member",
+    "name": "_starting",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_starting",
+    "access": null,
+    "description": null,
+    "lineNumber": 116,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "member",
+    "name": "_checkRecType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_checkRecType",
+    "access": null,
+    "description": null,
+    "lineNumber": 119,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 26,
+    "kind": "member",
+    "name": "_parsing",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_parsing",
+    "access": null,
+    "description": null,
+    "lineNumber": 136,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "method",
+    "name": "parseWARC",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#parseWARC",
+    "access": null,
+    "description": "Alias for {@link start} except that you can supply the path to the WARC file to be parsed\nif one was not supplied via the constructor or to parse another WARC file. If the path to WARC file\nto be parsed was supplied via the constructor and you supply a different path to this method.\nIt will override the one supplied via the constructor",
+    "lineNumber": 154,
+    "params": [
+      {
+        "nullable": true,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "wp",
+        "description": "the path to the WARC file to be parsed"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "indication if the parser has begun or is currently parsing a WARC file"
+    },
+    "throws": [
+      {
+        "types": [
+          "Error"
+        ],
+        "description": "if the path to the WARC file is null or undefined"
+      }
+    ]
+  },
+  {
+    "__docId__": 28,
+    "kind": "member",
+    "name": "_wp",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_wp",
+    "access": null,
+    "description": null,
+    "lineNumber": 156,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 29,
+    "kind": "method",
+    "name": "_checkType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_checkType",
+    "access": "private",
+    "description": "determine the WARC-Type for the record",
+    "lineNumber": 168,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the WARC-Type line"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lastBegin",
+        "description": "the WARC/1.0 line (WARC record begin)"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Symbol"
+      ],
+      "spread": false,
+      "description": "the record key that identifies the WARC-Type being parsed"
+    }
+  },
+  {
+    "__docId__": 30,
+    "kind": "member",
+    "name": "_checkRecType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_checkRecType",
+    "access": null,
+    "description": null,
+    "lineNumber": 169,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": null,
+    "description": null,
+    "lineNumber": 170,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 32,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": null,
+    "description": null,
+    "lineNumber": 174,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 33,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": null,
+    "description": null,
+    "lineNumber": 178,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 34,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": null,
+    "description": null,
+    "lineNumber": 182,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 35,
+    "kind": "member",
+    "name": "_foundType",
+    "memberof": "lib/warcParser/index.js~WARCParser",
+    "static": false,
+    "longname": "lib/warcParser/index.js~WARCParser#_foundType",
+    "access": null,
+    "description": null,
+    "lineNumber": 192,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 36,
+    "kind": "file",
+    "name": "lib/warcRecordBuilder/buildKeys.js",
+    "content": "/**\n * @desc Keys used by {@link WARCRecorderBuilder} to identify which WARC Record is currently being built\n * @type {{builderKeyInfo: Symbol, builderKeyMdata: Symbol, builderKeyReq: Symbol, builderKeyRes: Symbol}}\n */\nconst buildKeys = {\n  builderKeyInfo: Symbol('info'),\n  builderKeyMdata: Symbol('mdata'),\n  builderKeyReq: Symbol('req'),\n  builderKeyRes: Symbol('res')\n}\n\nmodule.exports = buildKeys\n",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/buildKeys.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 37,
+    "kind": "variable",
+    "name": "buildKeys",
+    "memberof": "lib/warcRecordBuilder/buildKeys.js",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/buildKeys.js~buildKeys",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecordBuilder/buildKeys.js",
+    "importStyle": null,
+    "description": "Keys used by {@link WARCRecorderBuilder} to identify which WARC Record is currently being built",
+    "lineNumber": 5,
+    "type": {
+      "nullable": null,
+      "types": [
+        "{builderKeyInfo: Symbol, builderKeyMdata: Symbol, builderKeyReq: Symbol, builderKeyRes: Symbol}"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 38,
+    "kind": "file",
+    "name": "lib/warcRecordBuilder/index.js",
+    "content": "/** @ignore */\nconst {builderKeyInfo, builderKeyMdata, builderKeyReq, builderKeyRes} = require('./buildKeys')\n/** @ignore */\nconst {WARCInfoRecord, WARCMetaDataRecord, WARCRequestRecord, WARCResponseRecord} = require('../warcRecords')\n\n/**\n * @desc Builds WARC Records by keeping track internally of the current WARC Record WARC-TYPE being parsed\n * by a parser e.g. {@link WARCParser}\n */\nclass WARCRecorderBuilder {\n  /**\n   * @desc Construct a new WARCRecorderBuilder\n   */\n  constructor () {\n    this._info = new Map()\n    this._mdata = new Map()\n    this._req = new Map()\n    this._res = new Map()\n  }\n\n  /**\n   * @desc Begin building WARC-TYPE: warcinfo\n   * @param {Buffer} bgn the WARC/1.0 line\n   * @param {Buffer} line the WARC-TYPE line\n   * @return {Symbol} the internal record key for the warcinfo record currently being built\n   */\n  initInfo (bgn, line) {\n    this._info.clear()\n    this._info.set('header', [bgn, line])\n    this._info.set('content', [])\n    return builderKeyInfo\n  }\n\n  /**\n   * @desc Begin building WARC-TYPE: metadata\n   * @param {Buffer} bgn the WARC/1.0 line\n   * @param {Buffer} line the WARC-TYPE line\n   * @return {Symbol} the internal record key for the metadata record currently being built\n   */\n  initMdata (bgn, line) {\n    this._mdata.clear()\n    this._mdata.set('header', [bgn, line])\n    this._mdata.set('content', [])\n    return builderKeyMdata\n  }\n\n  /**\n   * @desc Begin building WARC-TYPE: request\n   * @param {Buffer} bgn the WARC/1.0 line\n   * @param {Buffer} line the WARC-TYPE line\n   * @return {Symbol} the internal record key for the request record currently being built\n   */\n  initReq (bgn, line) {\n    this._req.clear()\n    this._req.set('header', [bgn, line])\n    this._req.set('http', [])\n    this._req.set('post', [])\n    return builderKeyReq\n  }\n\n  /**\n   * @desc Begin building WARC-TYPE: response\n   * @param {Buffer} bgn the WARC/1.0 line\n   * @param {Buffer} line the WARC-TYPE line\n   * @return {Symbol} the internal record key for the response record currently being built\n   */\n  initRes (bgn, line) {\n    this._res.clear()\n    this._res.set('header', [bgn, line])\n    this._res.set('http', [])\n    this._res.set('body', [])\n    return builderKeyRes\n  }\n\n  /**\n   * @desc Add the current line being parsed to a record currently being built\n   * @param {Symbol} key the internal record key for the response record currently being built exposed by\n   * {@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}\n   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts\n   * @param {Buffer} line the current line being parsed\n   */\n  addLineTo (key, ctrlfCount, line) {\n    switch (key) {\n      case builderKeyInfo:\n        this._addInfoLine(ctrlfCount, line)\n        break\n      case builderKeyMdata:\n        this._addMdataLine(ctrlfCount, line)\n        break\n      case builderKeyReq:\n        this._addReqLine(ctrlfCount, line)\n        break\n      case builderKeyRes:\n        this._addResLine(ctrlfCount, line)\n        break\n    }\n  }\n\n  /**\n   * @desc Build the record currently being parsed\n   * @param {Symbol} key the internal record key for the response record currently being built exposed by\n   * {@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}\n   * @return {WARCInfoRecord|WARCMetaDataRecord|WARCRequestRecord|WARCResponseRecord} based off the ``key`` supplied to\n   * this method\n   */\n  buildRecord (key) {\n    let record\n    switch (key) {\n      case builderKeyInfo:\n        record = new WARCInfoRecord(...this._info.values())\n        this._info.clear()\n        break\n      case builderKeyMdata:\n        record = new WARCMetaDataRecord(...this._mdata.values())\n        this._mdata.clear()\n        break\n      case builderKeyReq:\n        record = new WARCRequestRecord(...this._req.values())\n        this._req.clear()\n        break\n      case builderKeyRes:\n        record = new WARCResponseRecord(...this._res.values())\n        this._res.clear()\n        break\n    }\n    return record\n  }\n\n  /**\n   * @desc Adds the line to the correct WARC record section for warcinfo\n   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts\n   * @param {Buffer} line the current line being parsed\n   * @private\n   */\n  _addInfoLine (ctrlfCount, line) {\n    if (ctrlfCount === 0) {\n      this._info.get('header').push(line)\n    } else if (ctrlfCount === 1) {\n      this._info.get('content').push(line)\n    }\n  }\n\n  /**\n   * @desc Adds the line to the correct WARC record section for metadata\n   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts\n   * @param {Buffer} line the current line being parsed\n   * @private\n   */\n  _addMdataLine (ctrlfCount, line) {\n    if (ctrlfCount === 0) {\n      this._mdata.get('header').push(line)\n    } else if (ctrlfCount === 1) {\n      this._mdata.get('content').push(line)\n    }\n  }\n\n  /**\n   * @desc Adds the line to the correct WARC record section for request\n   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts\n   * @param {Buffer} line the current line being parsed\n   * @private\n   */\n  _addReqLine (ctrlfCount, line) {\n    if (ctrlfCount === 0) {\n      this._req.get('header').push(line)\n    } else if (ctrlfCount === 1) {\n      this._req.get('http').push(line)\n    } else if (ctrlfCount === 2) {\n      this._req.get('post').push(line)\n    }\n  }\n\n  /**\n   * @desc Adds the line to the correct WARC record section for response\n   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts\n   * @param {Buffer} line the current line being parsed\n   * @private\n   */\n  _addResLine (ctrlfCount, line) {\n    if (ctrlfCount === 0) {\n      this._res.get('header').push(line)\n    } else if (ctrlfCount === 1) {\n      this._res.get('http').push(line)\n    } else if (ctrlfCount === 2) {\n      this._res.get('body').push(line)\n    }\n  }\n}\n\nmodule.exports = WARCRecorderBuilder\n",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 39,
+    "kind": "variable",
+    "name": "builderKeyInfo",
+    "memberof": "lib/warcRecordBuilder/index.js",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/index.js~builderKeyInfo",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecordBuilder/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 40,
+    "kind": "variable",
+    "name": "WARCInfoRecord",
+    "memberof": "lib/warcRecordBuilder/index.js",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/index.js~WARCInfoRecord",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecordBuilder/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 41,
+    "kind": "class",
+    "name": "WARCRecorderBuilder",
+    "memberof": "lib/warcRecordBuilder/index.js",
+    "static": true,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecordBuilder/index.js",
+    "importStyle": null,
+    "description": "Builds WARC Records by keeping track internally of the current WARC Record WARC-TYPE being parsed\nby a parser e.g. {@link WARCParser}",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "__docId__": 42,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#constructor",
+    "access": null,
+    "description": "Construct a new WARCRecorderBuilder",
+    "lineNumber": 14,
+    "params": []
+  },
+  {
+    "__docId__": 43,
+    "kind": "member",
+    "name": "_info",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_info",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 44,
+    "kind": "member",
+    "name": "_mdata",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_mdata",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 45,
+    "kind": "member",
+    "name": "_req",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_req",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 46,
+    "kind": "member",
+    "name": "_res",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_res",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 47,
+    "kind": "method",
+    "name": "initInfo",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initInfo",
+    "access": null,
+    "description": "Begin building WARC-TYPE: warcinfo",
+    "lineNumber": 27,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bgn",
+        "description": "the WARC/1.0 line"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the WARC-TYPE line"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Symbol"
+      ],
+      "spread": false,
+      "description": "the internal record key for the warcinfo record currently being built"
+    }
+  },
+  {
+    "__docId__": 48,
+    "kind": "method",
+    "name": "initMdata",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initMdata",
+    "access": null,
+    "description": "Begin building WARC-TYPE: metadata",
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bgn",
+        "description": "the WARC/1.0 line"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the WARC-TYPE line"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Symbol"
+      ],
+      "spread": false,
+      "description": "the internal record key for the metadata record currently being built"
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "method",
+    "name": "initReq",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initReq",
+    "access": null,
+    "description": "Begin building WARC-TYPE: request",
+    "lineNumber": 53,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bgn",
+        "description": "the WARC/1.0 line"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the WARC-TYPE line"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Symbol"
+      ],
+      "spread": false,
+      "description": "the internal record key for the request record currently being built"
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "method",
+    "name": "initRes",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initRes",
+    "access": null,
+    "description": "Begin building WARC-TYPE: response",
+    "lineNumber": 67,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bgn",
+        "description": "the WARC/1.0 line"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the WARC-TYPE line"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Symbol"
+      ],
+      "spread": false,
+      "description": "the internal record key for the response record currently being built"
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "method",
+    "name": "addLineTo",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#addLineTo",
+    "access": null,
+    "description": "Add the current line being parsed to a record currently being built",
+    "lineNumber": 82,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Symbol"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "the internal record key for the response record currently being built exposed by\n{@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctrlfCount",
+        "description": "the current count of Control LineFeeds between WARC Record parts"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the current line being parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 52,
+    "kind": "method",
+    "name": "buildRecord",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#buildRecord",
+    "access": null,
+    "description": "Build the record currently being parsed",
+    "lineNumber": 106,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Symbol"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "the internal record key for the response record currently being built exposed by\n{@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "WARCInfoRecord",
+        "WARCMetaDataRecord",
+        "WARCRequestRecord",
+        "WARCResponseRecord"
+      ],
+      "spread": false,
+      "description": "based off the ``key`` supplied to\nthis method"
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "method",
+    "name": "_addInfoLine",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addInfoLine",
+    "access": "private",
+    "description": "Adds the line to the correct WARC record section for warcinfo",
+    "lineNumber": 135,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctrlfCount",
+        "description": "the current count of Control LineFeeds between WARC Record parts"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the current line being parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 54,
+    "kind": "method",
+    "name": "_addMdataLine",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addMdataLine",
+    "access": "private",
+    "description": "Adds the line to the correct WARC record section for metadata",
+    "lineNumber": 149,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctrlfCount",
+        "description": "the current count of Control LineFeeds between WARC Record parts"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the current line being parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "name": "_addReqLine",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addReqLine",
+    "access": "private",
+    "description": "Adds the line to the correct WARC record section for request",
+    "lineNumber": 163,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctrlfCount",
+        "description": "the current count of Control LineFeeds between WARC Record parts"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the current line being parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 56,
+    "kind": "method",
+    "name": "_addResLine",
+    "memberof": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addResLine",
+    "access": "private",
+    "description": "Adds the line to the correct WARC record section for response",
+    "lineNumber": 179,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctrlfCount",
+        "description": "the current count of Control LineFeeds between WARC Record parts"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "line",
+        "description": "the current line being parsed"
+      }
+    ]
+  },
+  {
+    "__docId__": 57,
+    "kind": "file",
+    "name": "lib/warcRecords/index.js",
+    "content": "/** @ignore */\nconst {parseWarcInfoMetaDataContent, parseWarcRecordHeader, headerRe} = require('./warcContentParsers')\n\n/**\n * @desc WARC-TYPE: warcinfo\n */\nclass WARCInfoRecord {\n  /**\n   * @desc Create a new WARCInfoRecord\n   * @param {Buffer[]} headerBuffers the warc header fields\n   * @param {Buffer[]} contentBuffers the warc records contents\n   */\n  constructor (headerBuffers, contentBuffers) {\n    /**\n     * @type {Object}\n     */\n    this.warcHeader = parseWarcRecordHeader(headerBuffers)\n\n    /**\n     * @type {Object}\n     */\n    this.content = parseWarcInfoMetaDataContent(contentBuffers)\n\n    /**\n     * @type {string}\n     */\n    this.type = 'warcinfo'\n  }\n\n  /**\n   * @return {string} WARC-TYPE\n   */\n  get warcType () {\n    return this.warcHeader['WARC-Type']\n  }\n\n  /**\n   * @return {string} WARC-Filename\n   */\n  get warcFilename () {\n    return this.warcHeader['WARC-Filename']\n  }\n\n  /**\n   * @return {string} WARC-Record-ID\n   */\n  get recordId () {\n    return this.warcHeader['WARC-Record-ID']\n  }\n\n  /**\n   * @return {string} WARC-HEADER:Content-Type\n   */\n  get warcContentType () {\n    return this.warcHeader['Content-Type']\n  }\n\n  /**\n   * @return {number} WARC-HEADER:Content-Length\n   */\n  get warcContentLength () {\n    return this.warcHeader['Content-Length']\n  }\n}\n\n/**\n * @desc WARC-TYPE: metadata\n */\nclass WARCMetaDataRecord {\n  /**\n   * @desc Create a new WARCMetaDataRecord\n   * @param {Buffer[]} headerBuffers the warc header fields\n   * @param {Buffer[]} contentBuffers the warc records contents\n   */\n  constructor (headerBuffers, contentBuffers) {\n    /**\n     * @type {Object}\n     */\n    this.warcHeader = parseWarcRecordHeader(headerBuffers)\n\n    /**\n     * @type {Object}\n     */\n    this.content = parseWarcInfoMetaDataContent(contentBuffers)\n\n    /**\n     * @type {string}\n     */\n    this.type = 'metadata'\n  }\n\n  /**\n   * @return {string} WARC-TYPE\n   */\n  get warcType () {\n    return this.warcHeader['WARC-Type']\n  }\n\n  /**\n   * @return {string} WARC-Record-ID\n   */\n  get recordId () {\n    return this.warcHeader['WARC-Record-ID']\n  }\n\n  /**\n   * @return {string} WARC-Concurrent-To\n   */\n  get concurrentTo () {\n    return this.warcHeader['WARC-Concurrent-To']\n  }\n\n  /**\n   * @return {string} WARC-HEADER:Content-Type\n   */\n  get warcContentType () {\n    return this.warcHeader['Content-Type']\n  }\n\n  /**\n   * @return {number} WARC-HEADER:Content-Length\n   */\n  get warcContentLength () {\n    return this.warcHeader['Content-Length']\n  }\n}\n\n/**\n * @desc WARC-TYPE: request\n */\nclass WARCRequestRecord {\n  /**\n   * @desc Create a new WARCRequestRecord\n   * @param {Buffer[]} headerBuffers\n   * @param {Buffer[]} httpBuffers\n   * @param {Buffer[]} postBuffers\n   */\n  constructor (headerBuffers, httpBuffers, postBuffers) {\n    /**\n     * @type {Object}\n     */\n    this.warcHeader = parseWarcRecordHeader(headerBuffers)\n\n    /**\n     * @type {Object}\n     */\n    this.httpHeaders = this._parseHttpHeaders(httpBuffers)\n\n    if (this.method.toLowerCase() === 'post') {\n      /**\n       * @desc The post data of the request. This property is only on a {@link WARCRequestRecord} if it corresponds to\n       * a post request\n       * @type {Buffer}\n       */\n      this.postBuffer = Buffer.concat(postBuffers)\n    }\n\n    /**\n     * @type {string}\n     */\n    this.type = 'request'\n\n    /**\n     * @type {?string}\n     */\n    this.method = null\n\n    /**\n     * @type {?string}\n     */\n    this.requestLine = null\n\n    /**\n     * @type {?string}\n     */\n    this.httpVersion = null\n  }\n\n  /**\n   * @desc Parses the request HTTP headers\n   * @param {Buffer[]} bufs the request HTTP headers\n   * @return {Object}\n   * @private\n   */\n  _parseHttpHeaders (bufs) {\n    let content = {}\n    let len = bufs.length\n    let i = 1\n    let line\n    let match\n    this.requestLine = bufs[0].toString('utf8').trim()\n    // disabling eslint to account for ES6 array destructuring\n    let [meth, path, httpV] = this.requestLine.split(' ') // eslint-disable-line\n    this.method = meth\n    this.httpVersion = httpV\n    let lastMatch\n    for (; i < len; ++i) {\n      line = bufs[i].toString('utf8').trim()\n      match = headerRe.exec(line)\n      if (match) {\n        let [_, m1, m2] = match // eslint-disable-line\n        content[m1] = m2\n        lastMatch = m1\n      } else {\n        // because really long set cookie and friends\n        if (lastMatch) {\n          content[lastMatch] += line\n        } else {\n          console.log('boooo WarcRequestRecord._parseHeaders')\n        }\n      }\n    }\n    return content\n  }\n\n  /**\n   * @return {string} WARC-Record-ID\n   */\n  get recordId () {\n    return this.warcHeader['WARC-Record-ID']\n  }\n\n  /**\n   * @return {string} WARC-Target-URI\n   */\n  get targetURI () {\n    return this.warcHeader['WARC-Target-URI']\n  }\n\n  /**\n   * @return {string} WARC-HEADER:Content-Type\n   */\n  get warcContentType () {\n    return this.warcHeader['Content-Type']\n  }\n\n  /**\n   * @return {number} WARC-HEADER:Content-Length\n   */\n  get warcContentLength () {\n    return this.warcHeader['Content-Length']\n  }\n}\n\n/**\n * @desc WARC-TYPE: response\n */\nclass WARCResponseRecord {\n  /**\n   * @desc Create a new WARCResponseRecord\n   * @param {Buffer[]} headerBuffers\n   * @param {Buffer[]} httpBuffers\n   * @param {Buffer[]} bodyBuffers\n   */\n  constructor (headerBuffers, httpBuffers, bodyBuffers) {\n    /**\n     * @type {Object}\n     */\n    this.warcHeader = parseWarcRecordHeader(headerBuffers)\n\n    /**\n     * @type {Object}\n     */\n    this.httpHeaders = this._parseHttpHeaders(httpBuffers)\n\n    /**\n     * @type {Buffer}\n     */\n    this.bodyBuffer = Buffer.concat(bodyBuffers)\n\n    /**\n     * @type {string}\n     */\n    this.type = 'response'\n\n    /**\n     * @type {?number}\n     */\n    this.statusCode = null\n\n    /**\n     * @type {?string}\n     */\n    this.statusReason = null\n\n    /**\n     * @type {?string}\n     */\n    this.statusLine = null\n\n    /**\n     * @type {?string}\n     */\n    this.httpVersion = null\n  }\n\n  /**\n   * @desc Parses the response HTTP headers\n   * @param {Buffer[]} bufs the response HTTP headers\n   * @return {Object}\n   * @private\n   */\n  _parseHttpHeaders (bufs) {\n    let content = {}\n    let len = bufs.length\n    let i = 1\n    let line\n    let match\n    this.statusLine = bufs[0].toString('utf8').trim()\n    let [httpV, statusCode, statusReason] = this.statusLine.split(' ')\n    this.statusCode = parseInt(statusCode)\n    this.statusReason = statusReason\n    this.httpVersion = httpV\n    let lastMatch\n    for (; i < len; ++i) {\n      line = bufs[i].toString('utf8').trim()\n      match = headerRe.exec(line)\n      if (match) {\n        // disabling eslint to account for ES6 array destructuring\n        let [_, m1, m2] = match // eslint-disable-line\n        if (m1.toLowerCase() === 'content-length') {\n          content[m1] = parseInt(m2)\n        } else {\n          content[m1] = m2\n        }\n        lastMatch = m1\n      } else {\n        // because really long set cookie and friends\n        if (lastMatch) {\n          content[lastMatch] += line\n        } else {\n          console.log('boooo WarcResponseRecord._parseHeaders')\n        }\n      }\n    }\n    return content\n  }\n\n  /**\n   * @return {string} WARC-Record-ID\n   */\n  get recordId () {\n    return this.warcHeader['WARC-Record-ID']\n  }\n\n  /**\n   * @return {string} WARC-Target-URI\n   */\n  get targetURI () {\n    return this.warcHeader['WARC-Target-URI']\n  }\n\n  /**\n   * @return {string} WARC-HEADER:Content-Type\n   */\n  get warcContentType () {\n    return this.warcHeader['Content-Type']\n  }\n\n  /**\n   * @return {number} WARC-HEADER:Content-Length\n   */\n  get warcContentLength () {\n    return this.warcHeader['Content-Length']\n  }\n}\n\nmodule.exports = {\n  WARCInfoRecord,\n  WARCMetaDataRecord,\n  WARCRequestRecord,\n  WARCResponseRecord\n}\n",
+    "static": true,
+    "longname": "lib/warcRecords/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 58,
+    "kind": "variable",
+    "name": "parseWarcInfoMetaDataContent",
+    "memberof": "lib/warcRecords/index.js",
+    "static": true,
+    "longname": "lib/warcRecords/index.js~parseWarcInfoMetaDataContent",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "ignore": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 59,
+    "kind": "class",
+    "name": "WARCInfoRecord",
+    "memberof": "lib/warcRecords/index.js",
+    "static": true,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/index.js",
+    "importStyle": null,
+    "description": "WARC-TYPE: warcinfo",
+    "lineNumber": 7,
+    "interface": false
+  },
+  {
+    "__docId__": 60,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#constructor",
+    "access": null,
+    "description": "Create a new WARCInfoRecord",
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "headerBuffers",
+        "description": "the warc header fields"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "contentBuffers",
+        "description": "the warc records contents"
+      }
+    ]
+  },
+  {
+    "__docId__": 61,
+    "kind": "member",
+    "name": "warcHeader",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#warcHeader",
+    "access": null,
+    "description": "",
+    "lineNumber": 17,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "member",
+    "name": "content",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#content",
+    "access": null,
+    "description": "",
+    "lineNumber": 22,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 63,
+    "kind": "member",
+    "name": "type",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#type",
+    "access": null,
+    "description": "",
+    "lineNumber": 27,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "get",
+    "name": "warcType",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#warcType",
+    "access": null,
+    "description": "",
+    "lineNumber": 33,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-TYPE"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 65,
+    "kind": "get",
+    "name": "warcFilename",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#warcFilename",
+    "access": null,
+    "description": "",
+    "lineNumber": 40,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Filename"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 66,
+    "kind": "get",
+    "name": "recordId",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#recordId",
+    "access": null,
+    "description": "",
+    "lineNumber": 47,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Record-ID"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 67,
+    "kind": "get",
+    "name": "warcContentType",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#warcContentType",
+    "access": null,
+    "description": "",
+    "lineNumber": 54,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Type"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 68,
+    "kind": "get",
+    "name": "warcContentLength",
+    "memberof": "lib/warcRecords/index.js~WARCInfoRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCInfoRecord#warcContentLength",
+    "access": null,
+    "description": "",
+    "lineNumber": 61,
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Length"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 69,
+    "kind": "class",
+    "name": "WARCMetaDataRecord",
+    "memberof": "lib/warcRecords/index.js",
+    "static": true,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/index.js",
+    "importStyle": null,
+    "description": "WARC-TYPE: metadata",
+    "lineNumber": 69,
+    "interface": false
+  },
+  {
+    "__docId__": 70,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#constructor",
+    "access": null,
+    "description": "Create a new WARCMetaDataRecord",
+    "lineNumber": 75,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "headerBuffers",
+        "description": "the warc header fields"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "contentBuffers",
+        "description": "the warc records contents"
+      }
+    ]
+  },
+  {
+    "__docId__": 71,
+    "kind": "member",
+    "name": "warcHeader",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#warcHeader",
+    "access": null,
+    "description": "",
+    "lineNumber": 79,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 72,
+    "kind": "member",
+    "name": "content",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#content",
+    "access": null,
+    "description": "",
+    "lineNumber": 84,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 73,
+    "kind": "member",
+    "name": "type",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#type",
+    "access": null,
+    "description": "",
+    "lineNumber": 89,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 74,
+    "kind": "get",
+    "name": "warcType",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#warcType",
+    "access": null,
+    "description": "",
+    "lineNumber": 95,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-TYPE"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "get",
+    "name": "recordId",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#recordId",
+    "access": null,
+    "description": "",
+    "lineNumber": 102,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Record-ID"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "get",
+    "name": "concurrentTo",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#concurrentTo",
+    "access": null,
+    "description": "",
+    "lineNumber": 109,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Concurrent-To"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 77,
+    "kind": "get",
+    "name": "warcContentType",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#warcContentType",
+    "access": null,
+    "description": "",
+    "lineNumber": 116,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Type"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
+    "kind": "get",
+    "name": "warcContentLength",
+    "memberof": "lib/warcRecords/index.js~WARCMetaDataRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCMetaDataRecord#warcContentLength",
+    "access": null,
+    "description": "",
+    "lineNumber": 123,
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Length"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 79,
+    "kind": "class",
+    "name": "WARCRequestRecord",
+    "memberof": "lib/warcRecords/index.js",
+    "static": true,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/index.js",
+    "importStyle": null,
+    "description": "WARC-TYPE: request",
+    "lineNumber": 131,
+    "interface": false
+  },
+  {
+    "__docId__": 80,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#constructor",
+    "access": null,
+    "description": "Create a new WARCRequestRecord",
+    "lineNumber": 138,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "headerBuffers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "httpBuffers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "postBuffers",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 81,
+    "kind": "member",
+    "name": "warcHeader",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#warcHeader",
+    "access": null,
+    "description": "",
+    "lineNumber": 142,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "member",
+    "name": "httpHeaders",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#httpHeaders",
+    "access": null,
+    "description": "",
+    "lineNumber": 147,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 83,
+    "kind": "member",
+    "name": "postBuffer",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#postBuffer",
+    "access": null,
+    "description": "The post data of the request. This property is only on a {@link WARCRequestRecord} if it corresponds to\na post request",
+    "lineNumber": 155,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Buffer"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 84,
+    "kind": "member",
+    "name": "type",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#type",
+    "access": null,
+    "description": "",
+    "lineNumber": 161,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 85,
+    "kind": "member",
+    "name": "method",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#method",
+    "access": null,
+    "description": "",
+    "lineNumber": 166,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 86,
+    "kind": "member",
+    "name": "requestLine",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#requestLine",
+    "access": null,
+    "description": "",
+    "lineNumber": 171,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 87,
+    "kind": "member",
+    "name": "httpVersion",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#httpVersion",
+    "access": null,
+    "description": "",
+    "lineNumber": 176,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 88,
+    "kind": "method",
+    "name": "_parseHttpHeaders",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#_parseHttpHeaders",
+    "access": "private",
+    "description": "Parses the request HTTP headers",
+    "lineNumber": 185,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bufs",
+        "description": "the request HTTP headers"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "member",
+    "name": "requestLine",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#requestLine",
+    "access": null,
+    "description": null,
+    "lineNumber": 191,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 90,
+    "kind": "member",
+    "name": "method",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#method",
+    "access": null,
+    "description": null,
+    "lineNumber": 194,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 91,
+    "kind": "member",
+    "name": "httpVersion",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#httpVersion",
+    "access": null,
+    "description": null,
+    "lineNumber": 195,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 92,
+    "kind": "get",
+    "name": "recordId",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#recordId",
+    "access": null,
+    "description": "",
+    "lineNumber": 219,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Record-ID"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 93,
+    "kind": "get",
+    "name": "targetURI",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#targetURI",
+    "access": null,
+    "description": "",
+    "lineNumber": 226,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Target-URI"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 94,
+    "kind": "get",
+    "name": "warcContentType",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#warcContentType",
+    "access": null,
+    "description": "",
+    "lineNumber": 233,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Type"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 95,
+    "kind": "get",
+    "name": "warcContentLength",
+    "memberof": "lib/warcRecords/index.js~WARCRequestRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCRequestRecord#warcContentLength",
+    "access": null,
+    "description": "",
+    "lineNumber": 240,
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Length"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 96,
+    "kind": "class",
+    "name": "WARCResponseRecord",
+    "memberof": "lib/warcRecords/index.js",
+    "static": true,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/index.js",
+    "importStyle": null,
+    "description": "WARC-TYPE: response",
+    "lineNumber": 248,
+    "interface": false
+  },
+  {
+    "__docId__": 97,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#constructor",
+    "access": null,
+    "description": "Create a new WARCResponseRecord",
+    "lineNumber": 255,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "headerBuffers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "httpBuffers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bodyBuffers",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 98,
+    "kind": "member",
+    "name": "warcHeader",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#warcHeader",
+    "access": null,
+    "description": "",
+    "lineNumber": 259,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 99,
+    "kind": "member",
+    "name": "httpHeaders",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#httpHeaders",
+    "access": null,
+    "description": "",
+    "lineNumber": 264,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 100,
+    "kind": "member",
+    "name": "bodyBuffer",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#bodyBuffer",
+    "access": null,
+    "description": "",
+    "lineNumber": 269,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Buffer"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 101,
+    "kind": "member",
+    "name": "type",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#type",
+    "access": null,
+    "description": "",
+    "lineNumber": 274,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 102,
+    "kind": "member",
+    "name": "statusCode",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusCode",
+    "access": null,
+    "description": "",
+    "lineNumber": 279,
+    "type": {
+      "nullable": true,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 103,
+    "kind": "member",
+    "name": "statusReason",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusReason",
+    "access": null,
+    "description": "",
+    "lineNumber": 284,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 104,
+    "kind": "member",
+    "name": "statusLine",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusLine",
+    "access": null,
+    "description": "",
+    "lineNumber": 289,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 105,
+    "kind": "member",
+    "name": "httpVersion",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#httpVersion",
+    "access": null,
+    "description": "",
+    "lineNumber": 294,
+    "type": {
+      "nullable": true,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 106,
+    "kind": "method",
+    "name": "_parseHttpHeaders",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#_parseHttpHeaders",
+    "access": "private",
+    "description": "Parses the response HTTP headers",
+    "lineNumber": 303,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bufs",
+        "description": "the response HTTP headers"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 107,
+    "kind": "member",
+    "name": "statusLine",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusLine",
+    "access": null,
+    "description": null,
+    "lineNumber": 309,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 108,
+    "kind": "member",
+    "name": "statusCode",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 311,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 109,
+    "kind": "member",
+    "name": "statusReason",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#statusReason",
+    "access": null,
+    "description": null,
+    "lineNumber": 312,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 110,
+    "kind": "member",
+    "name": "httpVersion",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#httpVersion",
+    "access": null,
+    "description": null,
+    "lineNumber": 313,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 111,
+    "kind": "get",
+    "name": "recordId",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#recordId",
+    "access": null,
+    "description": "",
+    "lineNumber": 342,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Record-ID"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 112,
+    "kind": "get",
+    "name": "targetURI",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#targetURI",
+    "access": null,
+    "description": "",
+    "lineNumber": 349,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-Target-URI"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 113,
+    "kind": "get",
+    "name": "warcContentType",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#warcContentType",
+    "access": null,
+    "description": "",
+    "lineNumber": 356,
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Type"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 114,
+    "kind": "get",
+    "name": "warcContentLength",
+    "memberof": "lib/warcRecords/index.js~WARCResponseRecord",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "lib/warcRecords/index.js~WARCResponseRecord#warcContentLength",
+    "access": null,
+    "description": "",
+    "lineNumber": 363,
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "WARC-HEADER:Content-Length"
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 115,
+    "kind": "file",
+    "name": "lib/warcRecords/warcContentParsers.js",
+    "content": "/**\n * @desc Capture ``(key):\\s(value)`` separated pairs\n * @type {RegExp}\n */\nconst headerRe = /([^:]+):\\s(.+)/\n\n/**\n * @desc Capture the WARC Record Id or WARC Concurrent To Id\n * @type {RegExp}\n */\nconst recIdRE = /<[a-z]+:[a-z]+:([^>]+)>/\n\n/**\n * @desc Parse a WARC Records headers not HTTP Header parser\n * @param {Buffer[]} bufs the WARC Records header lines\n * @return {Object}\n */\nfunction parseWarcRecordHeader (bufs) {\n  let rheader = {}\n  let len = bufs.length\n  let i = 1\n  let line\n  let match\n  line = bufs[0].toString('utf8').trim()\n  rheader['WARC'] = line.slice(line.indexOf('/') + 1)\n  for (; i < len; ++i) {\n    line = bufs[i].toString('utf8').trim()\n    match = headerRe.exec(line)\n    if (match) {\n      // disabling eslint to account for ES6 array destructuring\n      let [str, m1, m2] = match // eslint-disable-line\n      if (m1 === 'WARC-Record-ID' || m1 === 'WARC-Concurrent-To') {\n        let [_, id] = recIdRE.exec(m2) // eslint-disable-line\n        rheader[m1] = id\n      } else if (m1 === 'Content-Length') {\n        rheader[m1] = parseInt(m2)\n      } else {\n        rheader[m1] = m2\n      }\n    } else {\n      console.log('boooo parseWarcRecordHeader')\n    }\n  }\n  return rheader\n}\n\n/**\n * @desc Parse a WARC Metadata records metadata content\n * @param {Buffer[]} bufs the WARC Metadata records content lines\n * @return {Object}\n */\nfunction parseWarcInfoMetaDataContent (bufs) {\n  let content = {}\n  let len = bufs.length\n  let i = 0\n  let line\n  let match\n  for (; i < len; ++i) {\n    line = bufs[i].toString('utf8').trim()\n    match = headerRe.exec(line)\n    if (match) {\n      // disabling eslint to account for ES6 array destructuring\n      let [str, m1, m2] = match // eslint-disable-line\n      if (m1 === 'outlink') {\n        if (!content[m1]) {\n          content[m1] = []\n        }\n        content[m1].push(m2)\n      } else {\n        content[m1] = m2\n      }\n    } else {\n      console.log('boooo parseWarcInfoMetaDataContent')\n    }\n  }\n  return content\n}\n\nmodule.exports = {\n  headerRe,\n  recIdRE,\n  parseWarcInfoMetaDataContent,\n  parseWarcRecordHeader\n}\n",
+    "static": true,
+    "longname": "lib/warcRecords/warcContentParsers.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 116,
+    "kind": "variable",
+    "name": "headerRe",
+    "memberof": "lib/warcRecords/warcContentParsers.js",
+    "static": true,
+    "longname": "lib/warcRecords/warcContentParsers.js~headerRe",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/warcContentParsers.js",
+    "importStyle": null,
+    "description": "Capture ``(key):\\s(value)`` separated pairs",
+    "lineNumber": 5,
+    "type": {
+      "nullable": null,
+      "types": [
+        "RegExp"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 117,
+    "kind": "variable",
+    "name": "recIdRE",
+    "memberof": "lib/warcRecords/warcContentParsers.js",
+    "static": true,
+    "longname": "lib/warcRecords/warcContentParsers.js~recIdRE",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/warcContentParsers.js",
+    "importStyle": null,
+    "description": "Capture the WARC Record Id or WARC Concurrent To Id",
+    "lineNumber": 11,
+    "type": {
+      "nullable": null,
+      "types": [
+        "RegExp"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 118,
+    "kind": "function",
+    "name": "parseWarcRecordHeader",
+    "memberof": "lib/warcRecords/warcContentParsers.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/warcRecords/warcContentParsers.js~parseWarcRecordHeader",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/warcContentParsers.js",
+    "importStyle": null,
+    "description": "Parse a WARC Records headers not HTTP Header parser",
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bufs",
+        "description": "the WARC Records header lines"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 119,
+    "kind": "function",
+    "name": "parseWarcInfoMetaDataContent",
+    "memberof": "lib/warcRecords/warcContentParsers.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/warcRecords/warcContentParsers.js~parseWarcInfoMetaDataContent",
+    "access": null,
+    "export": false,
+    "importPath": "node-warc/lib/warcRecords/warcContentParsers.js",
+    "importStyle": null,
+    "description": "Parse a WARC Metadata records metadata content",
+    "lineNumber": 52,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Buffer[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bufs",
+        "description": "the WARC Metadata records content lines"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 121,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 122,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 123,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 124,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 125,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 126,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 127,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 128,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 129,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 130,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 132,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 133,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 134,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 135,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 136,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 137,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 138,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 139,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 140,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 141,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 142,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 143,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 144,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 145,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 148,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 149,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 150,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 151,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 152,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 153,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 154,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 155,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 156,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 157,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 158,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 159,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 160,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 161,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 162,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 163,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 164,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 165,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 166,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 167,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 169,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 170,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 171,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 172,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 173,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 174,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 175,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 176,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]

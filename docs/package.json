@@ -1,0 +1,32 @@
+{
+  "name": "node-warc",
+  "version": "1.0.0",
+  "description": "Parse Web Archive Records (WARC) Files via node.js",
+  "main": "index.js",
+  "author": "John Berlin <n0tan3rd@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "standard | snazzy",
+    "fix-lint": "standard --fix",
+    "doc": "esdoc"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    }
+  },
+  "dependencies": {
+    "binary-split": "^1.0.3",
+    "eventemitter3": "^2.0.3",
+    "fs-extra": "^3.0.1",
+    "through2": "^2.0.3",
+    "untildify": "^3.0.2"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "esdoc": "^0.5.2",
+    "pretty-time": "^0.2.0",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.2"
+  }
+}

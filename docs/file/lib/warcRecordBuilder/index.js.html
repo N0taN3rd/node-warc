@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/warcRecordBuilder/index.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcParser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcParser/index.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-recIdRE">recIdRE</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/warcRecordBuilder/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @ignore */
+const {builderKeyInfo, builderKeyMdata, builderKeyReq, builderKeyRes} = require(&apos;./buildKeys&apos;)
+/** @ignore */
+const {WARCInfoRecord, WARCMetaDataRecord, WARCRequestRecord, WARCResponseRecord} = require(&apos;../warcRecords&apos;)
+
+/**
+ * @desc Builds WARC Records by keeping track internally of the current WARC Record WARC-TYPE being parsed
+ * by a parser e.g. {@link WARCParser}
+ */
+class WARCRecorderBuilder {
+  /**
+   * @desc Construct a new WARCRecorderBuilder
+   */
+  constructor () {
+    this._info = new Map()
+    this._mdata = new Map()
+    this._req = new Map()
+    this._res = new Map()
+  }
+
+  /**
+   * @desc Begin building WARC-TYPE: warcinfo
+   * @param {Buffer} bgn the WARC/1.0 line
+   * @param {Buffer} line the WARC-TYPE line
+   * @return {Symbol} the internal record key for the warcinfo record currently being built
+   */
+  initInfo (bgn, line) {
+    this._info.clear()
+    this._info.set(&apos;header&apos;, [bgn, line])
+    this._info.set(&apos;content&apos;, [])
+    return builderKeyInfo
+  }
+
+  /**
+   * @desc Begin building WARC-TYPE: metadata
+   * @param {Buffer} bgn the WARC/1.0 line
+   * @param {Buffer} line the WARC-TYPE line
+   * @return {Symbol} the internal record key for the metadata record currently being built
+   */
+  initMdata (bgn, line) {
+    this._mdata.clear()
+    this._mdata.set(&apos;header&apos;, [bgn, line])
+    this._mdata.set(&apos;content&apos;, [])
+    return builderKeyMdata
+  }
+
+  /**
+   * @desc Begin building WARC-TYPE: request
+   * @param {Buffer} bgn the WARC/1.0 line
+   * @param {Buffer} line the WARC-TYPE line
+   * @return {Symbol} the internal record key for the request record currently being built
+   */
+  initReq (bgn, line) {
+    this._req.clear()
+    this._req.set(&apos;header&apos;, [bgn, line])
+    this._req.set(&apos;http&apos;, [])
+    this._req.set(&apos;post&apos;, [])
+    return builderKeyReq
+  }
+
+  /**
+   * @desc Begin building WARC-TYPE: response
+   * @param {Buffer} bgn the WARC/1.0 line
+   * @param {Buffer} line the WARC-TYPE line
+   * @return {Symbol} the internal record key for the response record currently being built
+   */
+  initRes (bgn, line) {
+    this._res.clear()
+    this._res.set(&apos;header&apos;, [bgn, line])
+    this._res.set(&apos;http&apos;, [])
+    this._res.set(&apos;body&apos;, [])
+    return builderKeyRes
+  }
+
+  /**
+   * @desc Add the current line being parsed to a record currently being built
+   * @param {Symbol} key the internal record key for the response record currently being built exposed by
+   * {@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}
+   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts
+   * @param {Buffer} line the current line being parsed
+   */
+  addLineTo (key, ctrlfCount, line) {
+    switch (key) {
+      case builderKeyInfo:
+        this._addInfoLine(ctrlfCount, line)
+        break
+      case builderKeyMdata:
+        this._addMdataLine(ctrlfCount, line)
+        break
+      case builderKeyReq:
+        this._addReqLine(ctrlfCount, line)
+        break
+      case builderKeyRes:
+        this._addResLine(ctrlfCount, line)
+        break
+    }
+  }
+
+  /**
+   * @desc Build the record currently being parsed
+   * @param {Symbol} key the internal record key for the response record currently being built exposed by
+   * {@link initInfo}, {@link initMdata}, {@link initRes} and {@link initReq}
+   * @return {WARCInfoRecord|WARCMetaDataRecord|WARCRequestRecord|WARCResponseRecord} based off the ``key`` supplied to
+   * this method
+   */
+  buildRecord (key) {
+    let record
+    switch (key) {
+      case builderKeyInfo:
+        record = new WARCInfoRecord(...this._info.values())
+        this._info.clear()
+        break
+      case builderKeyMdata:
+        record = new WARCMetaDataRecord(...this._mdata.values())
+        this._mdata.clear()
+        break
+      case builderKeyReq:
+        record = new WARCRequestRecord(...this._req.values())
+        this._req.clear()
+        break
+      case builderKeyRes:
+        record = new WARCResponseRecord(...this._res.values())
+        this._res.clear()
+        break
+    }
+    return record
+  }
+
+  /**
+   * @desc Adds the line to the correct WARC record section for warcinfo
+   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts
+   * @param {Buffer} line the current line being parsed
+   * @private
+   */
+  _addInfoLine (ctrlfCount, line) {
+    if (ctrlfCount === 0) {
+      this._info.get(&apos;header&apos;).push(line)
+    } else if (ctrlfCount === 1) {
+      this._info.get(&apos;content&apos;).push(line)
+    }
+  }
+
+  /**
+   * @desc Adds the line to the correct WARC record section for metadata
+   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts
+   * @param {Buffer} line the current line being parsed
+   * @private
+   */
+  _addMdataLine (ctrlfCount, line) {
+    if (ctrlfCount === 0) {
+      this._mdata.get(&apos;header&apos;).push(line)
+    } else if (ctrlfCount === 1) {
+      this._mdata.get(&apos;content&apos;).push(line)
+    }
+  }
+
+  /**
+   * @desc Adds the line to the correct WARC record section for request
+   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts
+   * @param {Buffer} line the current line being parsed
+   * @private
+   */
+  _addReqLine (ctrlfCount, line) {
+    if (ctrlfCount === 0) {
+      this._req.get(&apos;header&apos;).push(line)
+    } else if (ctrlfCount === 1) {
+      this._req.get(&apos;http&apos;).push(line)
+    } else if (ctrlfCount === 2) {
+      this._req.get(&apos;post&apos;).push(line)
+    }
+  }
+
+  /**
+   * @desc Adds the line to the correct WARC record section for response
+   * @param {number} ctrlfCount the current count of Control LineFeeds between WARC Record parts
+   * @param {Buffer} line the current line being parsed
+   * @private
+   */
+  _addResLine (ctrlfCount, line) {
+    if (ctrlfCount === 0) {
+      this._res.get(&apos;header&apos;).push(line)
+    } else if (ctrlfCount === 1) {
+      this._res.get(&apos;http&apos;).push(line)
+    } else if (ctrlfCount === 2) {
+      this._res.get(&apos;body&apos;).push(line)
+    }
+  }
+}
+
+module.exports = WARCRecorderBuilder
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
