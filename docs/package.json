@@ -3,24 +3,8 @@
   "version": "1.0.0",
   "description": "Parse Web Archive Records (WARC) Files via node.js",
   "main": "index.js",
-  "author": {
-    "name": "John Berlin",
-    "email": "n0tan3rd@gmail.com"
-  },
-  "license": "GPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/N0taN3rd/node-warc.git"
-  },
-  "bugs": {
-    "url": "https://github.com/N0taN3rd/node-warc/issues"
-  },
-  "keywords": [
-    "warc",
-    "warc.gz",
-    "warc-parsing",
-    "web-archiving"
-  ],
+  "author": "John Berlin <n0tan3rd@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "lint": "standard | snazzy",
     "fix-lint": "standard --fix",

@@ -1,21 +1,9 @@
 window.esdocSearchIndex = [
   [
-    "node-warc/lib/parsers/index.js~autowarcparser",
-    "class/lib/parsers/index.js~AutoWARCParser.html",
-    "<span>AutoWARCParser</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/index.js</span>",
-    "class"
-  ],
-  [
-    "node-warc/lib/parsers/gzipdetector.js~gzipdetector",
-    "class/lib/parsers/gzipDetector.js~GzipDetector.html",
-    "<span>GzipDetector</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
-    "class"
-  ],
-  [
-    "node-warc/lib/parsers/warcgzparser.js~warcgzparser",
-    "class/lib/parsers/warcGzParser.js~WARCGzParser.html",
-    "<span>WARCGzParser</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/warcGzParser.js</span>",
-    "class"
+    "node-warc/lib/warcparser/index.js~eventemitter",
+    "variable/index.html#static-variable-EventEmitter",
+    "<span>EventEmitter</span> <span class=\"search-result-import-path\">node-warc/lib/warcParser/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/warcrecords/index.js~warcinforecord",
@@ -30,10 +18,16 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "node-warc/lib/parsers/warcparser.js~warcparser",
-    "class/lib/parsers/warcParser.js~WARCParser.html",
-    "<span>WARCParser</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/warcParser.js</span>",
+    "node-warc/lib/warcparser/index.js~warcparser",
+    "class/lib/warcParser/index.js~WARCParser.html",
+    "<span>WARCParser</span> <span class=\"search-result-import-path\">node-warc/lib/warcParser/index.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/warcparser/index.js~warcrecorderbuilder",
+    "variable/index.html#static-variable-WARCRecorderBuilder",
+    "<span>WARCRecorderBuilder</span> <span class=\"search-result-import-path\">node-warc/lib/warcParser/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/warcrecordbuilder/index.js~warcrecorderbuilder",
@@ -48,27 +42,9 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "node-warc/lib/warcrecords/index.js~warcresourcerecord",
-    "class/lib/warcRecords/index.js~WARCResourceRecord.html",
-    "<span>WARCResourceRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/index.js</span>",
-    "class"
-  ],
-  [
     "node-warc/lib/warcrecords/index.js~warcresponserecord",
     "class/lib/warcRecords/index.js~WARCResponseRecord.html",
     "<span>WARCResponseRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/index.js</span>",
-    "class"
-  ],
-  [
-    "node-warc/lib/warcrecords/index.js~warcrevisitrecord",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html",
-    "<span>WARCRevisitRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/index.js</span>",
-    "class"
-  ],
-  [
-    "node-warc/lib/warcrecords/index.js~warcunknownrecord",
-    "class/lib/warcRecords/index.js~WARCUnknownRecord.html",
-    "<span>WARCUnknownRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/index.js</span>",
     "class"
   ],
   [
@@ -78,21 +54,9 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
-    "node-warc/lib/warcrecordbuilder/fieldidentifiers.js~fieldidentifiers",
+    "node-warc/lib/warcparser/fieldidentifiers.js~fieldidentifiers",
     "variable/index.html#static-variable-fieldIdentifiers",
-    "<span>fieldIdentifiers</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecordBuilder/fieldIdentifiers.js</span>",
-    "variable"
-  ],
-  [
-    "node-warc/lib/parsers/gzipdetector.js~gzipmagicnum",
-    "variable/index.html#static-variable-gzipMagicNum",
-    "<span>gzipMagicNum</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
-    "variable"
-  ],
-  [
-    "node-warc/lib/parsers/gzipdetector.js~gzipmagicnumlen",
-    "variable/index.html#static-variable-gzipMagicNumLen",
-    "<span>gzipMagicNumLen</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
+    "<span>fieldIdentifiers</span> <span class=\"search-result-import-path\">node-warc/lib/warcParser/fieldIdentifiers.js</span>",
     "variable"
   ],
   [
@@ -117,6 +81,12 @@ window.esdocSearchIndex = [
     "node-warc/lib/warcrecords/warccontentparsers.js~recidre",
     "variable/index.html#static-variable-recIdRE",
     "<span>recIdRE</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/warcContentParsers.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/warcparser/index.js~warcfieldidentifiers",
+    "variable/index.html#static-variable-warcFieldIdentifiers",
+    "<span>warcFieldIdentifiers</span> <span class=\"search-result-import-path\">node-warc/lib/warcParser/index.js</span>",
     "variable"
   ],
   [
@@ -450,105 +420,93 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "lib/parsers/gzipdetector.js",
-    "file/lib/parsers/gzipDetector.js.html",
-    "lib/parsers/gzipDetector.js",
+    "lib/warcparser/fieldidentifiers.js",
+    "file/lib/warcParser/fieldIdentifiers.js.html",
+    "lib/warcParser/fieldIdentifiers.js",
     "file"
   ],
   [
-    "lib/parsers/gzipdetector.js~gzipdetector.isgzipped",
-    "class/lib/parsers/gzipDetector.js~GzipDetector.html#static-method-isGzipped",
-    "lib/parsers/gzipDetector.js~GzipDetector.isGzipped",
-    "method"
-  ],
-  [
-    "lib/parsers/gzipdetector.js~gzipdetector.isgzippedsync",
-    "class/lib/parsers/gzipDetector.js~GzipDetector.html#static-method-isGzippedSync",
-    "lib/parsers/gzipDetector.js~GzipDetector.isGzippedSync",
-    "method"
-  ],
-  [
-    "lib/parsers/index.js",
-    "file/lib/parsers/index.js.html",
-    "lib/parsers/index.js",
+    "lib/warcparser/index.js",
+    "file/lib/warcParser/index.js.html",
+    "lib/warcParser/index.js",
     "file"
   ],
   [
-    "lib/parsers/index.js~autowarcparser#constructor",
-    "class/lib/parsers/index.js~AutoWARCParser.html#instance-constructor-constructor",
-    "lib/parsers/index.js~AutoWARCParser#constructor",
-    "method"
-  ],
-  [
-    "lib/parsers/index.js~autowarcparser#parsewarc",
-    "class/lib/parsers/index.js~AutoWARCParser.html#instance-method-parseWARC",
-    "lib/parsers/index.js~AutoWARCParser#parseWARC",
-    "method"
-  ],
-  [
-    "lib/parsers/index.js~autowarcparser#start",
-    "class/lib/parsers/index.js~AutoWARCParser.html#instance-method-start",
-    "lib/parsers/index.js~AutoWARCParser#start",
-    "method"
-  ],
-  [
-    "lib/parsers/warcgzparser.js",
-    "file/lib/parsers/warcGzParser.js.html",
-    "lib/parsers/warcGzParser.js",
-    "file"
-  ],
-  [
-    "lib/parsers/warcgzparser.js~warcgzparser#constructor",
-    "class/lib/parsers/warcGzParser.js~WARCGzParser.html#instance-constructor-constructor",
-    "lib/parsers/warcGzParser.js~WARCGzParser#constructor",
-    "method"
-  ],
-  [
-    "lib/parsers/warcgzparser.js~warcgzparser#count",
-    "class/lib/parsers/warcGzParser.js~WARCGzParser.html#instance-member-count",
-    "lib/parsers/warcGzParser.js~WARCGzParser#count",
+    "lib/warcparser/index.js~warcparser#_builder",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_builder",
+    "lib/warcParser/index.js~WARCParser#_builder",
     "member"
   ],
   [
-    "lib/parsers/warcgzparser.js~warcgzparser#parsewarc",
-    "class/lib/parsers/warcGzParser.js~WARCGzParser.html#instance-method-parseWARC",
-    "lib/parsers/warcGzParser.js~WARCGzParser#parseWARC",
-    "method"
-  ],
-  [
-    "lib/parsers/warcgzparser.js~warcgzparser#start",
-    "class/lib/parsers/warcGzParser.js~WARCGzParser.html#instance-method-start",
-    "lib/parsers/warcGzParser.js~WARCGzParser#start",
-    "method"
-  ],
-  [
-    "lib/parsers/warcparser.js",
-    "file/lib/parsers/warcParser.js.html",
-    "lib/parsers/warcParser.js",
-    "file"
-  ],
-  [
-    "lib/parsers/warcparser.js~warcparser#constructor",
-    "class/lib/parsers/warcParser.js~WARCParser.html#instance-constructor-constructor",
-    "lib/parsers/warcParser.js~WARCParser#constructor",
-    "method"
-  ],
-  [
-    "lib/parsers/warcparser.js~warcparser#count",
-    "class/lib/parsers/warcParser.js~WARCParser.html#instance-member-count",
-    "lib/parsers/warcParser.js~WARCParser#count",
+    "lib/warcparser/index.js~warcparser#_checkrectype",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_checkRecType",
+    "lib/warcParser/index.js~WARCParser#_checkRecType",
     "member"
   ],
   [
-    "lib/parsers/warcparser.js~warcparser#parsewarc",
-    "class/lib/parsers/warcParser.js~WARCParser.html#instance-method-parseWARC",
-    "lib/parsers/warcParser.js~WARCParser#parseWARC",
+    "lib/warcparser/index.js~warcparser#_checktype",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-method-_checkType",
+    "lib/warcParser/index.js~WARCParser#_checkType",
     "method"
   ],
   [
-    "lib/parsers/warcparser.js~warcparser#start",
-    "class/lib/parsers/warcParser.js~WARCParser.html#instance-method-start",
-    "lib/parsers/warcParser.js~WARCParser#start",
+    "lib/warcparser/index.js~warcparser#_crlfcounter",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_crlfCounter",
+    "lib/warcParser/index.js~WARCParser#_crlfCounter",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#_foundtype",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_foundType",
+    "lib/warcParser/index.js~WARCParser#_foundType",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#_parsing",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_parsing",
+    "lib/warcParser/index.js~WARCParser#_parsing",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#_readstream",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_readStream",
+    "lib/warcParser/index.js~WARCParser#_readStream",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#_starting",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_starting",
+    "lib/warcParser/index.js~WARCParser#_starting",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#_wp",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-_wp",
+    "lib/warcParser/index.js~WARCParser#_wp",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#constructor",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-constructor-constructor",
+    "lib/warcParser/index.js~WARCParser#constructor",
+    "method"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#count",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-member-count",
+    "lib/warcParser/index.js~WARCParser#count",
+    "member"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#parsewarc",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-method-parseWARC",
+    "lib/warcParser/index.js~WARCParser#parseWARC",
+    "method"
+  ],
+  [
+    "lib/warcparser/index.js~warcparser#start",
+    "class/lib/warcParser/index.js~WARCParser.html#instance-method-start",
+    "lib/warcParser/index.js~WARCParser#start",
     "method"
   ],
   [
@@ -558,16 +516,58 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "lib/warcrecordbuilder/fieldidentifiers.js",
-    "file/lib/warcRecordBuilder/fieldIdentifiers.js.html",
-    "lib/warcRecordBuilder/fieldIdentifiers.js",
-    "file"
-  ],
-  [
     "lib/warcrecordbuilder/index.js",
     "file/lib/warcRecordBuilder/index.js.html",
     "lib/warcRecordBuilder/index.js",
     "file"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_addinfoline",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-_addInfoLine",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addInfoLine",
+    "method"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_addmdataline",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-_addMdataLine",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addMdataLine",
+    "method"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_addreqline",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-_addReqLine",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addReqLine",
+    "method"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_addresline",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-_addResLine",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_addResLine",
+    "method"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_info",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-member-_info",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_info",
+    "member"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_mdata",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-member-_mdata",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_mdata",
+    "member"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_req",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-member-_req",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_req",
+    "member"
+  ],
+  [
+    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#_res",
+    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-member-_res",
+    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#_res",
+    "member"
   ],
   [
     "lib/warcrecordbuilder/index.js~warcrecorderbuilder#addlineto",
@@ -582,21 +582,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#clear",
-    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-clear",
-    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#clear",
-    "method"
-  ],
-  [
     "lib/warcrecordbuilder/index.js~warcrecorderbuilder#constructor",
     "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-constructor-constructor",
     "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#constructor",
-    "method"
-  ],
-  [
-    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#determinewarctype",
-    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-determineWarcType",
-    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#determineWarcType",
     "method"
   ],
   [
@@ -621,24 +609,6 @@ window.esdocSearchIndex = [
     "lib/warcrecordbuilder/index.js~warcrecorderbuilder#initres",
     "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-initRes",
     "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initRes",
-    "method"
-  ],
-  [
-    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#initresource",
-    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-initResource",
-    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initResource",
-    "method"
-  ],
-  [
-    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#initrevist",
-    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-initRevist",
-    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initRevist",
-    "method"
-  ],
-  [
-    "lib/warcrecordbuilder/index.js~warcrecorderbuilder#initunknown",
-    "class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html#instance-method-initUnknown",
-    "lib/warcRecordBuilder/index.js~WARCRecorderBuilder#initUnknown",
     "method"
   ],
   [
@@ -756,6 +726,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/warcrecords/index.js~warcrequestrecord#_parsehttpheaders",
+    "class/lib/warcRecords/index.js~WARCRequestRecord.html#instance-method-_parseHttpHeaders",
+    "lib/warcRecords/index.js~WARCRequestRecord#_parseHttpHeaders",
+    "method"
+  ],
+  [
     "lib/warcrecords/index.js~warcrequestrecord#constructor",
     "class/lib/warcRecords/index.js~WARCRequestRecord.html#instance-constructor-constructor",
     "lib/warcRecords/index.js~WARCRequestRecord#constructor",
@@ -828,28 +804,10 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/warcrecords/index.js~warcresourcerecord#constructor",
-    "class/lib/warcRecords/index.js~WARCResourceRecord.html#instance-constructor-constructor",
-    "lib/warcRecords/index.js~WARCResourceRecord#constructor",
+    "lib/warcrecords/index.js~warcresponserecord#_parsehttpheaders",
+    "class/lib/warcRecords/index.js~WARCResponseRecord.html#instance-method-_parseHttpHeaders",
+    "lib/warcRecords/index.js~WARCResponseRecord#_parseHttpHeaders",
     "method"
-  ],
-  [
-    "lib/warcrecords/index.js~warcresourcerecord#contentbuffers",
-    "class/lib/warcRecords/index.js~WARCResourceRecord.html#instance-member-contentBuffers",
-    "lib/warcRecords/index.js~WARCResourceRecord#contentBuffers",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcresourcerecord#type",
-    "class/lib/warcRecords/index.js~WARCResourceRecord.html#instance-member-type",
-    "lib/warcRecords/index.js~WARCResourceRecord#type",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcresourcerecord#warcheader",
-    "class/lib/warcRecords/index.js~WARCResourceRecord.html#instance-member-warcHeader",
-    "lib/warcRecords/index.js~WARCResourceRecord#warcHeader",
-    "member"
   ],
   [
     "lib/warcrecords/index.js~warcresponserecord#bodybuffer",
@@ -927,102 +885,6 @@ window.esdocSearchIndex = [
     "lib/warcrecords/index.js~warcresponserecord#warcheader",
     "class/lib/warcRecords/index.js~WARCResponseRecord.html#instance-member-warcHeader",
     "lib/warcRecords/index.js~WARCResponseRecord#warcHeader",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#constructor",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-constructor-constructor",
-    "lib/warcRecords/index.js~WARCRevisitRecord#constructor",
-    "method"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#httpheaders",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-httpHeaders",
-    "lib/warcRecords/index.js~WARCRevisitRecord#httpHeaders",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#httpversion",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-httpVersion",
-    "lib/warcRecords/index.js~WARCRevisitRecord#httpVersion",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#recordid",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-get-recordId",
-    "lib/warcRecords/index.js~WARCRevisitRecord#recordId",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#statuscode",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-statusCode",
-    "lib/warcRecords/index.js~WARCRevisitRecord#statusCode",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#statusline",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-statusLine",
-    "lib/warcRecords/index.js~WARCRevisitRecord#statusLine",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#statusreason",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-statusReason",
-    "lib/warcRecords/index.js~WARCRevisitRecord#statusReason",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#targeturi",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-get-targetURI",
-    "lib/warcRecords/index.js~WARCRevisitRecord#targetURI",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#type",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-type",
-    "lib/warcRecords/index.js~WARCRevisitRecord#type",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#warccontentlength",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-get-warcContentLength",
-    "lib/warcRecords/index.js~WARCRevisitRecord#warcContentLength",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#warccontenttype",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-get-warcContentType",
-    "lib/warcRecords/index.js~WARCRevisitRecord#warcContentType",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcrevisitrecord#warcheader",
-    "class/lib/warcRecords/index.js~WARCRevisitRecord.html#instance-member-warcHeader",
-    "lib/warcRecords/index.js~WARCRevisitRecord#warcHeader",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcunknownrecord#constructor",
-    "class/lib/warcRecords/index.js~WARCUnknownRecord.html#instance-constructor-constructor",
-    "lib/warcRecords/index.js~WARCUnknownRecord#constructor",
-    "method"
-  ],
-  [
-    "lib/warcrecords/index.js~warcunknownrecord#otherbuffers",
-    "class/lib/warcRecords/index.js~WARCUnknownRecord.html#instance-member-otherBuffers",
-    "lib/warcRecords/index.js~WARCUnknownRecord#otherBuffers",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcunknownrecord#type",
-    "class/lib/warcRecords/index.js~WARCUnknownRecord.html#instance-member-type",
-    "lib/warcRecords/index.js~WARCUnknownRecord#type",
-    "member"
-  ],
-  [
-    "lib/warcrecords/index.js~warcunknownrecord#warcheader",
-    "class/lib/warcRecords/index.js~WARCUnknownRecord.html#instance-member-warcHeader",
-    "lib/warcRecords/index.js~WARCUnknownRecord#warcHeader",
     "member"
   ],
   [

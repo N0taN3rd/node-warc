@@ -1,48 +1,39 @@
 {
-  "coverage": "98.14%",
-  "expectCount": 108,
-  "actualCount": 106,
+  "coverage": "90.9%",
+  "expectCount": 88,
+  "actualCount": 80,
   "files": {
-    "lib/parsers/index.js": {
-      "expectCount": 4,
-      "actualCount": 4,
-      "undocumentLines": []
-    },
-    "lib/parsers/gzipDetector.js": {
-      "expectCount": 5,
-      "actualCount": 5,
-      "undocumentLines": []
-    },
-    "lib/parsers/warcGzParser.js": {
-      "expectCount": 5,
-      "actualCount": 4,
+    "lib/warcParser/index.js": {
+      "expectCount": 17,
+      "actualCount": 13,
       "undocumentLines": [
-        82
+        7,
+        8,
+        77,
+        9
       ]
     },
     "lib/warcRecords/index.js": {
-      "expectCount": 70,
-      "actualCount": 70,
+      "expectCount": 49,
+      "actualCount": 49,
       "undocumentLines": []
-    },
-    "lib/parsers/warcParser.js": {
-      "expectCount": 5,
-      "actualCount": 4,
-      "undocumentLines": [
-        80
-      ]
     },
     "lib/warcRecordBuilder/index.js": {
-      "expectCount": 13,
-      "actualCount": 13,
-      "undocumentLines": []
+      "expectCount": 16,
+      "actualCount": 12,
+      "undocumentLines": [
+        15,
+        16,
+        17,
+        18
+      ]
     },
     "lib/warcRecordBuilder/buildKeys.js": {
       "expectCount": 1,
       "actualCount": 1,
       "undocumentLines": []
     },
-    "lib/warcRecordBuilder/fieldIdentifiers.js": {
+    "lib/warcParser/fieldIdentifiers.js": {
       "expectCount": 1,
       "actualCount": 1,
       "undocumentLines": []
