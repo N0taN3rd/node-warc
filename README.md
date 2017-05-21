@@ -1,7 +1,7 @@
 # node-warc
 Parse Web ARChive  (WARC) files with node.js. 
 
-* This project is currently under active development and does not support parsing of warc.gz. master@[9397341](https://github.com/N0taN3rd/node-warc/commit/93973417b648045549db3784df0889d8e28ae4c7).      
+* This project is currently under active development but does not support parsing of warc.gz at the moment. master@[9397341](https://github.com/N0taN3rd/node-warc/commit/93973417b648045549db3784df0889d8e28ae4c7)      
 
 ## Example usage
 
@@ -28,6 +28,7 @@ parser.parseWARC('<path-to-warcfile>')
 ```
 
 ## API
+Documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
 
 ## Benchmark
 Parsing 145.9MB UN-GZIPPED WARC took 2s.  Node process memory usage 27.2mb
