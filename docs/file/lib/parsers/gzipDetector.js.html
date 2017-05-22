@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/parsers/gzipDetector.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="https://n0tan3rd.github.io/node-warc/">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/N0taN3rd/node-warc.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">parsers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/gzipDetector.js~GzipDetector.html">GzipDetector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/index.js~AutoWARCParser.html">AutoWARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcGzParser.js~WARCGzParser.html">WARCGzParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResourceRecord.html">WARCResourceRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRevisitRecord.html">WARCRevisitRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCUnknownRecord.html">WARCUnknownRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-recIdRE">recIdRE</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/parsers/gzipDetector.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @ignore */
+const fs = require(&apos;fs-extra&apos;)
+/** @ignore */
+const untildify = require(&apos;untildify&apos;)
+
+/**
+ * @see https://en.wikipedia.org/wiki/Gzip
+ * @desc Gizped warc magic num:
+ * - Buffer.from(&apos;1f8b08&apos;, &apos;hex&apos;)
+ * - Uint8Array [ 31, 139, 8 ]
+ * Not gziped warc magic num:
+ * - Uint8Array [ 87, 65, 82 ]
+ * Easier to use Uint8Arrays instead of node buffers due to allocation issues ``new Buffer(len)`` is deprecated
+ * @type {Uint8Array}
+ */
+const gzipMagicNum = new Uint8Array([0x1F, 0x8B, 0x8])
+
+/**
+ * @type {number} length of the gzip magic number header 3 bytes
+ */
+const gzipMagicNumLen = gzipMagicNum.length
+
+/**
+ * Utility class that provides the means to detect if a file is gzipped or not
+ */
+class GzipDetector {
+  /**
+   * @desc Determines if a file is gzipped or not by reading its the magic number
+   * @param {string} filePath path to the file to detect
+   * @return {Promise.&lt;boolean&gt;} Promise that resolves to true if the file is gzipped false otherwise
+   * @throws {Error} if the filePath is null or undefined or if another error occurred
+   */
+  static async isGzipped (filePath) {
+    if (filePath === null || filePath === undefined) {
+      throw new Error(`The filePath path is ${filePath}`)
+    }
+    filePath = untildify(filePath)
+    const fd = await fs.open(filePath, &apos;r&apos;)
+    const fillMe = new Uint8Array(3)
+    await fs.read(fd, fillMe, 0, 3, undefined)
+    await fs.close(fd)
+    let i = 0
+    let isGzipped = true
+    // should never happen as we create the Unit8Array to be size 3
+    // but just in case
+    if (gzipMagicNumLen !== fillMe.length) {
+      return false
+    }
+    for (; i &lt; gzipMagicNumLen; ++i) {
+      if (gzipMagicNum[i] !== fillMe[i]) {
+        isGzipped = false
+        break
+      }
+    }
+    return isGzipped
+  }
+
+  /**
+   * @desc Synchronous version of {@link isGzipped}
+   * @param {string} filePath path to the file to detect
+   * @return {boolean} true if the file is gzipped false otherwise
+   * @throws {Error} if the filePath is null or undefined or if another error occurred
+   */
+  static isGzippedSync (filePath) {
+    if (filePath === null || filePath === undefined) {
+      throw new Error(`The filePath path is ${filePath}`)
+    }
+    filePath = untildify(filePath)
+    const fd = fs.openSync(filePath, &apos;r&apos;)
+    const fillMe = new Uint8Array(3)
+    fs.readSync(fd, fillMe, 0, 3, undefined)
+    fs.closeSync(fd)
+    let i = 0
+    let isGzipped = true
+    // should never happen as we create the Unit8Array to be size 3
+    // but just in case
+    if (gzipMagicNumLen !== fillMe.length) {
+      return false
+    }
+    for (; i &lt; gzipMagicNumLen; ++i) {
+      if (gzipMagicNum[i] !== fillMe[i]) {
+        isGzipped = false
+        break
+      }
+    }
+    return isGzipped
+  }
+}
+
+module.exports = GzipDetector
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
