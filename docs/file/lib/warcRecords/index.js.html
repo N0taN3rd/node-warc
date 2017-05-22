@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  
+  <a data-ice="repoURL" href="https://github.com/N0taN3rd/node-warc.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -32,17 +32,22 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcParser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcParser/index.js~WARCParser.html">WARCParser</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span></li>
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">parsers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/gzipDetector.js~GzipDetector.html">GzipDetector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/index.js~AutoWARCParser.html">AutoWARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcGzParser.js~WARCGzParser.html">WARCGzParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResourceRecord.html">WARCResourceRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRevisitRecord.html">WARCRevisitRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCUnknownRecord.html">WARCUnknownRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
@@ -191,25 +196,6 @@ class WARCRequestRecord {
    */
   constructor (headerBuffers, httpBuffers, postBuffers) {
     /**
-     * @type {Object}
-     */
-    this.warcHeader = parseWarcRecordHeader(headerBuffers)
-
-    /**
-     * @type {Object}
-     */
-    this.httpHeaders = this._parseHttpHeaders(httpBuffers)
-
-    if (this.method.toLowerCase() === &apos;post&apos;) {
-      /**
-       * @desc The post data of the request. This property is only on a {@link WARCRequestRecord} if it corresponds to
-       * a post request
-       * @type {Buffer}
-       */
-      this.postBuffer = Buffer.concat(postBuffers)
-    }
-
-    /**
      * @type {string}
      */
     this.type = &apos;request&apos;
@@ -228,6 +214,25 @@ class WARCRequestRecord {
      * @type {?string}
      */
     this.httpVersion = null
+
+    /**
+     * @type {Object}
+     */
+    this.warcHeader = parseWarcRecordHeader(headerBuffers)
+
+    /**
+     * @type {Object}
+     */
+    this.httpHeaders = this._parseHttpHeaders(httpBuffers)
+
+    if (this.method &amp;&amp; this.method.toLowerCase() === &apos;post&apos;) {
+      /**
+       * @desc The post data of the request. This property is only on a {@link WARCRequestRecord} if it corresponds to
+       * a post request
+       * @type {Buffer}
+       */
+      this.postBuffer = Buffer.concat(postBuffers)
+    }
   }
 
   /**
@@ -237,11 +242,15 @@ class WARCRequestRecord {
    * @private
    */
   _parseHttpHeaders (bufs) {
+    if (bufs.length === 0) {
+      return {}
+    }
     let content = {}
     let len = bufs.length
     let i = 1
     let line
     let match
+    // console.log(bufs[0].toString(&apos;utf8&apos;).trim())
     this.requestLine = bufs[0].toString(&apos;utf8&apos;).trim()
     // disabling eslint to account for ES6 array destructuring
     let [meth, path, httpV] = this.requestLine.split(&apos; &apos;) // eslint-disable-line
@@ -260,7 +269,7 @@ class WARCRequestRecord {
         if (lastMatch) {
           content[lastMatch] += line
         } else {
-          console.log(&apos;boooo WarcRequestRecord._parseHeaders&apos;)
+          console.log(&apos;boooo WarcRequestRecord._parseHeaders&apos;, line)
         }
       }
     }
@@ -308,26 +317,6 @@ class WARCResponseRecord {
    */
   constructor (headerBuffers, httpBuffers, bodyBuffers) {
     /**
-     * @type {Object}
-     */
-    this.warcHeader = parseWarcRecordHeader(headerBuffers)
-
-    /**
-     * @type {Object}
-     */
-    this.httpHeaders = this._parseHttpHeaders(httpBuffers)
-
-    /**
-     * @type {Buffer}
-     */
-    this.bodyBuffer = Buffer.concat(bodyBuffers)
-
-    /**
-     * @type {string}
-     */
-    this.type = &apos;response&apos;
-
-    /**
      * @type {?number}
      */
     this.statusCode = null
@@ -346,6 +335,38 @@ class WARCResponseRecord {
      * @type {?string}
      */
     this.httpVersion = null
+
+    /**
+     * @type {Object}
+     */
+    this.warcHeader = parseWarcRecordHeader(headerBuffers)
+
+    if (this.warcContentType === &apos;text/dns&apos;) {
+      /**
+       * @type {Object}
+       */
+      this.httpHeaders = {}
+
+      /**
+       * @type {?Buffer|?string[]}
+       */
+      this.bodyBuffer = httpBuffers.map(it =&gt; it.toString())
+    } else {
+      /**
+       * @type {Object}
+       */
+      this.httpHeaders = this._parseHttpHeaders(httpBuffers)
+
+      /**
+       * @type {?Buffer|?string[]}
+       */
+      this.bodyBuffer = Buffer.concat(bodyBuffers || [])
+    }
+
+    /**
+     * @type {string}
+     */
+    this.type = &apos;response&apos;
   }
 
   /**
@@ -355,6 +376,9 @@ class WARCResponseRecord {
    * @private
    */
   _parseHttpHeaders (bufs) {
+    if (bufs.length === 0) {
+      return {}
+    }
     let content = {}
     let len = bufs.length
     let i = 1
@@ -383,7 +407,7 @@ class WARCResponseRecord {
         if (lastMatch) {
           content[lastMatch] += line
         } else {
-          console.log(&apos;boooo WarcResponseRecord._parseHeaders&apos;)
+          console.log(&apos;boooo WarcResponseRecord._parseHeaders&apos;, this.warcContentType, line)
         }
       }
     }
@@ -419,11 +443,196 @@ class WARCResponseRecord {
   }
 }
 
+/**
+ * @desc WARC-TYPE: revisit
+ */
+class WARCRevisitRecord {
+  /**
+   * @desc Create a new WARCResponseRecord
+   * @param {Buffer[]} headerBuffers
+   * @param {Buffer[]} httpBuffers
+   */
+  constructor (headerBuffers, httpBuffers) {
+    /**
+     * @type {string}
+     */
+    this.type = &apos;revisit&apos;
+
+    /**
+     * @type {?number}
+     */
+    this.statusCode = null
+
+    /**
+     * @type {?string}
+     */
+    this.statusReason = null
+
+    /**
+     * @type {?string}
+     */
+    this.statusLine = null
+
+    /**
+     * @type {?string}
+     */
+    this.httpVersion = null
+
+    /**
+     * @type {Object}
+     */
+    this.warcHeader = parseWarcRecordHeader(headerBuffers)
+
+    /**
+     * @type {Object}
+     */
+    this.httpHeaders = this._parseHttpHeaders(httpBuffers)
+  }
+
+  /**
+   * @desc Parses the response HTTP headers
+   * @param {Buffer[]} bufs the response HTTP headers
+   * @return {Object}
+   * @private
+   */
+  _parseHttpHeaders (bufs) {
+    if (bufs.length === 0) {
+      return {}
+    }
+    let content = {}
+    let len = bufs.length
+    let i = 1
+    let line
+    let match
+    // console.log(fl)
+    this.statusLine = bufs[0].toString(&apos;utf8&apos;).trim()
+    let [httpV, statusCode, statusReason] = this.statusLine.split(&apos; &apos;)
+    this.statusCode = parseInt(statusCode)
+    this.statusReason = statusReason
+    this.httpVersion = httpV
+    let lastMatch
+    for (; i &lt; len; ++i) {
+      line = bufs[i].toString(&apos;utf8&apos;).trim()
+      match = headerRe.exec(line)
+      if (match) {
+        // disabling eslint to account for ES6 array destructuring
+        let [_, m1, m2] = match // eslint-disable-line
+        if (m1.toLowerCase() === &apos;content-length&apos;) {
+          content[m1] = parseInt(m2)
+        } else {
+          content[m1] = m2
+        }
+        lastMatch = m1
+      } else {
+        // because really long set cookie and friends
+        if (lastMatch) {
+          content[lastMatch] += line
+        } else {
+          console.log(&apos;boooo WARCRevisitRecord._parseHeaders&apos;, this.warcContentType, line)
+        }
+      }
+    }
+    return content
+  }
+
+  /**
+   * @return {string} WARC-Record-ID
+   */
+  get recordId () {
+    return this.warcHeader[&apos;WARC-Record-ID&apos;]
+  }
+
+  /**
+   * @return {string} WARC-Target-URI
+   */
+  get targetURI () {
+    return this.warcHeader[&apos;WARC-Target-URI&apos;]
+  }
+
+  /**
+   * @return {string} WARC-HEADER:Content-Type
+   */
+  get warcContentType () {
+    return this.warcHeader[&apos;Content-Type&apos;]
+  }
+
+  /**
+   * @return {number} WARC-HEADER:Content-Length
+   */
+  get warcContentLength () {
+    return this.warcHeader[&apos;Content-Length&apos;]
+  }
+}
+
+/**
+ * @desc This class is this libraries attempt at being lenient about parsing.
+ */
+class WARCResourceRecord {
+  /**
+   * @desc Create a new WARCResponseRecord
+   * @param {Buffer[]} headerBuffers
+   * @param {Buffer[]} contentBuffers
+   */
+  constructor (headerBuffers, contentBuffers) {
+    /**
+     * @type {Object}
+     */
+    this.warcHeader = parseWarcRecordHeader(headerBuffers)
+
+    /**
+     * @type {Buffer}
+     */
+    this.contentBuffers = Buffer.concat(contentBuffers)
+
+    /**
+     * @type {string}
+     */
+    this.type = &apos;resource&apos;
+  }
+}
+
+/**
+ * @desc This class is this libraries attempt at being lenient about parsing.
+ * This class is only used if this library cannot automatically correct the common ``off by one`` error
+ * other WARC parsing libraries stop immediately at when encountered (especially during indexing).
+ *
+ * This library knows does not think missing a single ``CTRL-LF`` should stop you from reading a WARC
+ *
+ * Now if something went terribly wrong during WARC creation that&apos;s on you but we still think you should know about it by having
+ * as much of that messed up data as we can parse before moving on to the next record.
+ */
+class WARCUnknownRecord {
+  /**
+   * @desc Create a new WARCResponseRecord
+   * @param {Buffer[]} headerBuffers
+   * @param {Buffer[]} otherBuffers
+   */
+  constructor (headerBuffers, ...otherBuffers) {
+    /**
+     * @type {Object}
+     */
+    this.warcHeader = parseWarcRecordHeader(headerBuffers)
+
+    /**
+     * @type {Buffer[][]}
+     */
+    this.otherBuffers = otherBuffers
+
+    /**
+     * @type {string}
+     */
+    this.type = &apos;unknown&apos;
+  }
+}
+
 module.exports = {
   WARCInfoRecord,
   WARCMetaDataRecord,
   WARCRequestRecord,
-  WARCResponseRecord
+  WARCResponseRecord,
+  WARCRevisitRecord,
+  WARCUnknownRecord,
+  WARCResourceRecord
 }
 </code></pre>
 

@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  
+  <a data-ice="repoURL" href="https://github.com/N0taN3rd/node-warc.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -32,17 +32,22 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcParser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcParser/index.js~WARCParser.html">WARCParser</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span></li>
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">parsers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/gzipDetector.js~GzipDetector.html">GzipDetector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/index.js~AutoWARCParser.html">AutoWARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcGzParser.js~WARCGzParser.html">WARCGzParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResourceRecord.html">WARCResourceRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRevisitRecord.html">WARCRevisitRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCUnknownRecord.html">WARCUnknownRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
@@ -69,67 +74,13 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span><span data-ice="signature">: <span>*</span></span>
+          <span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span><span data-ice="signature">: {builderKeyInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyMdata: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyReq: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRev: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyResource: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyUnknown: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>}</span>
         </p>
       </div>
       <div>
         
         
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span><span data-ice="signature">: {builderKeyInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyMdata: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyReq: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>}</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        <div data-ice="description"><p>Keys used by <span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span> to identify which WARC Record is currently being built</p>
+        <div data-ice="description"><p>Keys used by <span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span> to identify which WARC Record is currently being built</p>
 </div>
       </div>
     </td>
@@ -151,7 +102,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span><span data-ice="signature">: {begin: <span>Buffer</span>, info: <span>Buffer</span>, mdata: <span>Buffer</span>, req: <span>Buffer</span>, res: <span>Buffer</span>, crlf: <span>Buffer</span>, empty: <span>Buffer</span>}</span>
+          <span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span><span data-ice="signature">: {begin: <span>Buffer</span>, info: <span>Buffer</span>, mdata: <span>Buffer</span>, req: <span>Buffer</span>, res: <span>Buffer</span>, revisit: <span>Buffer</span>, crlf: <span>Buffer</span>, empty: <span>Buffer</span>}</span>
         </p>
       </div>
       <div>
@@ -160,6 +111,68 @@
         <div data-ice="description"><p>Buffers from hex strings representing the a WARC records WARC-TYPE or record/record-section separator
 as seen by the parser.</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">Uint8Array</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Gizped warc magic num:</p>
+<ul>
+<li>Buffer.from(&apos;1f8b08&apos;, &apos;hex&apos;)</li>
+<li>Uint8Array [ 31, 139, 8 ]
+Not gziped warc magic num:</li>
+<li>Uint8Array [ 87, 65, 82 ]
+Easier to use Uint8Arrays instead of node buffers due to allocation issues <code>new Buffer(len)</code> is deprecated</li>
+</ul>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -223,124 +236,11 @@ as seen by the parser.</p>
       
     </td>
   </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
 </tbody>
 </table>
 </div>
 <div data-ice="details"><h2 data-ice="title">Static Public </h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-variable-EventEmitter">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span data-ice="name">EventEmitter</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/warcParser/index.js.html#lineNumber7">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-variable-WARCRecorderBuilder">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span data-ice="name">WARCRecorderBuilder</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/warcParser/index.js.html#lineNumber8">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
 <div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-variable-buildKeys">
     <span class="access" data-ice="access">public</span>
@@ -349,7 +249,7 @@ as seen by the parser.</p>
     
     
     
-    <span data-ice="name">buildKeys</span><span data-ice="signature">: {builderKeyInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyMdata: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyReq: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>}</span>
+    <span data-ice="name">buildKeys</span><span data-ice="signature">: {builderKeyInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyMdata: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyReq: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRes: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyRev: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyResource: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>, builderKeyUnknown: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a></span>}</span>
     <span class="right-info">
       
       
@@ -360,7 +260,7 @@ as seen by the parser.</p>
   
   
   
-  <div data-ice="description"><p>Keys used by <span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span> to identify which WARC Record is currently being built</p>
+  <div data-ice="description"><p>Keys used by <span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span> to identify which WARC Record is currently being built</p>
 </div>
 
   
@@ -393,11 +293,11 @@ as seen by the parser.</p>
     
     
     
-    <span data-ice="name">fieldIdentifiers</span><span data-ice="signature">: {begin: <span>Buffer</span>, info: <span>Buffer</span>, mdata: <span>Buffer</span>, req: <span>Buffer</span>, res: <span>Buffer</span>, crlf: <span>Buffer</span>, empty: <span>Buffer</span>}</span>
+    <span data-ice="name">fieldIdentifiers</span><span data-ice="signature">: {begin: <span>Buffer</span>, info: <span>Buffer</span>, mdata: <span>Buffer</span>, req: <span>Buffer</span>, res: <span>Buffer</span>, revisit: <span>Buffer</span>, crlf: <span>Buffer</span>, empty: <span>Buffer</span>}</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/warcParser/fieldIdentifiers.js.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/warcRecordBuilder/fieldIdentifiers.js.html#lineNumber7">source</a></span></span>
     </span>
   </h3>
 
@@ -408,6 +308,100 @@ as seen by the parser.</p>
 as seen by the parser. Due to the large size of WARC files and the binary data contained within it is more efficient
 to parse the files contents looking for these sentinels than converting the buffer to an UTF-8 string first</p>
 </div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-variable-gzipMagicNum">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">gzipMagicNum</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">Uint8Array</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/parsers/gzipDetector.js.html#lineNumber16">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Gizped warc magic num:</p>
+<ul>
+<li>Buffer.from(&apos;1f8b08&apos;, &apos;hex&apos;)</li>
+<li>Uint8Array [ 31, 139, 8 ]
+Not gziped warc magic num:</li>
+<li>Uint8Array [ 87, 65, 82 ]
+Easier to use Uint8Arrays instead of node buffers due to allocation issues <code>new Buffer(len)</code> is deprecated</li>
+</ul>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <div data-ice="see"><h4>See:</h4><ul><li><span><a href="https://en.wikipedia.org/wiki/Gzip">https://en.wikipedia.org/wiki/Gzip</a></span></li></ul></div>
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-variable-gzipMagicNumLen">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">gzipMagicNumLen</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/parsers/gzipDetector.js.html#lineNumber21">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
 
   
 
@@ -496,49 +490,6 @@ to parse the files contents looking for these sentinels than converting the buff
   
   <div data-ice="description"><p>Capture the WARC Record Id or WARC Concurrent To Id</p>
 </div>
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-variable-warcFieldIdentifiers">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span data-ice="name">warcFieldIdentifiers</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/warcParser/index.js.html#lineNumber9">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
 
   
 

@@ -3,8 +3,7 @@
   "destination": "./docs",
   "access": [
     "public",
-    "protected",
-    "private"
+    "protected"
   ],
   "unexportIdentifier": true,
   "undocumentIdentifier": true,
