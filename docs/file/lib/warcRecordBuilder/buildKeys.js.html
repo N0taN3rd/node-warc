@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  
+  <a data-ice="repoURL" href="https://github.com/N0taN3rd/node-warc.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -32,17 +32,22 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcParser</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcParser/index.js~WARCParser.html">WARCParser</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCRecorderBuilder">WARCRecorderBuilder</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcFieldIdentifiers">warcFieldIdentifiers</a></span></span></li>
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">parsers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/gzipDetector.js~GzipDetector.html">GzipDetector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/index.js~AutoWARCParser.html">AutoWARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcGzParser.js~WARCGzParser.html">WARCGzParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResourceRecord.html">WARCResourceRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRevisitRecord.html">WARCRevisitRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCUnknownRecord.html">WARCUnknownRecord</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
@@ -54,13 +59,16 @@
 <div class="content" data-ice="content"><h1 data-ice="title">lib/warcRecordBuilder/buildKeys.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
  * @desc Keys used by {@link WARCRecorderBuilder} to identify which WARC Record is currently being built
- * @type {{builderKeyInfo: Symbol, builderKeyMdata: Symbol, builderKeyReq: Symbol, builderKeyRes: Symbol}}
+ * @type {{builderKeyInfo: Symbol, builderKeyMdata: Symbol, builderKeyReq: Symbol, builderKeyRes: Symbol, builderKeyRev: Symbol,builderKeyResource: Symbol,builderKeyUnknown: Symbol}}
  */
 const buildKeys = {
   builderKeyInfo: Symbol(&apos;info&apos;),
   builderKeyMdata: Symbol(&apos;mdata&apos;),
   builderKeyReq: Symbol(&apos;req&apos;),
-  builderKeyRes: Symbol(&apos;res&apos;)
+  builderKeyRes: Symbol(&apos;res&apos;),
+  builderKeyRev: Symbol(&apos;revisit&apos;),
+  builderKeyResource: Symbol(&apos;resource&apos;),
+  builderKeyUnknown: Symbol(&apos;unkown&apos;)
 }
 
 module.exports = buildKeys
