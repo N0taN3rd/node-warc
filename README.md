@@ -1,13 +1,40 @@
 # node-warc
-Parse Web ARChive  (WARC) files with node.js. 
+Parse Web ARChive (WARC) files with node.js. 
 
-* This project is currently under active development but does not support parsing of warc.gz at the moment. master@[9397341](https://github.com/N0taN3rd/node-warc/commit/93973417b648045549db3784df0889d8e28ae4c7)      
+``.warc`` and ``.warc.gz`` is supported
+
+Writing coming soon!
+
+## API
+Full API documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
 
 ## Example usage
 
-### Example 1
+### Example 1: Both ``.warc`` and ``.warc.gz``
 ```js
-const WARCParse = require('node-warc')
+const AutoWARCParser = require('node-warc')
+
+const parser = new AutoWARCParser('<path-to-warcfile>')
+parser.on('record', record => { console.log(record) })
+parser.on('done', finalRecord => { console.log(finalRecord) })
+parser.on('error', error => { console.error(error) })
+parser.start()
+```
+
+### Example 2: Only ``.warc.gz``
+```js
+const WARCGzParser = require('node-warc').WARCGzParser
+
+const parser = new WARCGzParser('<path-to-warcfile>')
+parser.on('record', record => { console.log(record) })
+parser.on('done', finalRecord => { console.log(finalRecord) })
+parser.on('error', error => { console.error(error) })
+parser.start()
+```
+
+### Example 3: Only ``.warc``
+```js
+const WARCParser = require('node-warc').WARCParser
 
 const parser = new WARCParser('<path-to-warcfile>')
 parser.on('record', record => { console.log(record) })
@@ -16,24 +43,18 @@ parser.on('error', error => { console.error(error) })
 parser.start()
 ```
 
-### Example 2
-```js
-const WARCParse = require('node-warc')
+## Benchmark 
 
-const parser = new WARCParser()
-parser.on('record', record => { console.log(record) })
-parser.on('done', finalRecord => { console.log(finalRecord) })
-parser.on('error', error => { console.error(error) })
-parser.parseWARC('<path-to-warcfile>')
-```
+#### UN-GZIPPED 
+- 145.9MB (8,026 records) took 2s. Max node process usage 22 MiB 
+- 268MB (852 records) took 2s. Max node process usage  77 MiB
+- 2GB (76,980 records) took 21s. Max node process usage 100 MiB
+- 4.8GB (185,662 records) took 1m. Max node process usage 144.3 MiB
 
-## API
-Documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
-
-## Benchmark
-Parsing 145.9MB UN-GZIPPED WARC took 2s.  Node process memory usage 27.2mb
-
-Parsing 2GB UN-GZIPPED WARC took 21s. Node process memory usage 85mb
-
+#### GZIPPED
+- 7.7MB (1,269 records) took 297ms. Max node process memory usage 7.1 MiB
+- 819.1MB (34,253 records) took 16s. Max node process memory usage 190.3 MiB
+- 2.3GB (68,020 records) took 45s. Max node process memory usage 197.6 MiB
+- 5.3GB (269,464 records) took 4m. Max node process memory usage 198.2 MiB
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
