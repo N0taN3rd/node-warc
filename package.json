@@ -33,8 +33,12 @@
   },
   "dependencies": {
     "binary-split": "^1.0.3",
+    "bluebird": "^3.5.0",
     "eventemitter3": "^2.0.3",
     "fs-extra": "^3.0.1",
+    "lodash.isempty": "^4.4.0",
+    "moment": "^2.18.1",
+    "string": "^3.3.3",
     "through2": "^2.0.3",
     "untildify": "^3.0.2"
   },
