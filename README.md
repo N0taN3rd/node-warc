@@ -3,7 +3,7 @@ Parse Web ARChive (WARC) files with node.js.
 
 ``.warc`` and ``.warc.gz`` is supported
 
-Writing coming soon!
+[Writing available](https://github.com/N0taN3rd/node-warc/tree/master/lib/writers) (documentation pending)!
 
 ## API
 Full API documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
