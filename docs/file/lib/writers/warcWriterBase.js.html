@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/writers/warcWriterBase.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="https://n0tan3rd.github.io/node-warc/">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/N0taN3rd/node-warc.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">parsers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/gzipDetector.js~GzipDetector.html">GzipDetector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/index.js~AutoWARCParser.html">AutoWARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcGzParser.js~WARCGzParser.html">WARCGzParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isEmptyPlainObject">isEmptyPlainObject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ElectronGetResError">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isEmpty">isEmpty</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecordBuilder</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecordBuilder/index.js~WARCRecorderBuilder.html">WARCRecorderBuilder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-buildKeys">buildKeys</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-fieldIdentifiers">fieldIdentifiers</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">warcRecords</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCInfoRecord.html">WARCInfoRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCMetaDataRecord.html">WARCMetaDataRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRequestRecord.html">WARCRequestRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResourceRecord.html">WARCResourceRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCResponseRecord.html">WARCResponseRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCRevisitRecord.html">WARCRevisitRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/warcRecords/index.js~WARCUnknownRecord.html">WARCUnknownRecord</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcInfoMetaDataContent">parseWarcInfoMetaDataContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseWarcRecordHeader">parseWarcRecordHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-headerRe">headerRe</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-recIdRE">recIdRE</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">writers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/electron.js~ElectronWARCGenerator.html">ElectronWARCGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CRLF">CRLF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCWriterBase">WARCWriterBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CRLF">CRLF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-WARCWriterBase">WARCWriterBase</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-CRLF">CRLF</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-recordSeparator">recordSeparator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcFields">warcFields</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcHeader">warcHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcHeaderContent">warcHeaderContent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcMetadataHeader">warcMetadataHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcRequestHeader">warcRequestHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcResponseHeader">warcResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-EventEmitter">EventEmitter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-warcHeader">warcHeader</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/writers/warcWriterBase.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @ignore */
+const fs = require(&apos;fs-extra&apos;)
+/** @ignore */
+const Promise = require(&apos;bluebird&apos;)
+/** @ignore */
+const Path = require(&apos;path&apos;)
+/** @ignore */
+const uuid = require(&apos;uuid/v1&apos;)
+/** @ignore */
+const S = require(&apos;string&apos;)
+/** @ignore */
+const moment = require(&apos;moment&apos;)
+const EventEmitter = require(&apos;eventemitter3&apos;)
+const {
+  warcHeader,
+  warcHeaderContent,
+  warcRequestHeader,
+  warcResponseHeader,
+  warcMetadataHeader,
+  recordSeparator,
+  CRLF
+} = require(&apos;./warcFields&apos;)
+
+/**
+ * The base class of {@link ElectronWARCGenerator} and {@link RemoteChromeWARCGenerator}
+ */
+class WARCWriterBase extends EventEmitter {
+  /**
+   * @desc Create a new WARCWriter
+   * @param {boolean} [noHTTP2=false] noHTTP2 - The web uses HTTP/2 but
+   * all known replay systems can only replay HTTP &lt;= 1.1. But if you turn HTTP/2 into
+   * HTTP/1.1 it will replay for the most part. True means modify the HTTP headers False means
+   * leave the HTTP headers as they occurred
+   */
+  constructor (noHTTP2 = false) {
+    super()
+    this._warcOutStream = null
+    this._lastError = null
+    this._swapper = S(&apos;&apos;)
+    this._rid = null
+    this._now = null
+    this._fileName = null
+    this._noHTTP2 = noHTTP2
+    this._onFinish = this._onFinish.bind(this)
+    this._onError = this._onError.bind(this)
+  }
+
+  /**
+   * @desc Enable modification of HTTP/2 headers into HTTP/1.1
+   */
+  turnHTTP2IntoHTTP11 () {
+    this._noHTTP2 = true
+  }
+
+  /**
+   * @desc Disable modification of HTTP/2 headers into HTTP/1.1
+   */
+  keepHTTP2 () {
+    this._noHTTP2 = false
+  }
+
+  /**
+   * @desc Initialize the writer
+   * @param {string} warcPath - the path for the WARC file to be written
+   * @param {boolean} [appending=false] appending - append to a previously created WARC file
+   */
+  initWARC (warcPath, appending = false) {
+    if (appending) {
+      this._warcOutStream = fs.createWriteStream(warcPath, {flags: &apos;a&apos;})
+    } else {
+      this._warcOutStream = fs.createWriteStream(warcPath)
+    }
+    this._warcOutStream.on(&apos;finish&apos;, this._onFinish)
+    this._warcOutStream.on(&apos;error&apos;, this._onError)
+    let now = new Date().toISOString()
+    this._now = now.substr(0, now.indexOf(&apos;.&apos;)) + &apos;Z&apos;
+    this._rid = uuid()
+    this._fileName = Path.basename(warcPath)
+  }
+
+  /**
+   * @desc Write out the WARC-Type: info records
+   * @param {string} version
+   * @param {string} isPartOfV
+   * @param {string} warcInfoDescription
+   * @param {string} ua user agent
+   * @return {Promise.&lt;void&gt;}
+   */
+  writeWarcInfoRecord (version, isPartOfV, warcInfoDescription, ua) {
+    this._swapper.setValue(warcHeaderContent)
+    let whct = this._swapper.template({version, isPartOfV, warcInfoDescription, ua}).s
+    let whc = Buffer.from(`${CRLF}${whct}${CRLF}`, &apos;utf8&apos;)
+    let wh = Buffer.from(this._swapper.setValue(warcHeader).template({
+      fileName: this._fileName,
+      now: this._now,
+      len: whc.length,
+      rid: this._rid
+    }).s, &apos;utf8&apos;)
+    return this.writeRecordBlock(wh, whc, recordSeparator)
+  }
+
+  /**
+   * @desc Write WARC-Type: metadata for outlinks
+   * @param {string} targetURI
+   * @param {string} outlinks
+   * @return {Promise.&lt;void&gt;}
+   */
+  writeWarcMetadataOutlinks (targetURI, outlinks) {
+    let wmhc = Buffer.from(`${CRLF}${outlinks}${CRLF}`, &apos;utf8&apos;)
+    let wmh = Buffer.from(this._swapper.setValue(warcMetadataHeader).template({
+      targetURI,
+      now: this._now,
+      len: wmhc.length,
+      concurrentTo: this._rid,
+      rid: uuid()
+    }).s, &apos;utf8&apos;)
+    return this.writeRecordBlock(wmh, wmhc, recordSeparator)
+  }
+
+  /**
+   * @desc Write A Request Record
+   * @param {string} targetURI
+   * @param {string} httpHeaderString
+   * @param {string|Buffer?} requestData
+   * @return {Promise.&lt;void&gt;}
+   */
+  writeRequestRecord (targetURI, httpHeaderString, requestData) {
+    this._swapper.setValue(warcRequestHeader)
+    let reqHeadContentBuffer
+    if (requestData !== null &amp;&amp; requestData !== undefined) {
+      reqHeadContentBuffer = Buffer.from(`${CRLF}${httpHeaderString}${requestData}${CRLF}`, &apos;utf8&apos;)
+    } else {
+      reqHeadContentBuffer = Buffer.from(`${CRLF}${httpHeaderString}`, &apos;utf8&apos;)
+    }
+    let reqWHeader = this._swapper.template({
+      targetURI,
+      concurrentTo: this._rid,
+      now: this._now,
+      rid: uuid(),
+      len: reqHeadContentBuffer.length
+    }).s
+    return this.writeRecordBlock(reqWHeader, reqHeadContentBuffer, recordSeparator)
+  }
+
+  /**
+   * @desc Write A Response Record
+   * @param {string} targetURI
+   * @param {string} httpHeaderString
+   * @param {string|Buffer?} responseData
+   * @return {Promise.&lt;void&gt;}
+   */
+  writeResponseRecord (targetURI, httpHeaderString, responseData) {
+    this._swapper.setValue(warcRequestHeader)
+    let resHeaderContentBuffer = Buffer.from(`${CRLF}${httpHeaderString}`, &apos;utf8&apos;)
+    let resDataLen = responseData ? responseData.length : 0
+    let respWHeader = this._swapper.setValue(warcResponseHeader).template({
+      targetURI,
+      now: this._now,
+      rid: uuid(),
+      len: resHeaderContentBuffer.length + resDataLen
+    }).s
+    if (responseData !== null &amp;&amp; responseData !== undefined) {
+      return this.writeRecordBlock(respWHeader, resHeaderContentBuffer, responseData, CRLF, recordSeparator)
+    } else {
+      return this.writeRecordBlock(respWHeader, resHeaderContentBuffer, CRLF, recordSeparator)
+    }
+  }
+
+  /**
+   * @desc Write arbitrary number of items to the WARC
+   * @param {*} recordParts
+   * @return {Promise.&lt;void&gt;}
+   */
+  writeRecordBlock (...recordParts) {
+    return new Promise((resolve, reject) =&gt; {
+      let dataIter = recordParts[Symbol.iterator]()
+      this._doWrite(dataIter, resolve, reject)
+    })
+  }
+
+  /**
+   * @desc Close the underlying filestream to the WARC currently being written.
+   * The `finished` event will not be emitted until this method has been called
+   */
+  end () {
+    if (this._warcOutStream) {
+      this._warcOutStream.end()
+    }
+  }
+
+  /**
+   *
+   * @param {Symbol.iterator} dataIter
+   * @param resolve
+   * @param reject
+   * @private
+   */
+  _doWrite (dataIter, resolve, reject) {
+    let next = dataIter.next()
+    if (!next.done) {
+      this._warcOutStream.write(next.value, &apos;utf8&apos;, this._doWrite.bind(this, dataIter, resolve, reject))
+    } else {
+      resolve()
+    }
+  }
+
+  /**
+   * @desc Called when the WARC generation is finished
+   * @emits {finished} emitted when WARC generation is complete
+   * @private
+   */
+  _onFinish () {
+    let le = this._lastError
+    this._lastError = null
+    this._warcOutStream.destroy()
+    this._warcOutStream = null
+    this._rid = null
+    this._now = null
+    this._fileName = null
+    if (le) {
+      this.emit(&apos;finished&apos;, le)
+    } else {
+      this.emit(&apos;finished&apos;)
+    }
+  }
+
+  /**
+   * @desc Emits an error if one occurs
+   * @emits {error} The error that occurred
+   * @private
+   */
+  _onError (err) {
+    this._lastError = err
+    this.emit(&apos;error&apos;, err)
+  }
+}
+
+module.exports = WARCWriterBase
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
