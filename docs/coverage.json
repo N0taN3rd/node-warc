@@ -1,7 +1,7 @@
 {
-  "coverage": "87.09%",
+  "coverage": "88.38%",
   "expectCount": 155,
-  "actualCount": 135,
+  "actualCount": 137,
   "files": {
     "lib/parsers/index.js": {
       "expectCount": 4,
@@ -10,12 +10,10 @@
     },
     "lib/writers/remoteChrome.js": {
       "expectCount": 9,
-      "actualCount": 5,
+      "actualCount": 7,
       "undocumentLines": [
         8,
-        7,
-        687,
-        678
+        7
       ]
     },
     "lib/writers/warcFields.js": {
