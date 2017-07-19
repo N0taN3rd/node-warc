@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/parsers/warcParser.js | API Document</title>
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -78,178 +78,57 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/parsers/warcParser.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/** @ignore */
-const bsplit = require(&apos;binary-split&apos;)
-/** @ignore */
-const untildify = require(&apos;untildify&apos;)
-/** @ignore */
-const fs = require(&apos;fs-extra&apos;)
-/** @ignore */
-const EventEmitter = require(&apos;eventemitter3&apos;)
-/** @ignore */
-const WARCRecorderBuilder = require(&apos;../warcRecordBuilder&apos;)
-/** @ignore */
-const warcFieldIdentifiers = require(&apos;../warcRecordBuilder/fieldIdentifiers&apos;)
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1>
+<p>Parse Web ARChive (WARC) files with node.js. </p>
+<p><code>.warc</code> and <code>.warc.gz</code> is supported</p>
+<p><a href="https://github.com/N0taN3rd/node-warc/tree/master/lib/writers">Writing available</a> (documentation pending)!</p>
+<h2 id="api">API</h2>
+<p>Full API documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
+<h2 id="example-usage">Example usage</h2>
+<h3 id="example-1-both-warc-and-warc-gz-">Example 1: Both <code>.warc</code> and <code>.warc.gz</code></h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const AutoWARCParser = require(&apos;node-warc&apos;)
 
-/**
- * @desc Parse a WARC file
- * @extends {EventEmitter}
- * @example
- *  const parser = new WARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
- *  parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
- *  parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
- *  parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
- *  parser.start()
- * @example
- *  const parser = new WARCParser()
- *  parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
- *  parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
- *  parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
- *  parser.parseWARC(&apos;&lt;path-to-warcfile&gt;&apos;)
- */
-class WARCParser extends EventEmitter {
-  /**
-   * @desc Create a new WARCParser
-   * @param {?string} wp path to the warc file tobe parsed
-   */
-  constructor (wp = null) {
-    super()
-    /**
-     * @type {?string} the path to the WARC file to be parsed
-     * @private
-     */
-    this._wp = wp
-
-    /**
-     * @type {ReadStream} the underlying ReadStream
-     * @private
-     */
-    this._readStream = null
-
-    /**
-     * @type {boolean} should the parser check the current lines buffer for the warctype
-     * @private
-     */
-    this._checkRecType = false
-
-    /**
-     * @type {boolean} have we identified the records correct WARC-Type for the record
-     * @private
-     */
-    this._foundType = false
-
-    /**
-     * @type {boolean} is the parser just starting to parse the WARC file
-     * @private
-     */
-    this._starting = true
-
-    /**
-     * @type {boolean} is the parser currently parsing the WARC
-     * @private
-     */
-    this._parsing = false
-
-    /**
-     * @type {{count: number, increment: function, reset: function}}
-     * @private
-     */
-    this._crlfCounter = {
-      count: 0,
-      increment () {
-        this.count += 1
-      },
-      reset () {
-        this.count = 0
-      }
-    }
-    /**
-     * @type {WARCRecorderBuilder}
-     * @private
-     */
-    this._builder = new WARCRecorderBuilder()
-  }
-
-  /**
-   * @desc Begin parsing the WARC file. Once the start method has been called the parser will begin emitting
-   * @emits {record} emitted when the parser has parsed a full record, the argument supplied to the listener will be the parsed record
-   * @emits {done} emitted when the WARC file has been completely parsed, the argument supplied to the listener will be last record
-   * @emits {error} emitted if an exception occurs, the argument supplied to the listener will be the error that occurred.
-   * @return {boolean} indication if the parser has begun or is currently parsing a WARC file
-   * - true: indicates the parser has begun parsing the WARC file true
-   * - false: indicated the parser is currently parsing a WARC file
-   * @throws {Error} if the path to the WARC file is null or undefined or another error occurred
-   */
-  start () {
-    if (!this._parsing) {
-      if (this._wp === null || this._wp === undefined) {
-        throw new Error(&apos;The path to the WARC file is undefined&apos;)
-      }
-      this._starting = true
-      this._parsing = true
-      let lastBegin
-      let buildKey
-      let isEmptyLine
-      this._readStream = fs.createReadStream(untildify(this._wp))
-      this._readStream.pipe(bsplit())
-        .on(&apos;data&apos;, (line) =&gt; {
-          if (warcFieldIdentifiers.begin.equals(line)) {
-            if (!this._starting) {
-              this.emit(&apos;record&apos;, this._builder.buildRecord(buildKey))
-            } else {
-              this._starting = false
-            }
-            this._crlfCounter.reset()
-            this._checkRecType = true
-            lastBegin = line
-          } else {
-            isEmptyLine = warcFieldIdentifiers.empty.equals(line)
-            if (this._checkRecType &amp;&amp; !isEmptyLine) {
-              this._checkRecType = false
-              buildKey = this._builder.determineWarcType(line, lastBegin)
-            } else if (isEmptyLine) {
-              this._crlfCounter.increment()
-            } else {
-              this._builder.addLineTo(buildKey, this._crlfCounter.count, line)
-            }
-          }
-        })
-        .on(&apos;error&apos;, error =&gt; {
-          this.emit(&apos;error&apos;, error)
-        })
-        .on(&apos;end&apos;, () =&gt; {
-          this._parsing = false
-          this._readStream.destroy()
-          let record = this._builder.buildRecord(buildKey)
-          this._builder.clear()
-          this.emit(&apos;done&apos;, record)
-        })
-    } else {
-      return false
-    }
-  }
-
-  /**
-   * @desc Alias for {@link start} except that you can supply the path to the WARC file to be parsed
-   * if one was not supplied via the constructor or to parse another WARC file. If the path to WARC file
-   * to be parsed was supplied via the constructor and you supply a different path to this method.
-   * It will override the one supplied via the constructor
-   * @param {?string} wp the path to the WARC file to be parsed
-   * @return {boolean} indication if the parser has begun or is currently parsing a WARC file
-   * @throws {Error} if the path to the WARC file is null or undefined or another error occurred
-   */
-  parseWARC (wp) {
-    if (!this._parsing) {
-      this._wp = wp || this._wp
-    }
-    return this.start()
-  }
-}
-
-module.exports = WARCParser
+const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.start()</code>
 </code></pre>
+<h3 id="example-2-only-warc-gz-">Example 2: Only <code>.warc.gz</code></h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCGzParser = require(&apos;node-warc&apos;).WARCGzParser
 
+const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.start()</code>
+</code></pre>
+<h3 id="example-3-only-warc-">Example 3: Only <code>.warc</code></h3>
+<pre><code class="lang-js"><code class="source-code prettyprint">const WARCParser = require(&apos;node-warc&apos;).WARCParser
+
+const parser = new WARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
+parser.on(&apos;done&apos;, finalRecord =&gt; { console.log(finalRecord) })
+parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
+parser.start()</code>
+</code></pre>
+<h2 id="benchmark">Benchmark</h2>
+<h4 id="un-gzipped">UN-GZIPPED</h4>
+<ul>
+<li>145.9MB (8,026 records) took 2s. Max node process usage 22 MiB </li>
+<li>268MB (852 records) took 2s. Max node process usage  77 MiB</li>
+<li>2GB (76,980 records) took 21s. Max node process usage 100 MiB</li>
+<li>4.8GB (185,662 records) took 1m. Max node process usage 144.3 MiB</li>
+</ul>
+<h4 id="gzipped">GZIPPED</h4>
+<ul>
+<li>7.7MB (1,269 records) took 297ms. Max node process memory usage 7.1 MiB</li>
+<li>819.1MB (34,253 records) took 16s. Max node process memory usage 190.3 MiB</li>
+<li>2.3GB (68,020 records) took 45s. Max node process memory usage 197.6 MiB</li>
+<li>5.3GB (269,464 records) took 4m. Max node process memory usage 198.2 MiB</li>
+</ul>
+<p><a href="https://github.com/feross/standard"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg" alt="JavaScript Style Guide"></a></p>
+</div>
 </div>
 
 <footer class="footer">

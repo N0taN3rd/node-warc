@@ -6,9 +6,57 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/writers/electron.js~crlf",
+    "variable/index.html#static-variable-CRLF",
+    "<span>CRLF</span> <span class=\"search-result-import-path\">node-warc/lib/writers/electron.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/remotechrome.js~crlf",
+    "variable/index.html#static-variable-CRLF",
+    "<span>CRLF</span> <span class=\"search-result-import-path\">node-warc/lib/writers/remoteChrome.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~crlf",
+    "variable/index.html#static-variable-CRLF",
+    "<span>CRLF</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/utils/electrongetreserror.js~electrongetreserror",
+    "class/lib/utils/electronGetResError.js~ElectronGetResError.html",
+    "<span>ElectronGetResError</span> <span class=\"search-result-import-path\">node-warc/lib/utils/electronGetResError.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/utils/getresbodyelectron.js~electrongetreserror",
+    "variable/index.html#static-variable-ElectronGetResError",
+    "<span>ElectronGetResError</span> <span class=\"search-result-import-path\">node-warc/lib/utils/getResBodyElectron.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/electron.js~electronwarcgenerator",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html",
+    "<span>ElectronWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/electron.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/writers/warcwriterbase.js~eventemitter",
+    "variable/index.html#static-variable-EventEmitter",
+    "<span>EventEmitter</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcWriterBase.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/parsers/gzipdetector.js~gzipdetector",
     "class/lib/parsers/gzipDetector.js~GzipDetector.html",
     "<span>GzipDetector</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/writers/remotechrome.js~remotechromewarcgenerator",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html",
+    "<span>RemoteChromeWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/remoteChrome.js</span>",
     "class"
   ],
   [
@@ -72,6 +120,24 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/writers/electron.js~warcwriterbase",
+    "variable/index.html#static-variable-WARCWriterBase",
+    "<span>WARCWriterBase</span> <span class=\"search-result-import-path\">node-warc/lib/writers/electron.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/remotechrome.js~warcwriterbase",
+    "variable/index.html#static-variable-WARCWriterBase",
+    "<span>WARCWriterBase</span> <span class=\"search-result-import-path\">node-warc/lib/writers/remoteChrome.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcwriterbase.js~warcwriterbase",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html",
+    "<span>WARCWriterBase</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcWriterBase.js</span>",
+    "class"
+  ],
+  [
     "node-warc/lib/warcrecordbuilder/buildkeys.js~buildkeys",
     "variable/index.html#static-variable-buildKeys",
     "<span>buildKeys</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecordBuilder/buildKeys.js</span>",
@@ -82,6 +148,12 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-fieldIdentifiers",
     "<span>fieldIdentifiers</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecordBuilder/fieldIdentifiers.js</span>",
     "variable"
+  ],
+  [
+    "node-warc/lib/utils/getresbodyelectron.js~getresbodyelectron",
+    "function/index.html#static-function-getResBodyElectron",
+    "<span>getResBodyElectron</span> <span class=\"search-result-import-path\">node-warc/lib/utils/getResBodyElectron.js</span>",
+    "function"
   ],
   [
     "node-warc/lib/parsers/gzipdetector.js~gzipmagicnum",
@@ -102,6 +174,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "node-warc/lib/utils/isemptyplainobject.js~isempty",
+    "variable/index.html#static-variable-isEmpty",
+    "<span>isEmpty</span> <span class=\"search-result-import-path\">node-warc/lib/utils/isEmptyPlainObject.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/utils/isemptyplainobject.js~isemptyplainobject",
+    "function/index.html#static-function-isEmptyPlainObject",
+    "<span>isEmptyPlainObject</span> <span class=\"search-result-import-path\">node-warc/lib/utils/isEmptyPlainObject.js</span>",
+    "function"
+  ],
+  [
     "node-warc/lib/warcrecords/warccontentparsers.js~parsewarcinfometadatacontent",
     "function/index.html#static-function-parseWarcInfoMetaDataContent",
     "<span>parseWarcInfoMetaDataContent</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/warcContentParsers.js</span>",
@@ -117,6 +201,54 @@ window.esdocSearchIndex = [
     "node-warc/lib/warcrecords/warccontentparsers.js~recidre",
     "variable/index.html#static-variable-recIdRE",
     "<span>recIdRE</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecords/warcContentParsers.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~recordseparator",
+    "variable/index.html#static-variable-recordSeparator",
+    "<span>recordSeparator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcfields",
+    "variable/index.html#static-variable-warcFields",
+    "<span>warcFields</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcheader",
+    "variable/index.html#static-variable-warcHeader",
+    "<span>warcHeader</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcwriterbase.js~warcheader",
+    "variable/index.html#static-variable-warcHeader",
+    "<span>warcHeader</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcWriterBase.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcheadercontent",
+    "variable/index.html#static-variable-warcHeaderContent",
+    "<span>warcHeaderContent</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcmetadataheader",
+    "variable/index.html#static-variable-warcMetadataHeader",
+    "<span>warcMetadataHeader</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcrequestheader",
+    "variable/index.html#static-variable-warcRequestHeader",
+    "<span>warcRequestHeader</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/writers/warcfields.js~warcresponseheader",
+    "variable/index.html#static-variable-warcResponseHeader",
+    "<span>warcResponseHeader</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcFields.js</span>",
     "variable"
   ],
   [
@@ -550,6 +682,48 @@ window.esdocSearchIndex = [
     "class/lib/parsers/warcParser.js~WARCParser.html#instance-method-start",
     "lib/parsers/warcParser.js~WARCParser#start",
     "method"
+  ],
+  [
+    "lib/utils/electrongetreserror.js",
+    "file/lib/utils/electronGetResError.js.html",
+    "lib/utils/electronGetResError.js",
+    "file"
+  ],
+  [
+    "lib/utils/electrongetreserror.js~electrongetreserror#constructor",
+    "class/lib/utils/electronGetResError.js~ElectronGetResError.html#instance-constructor-constructor",
+    "lib/utils/electronGetResError.js~ElectronGetResError#constructor",
+    "method"
+  ],
+  [
+    "lib/utils/electrongetreserror.js~electrongetreserror#oerror",
+    "class/lib/utils/electronGetResError.js~ElectronGetResError.html#instance-member-oError",
+    "lib/utils/electronGetResError.js~ElectronGetResError#oError",
+    "member"
+  ],
+  [
+    "lib/utils/electrongetreserror.js~electrongetreserror#rid",
+    "class/lib/utils/electronGetResError.js~ElectronGetResError.html#instance-member-rid",
+    "lib/utils/electronGetResError.js~ElectronGetResError#rid",
+    "member"
+  ],
+  [
+    "lib/utils/getresbodyelectron.js",
+    "file/lib/utils/getResBodyElectron.js.html",
+    "lib/utils/getResBodyElectron.js",
+    "file"
+  ],
+  [
+    "lib/utils/index.js",
+    "file/lib/utils/index.js.html",
+    "lib/utils/index.js",
+    "file"
+  ],
+  [
+    "lib/utils/isemptyplainobject.js",
+    "file/lib/utils/isEmptyPlainObject.js.html",
+    "lib/utils/isEmptyPlainObject.js",
+    "file"
   ],
   [
     "lib/warcrecordbuilder/buildkeys.js",
@@ -1030,5 +1204,167 @@ window.esdocSearchIndex = [
     "file/lib/warcRecords/warcContentParsers.js.html",
     "lib/warcRecords/warcContentParsers.js",
     "file"
+  ],
+  [
+    "lib/writers/electron.js",
+    "file/lib/writers/electron.js.html",
+    "lib/writers/electron.js",
+    "file"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generateget",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generateGet",
+    "lib/writers/electron.js~ElectronWARCGenerator#generateGet",
+    "method"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generateonlyres",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generateOnlyRes",
+    "lib/writers/electron.js~ElectronWARCGenerator#generateOnlyRes",
+    "method"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generateoptions",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generateOptions",
+    "lib/writers/electron.js~ElectronWARCGenerator#generateOptions",
+    "method"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generateother",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generateOther",
+    "lib/writers/electron.js~ElectronWARCGenerator#generateOther",
+    "method"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generatepost",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generatePost",
+    "lib/writers/electron.js~ElectronWARCGenerator#generatePost",
+    "method"
+  ],
+  [
+    "lib/writers/electron.js~electronwarcgenerator#generateredirectresponse",
+    "class/lib/writers/electron.js~ElectronWARCGenerator.html#instance-method-generateRedirectResponse",
+    "lib/writers/electron.js~ElectronWARCGenerator#generateRedirectResponse",
+    "method"
+  ],
+  [
+    "lib/writers/index.js",
+    "file/lib/writers/index.js.html",
+    "lib/writers/index.js",
+    "file"
+  ],
+  [
+    "lib/writers/remotechrome.js",
+    "file/lib/writers/remoteChrome.js.html",
+    "lib/writers/remoteChrome.js",
+    "file"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generateget",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generateGet",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generateGet",
+    "method"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generateonlyres",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generateOnlyRes",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generateOnlyRes",
+    "method"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generateoptions",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generateOptions",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generateOptions",
+    "method"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generateother",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generateOther",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generateOther",
+    "method"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generatepost",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generatePost",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generatePost",
+    "method"
+  ],
+  [
+    "lib/writers/remotechrome.js~remotechromewarcgenerator#generateredirectresponse",
+    "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html#instance-method-generateRedirectResponse",
+    "lib/writers/remoteChrome.js~RemoteChromeWARCGenerator#generateRedirectResponse",
+    "method"
+  ],
+  [
+    "lib/writers/warcfields.js",
+    "file/lib/writers/warcFields.js.html",
+    "lib/writers/warcFields.js",
+    "file"
+  ],
+  [
+    "lib/writers/warcwriterbase.js",
+    "file/lib/writers/warcWriterBase.js.html",
+    "lib/writers/warcWriterBase.js",
+    "file"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#constructor",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-constructor-constructor",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#constructor",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#end",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-end",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#end",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#initwarc",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-initWARC",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#initWARC",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#keephttp2",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-keepHTTP2",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#keepHTTP2",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#turnhttp2intohttp11",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-turnHTTP2IntoHTTP11",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#turnHTTP2IntoHTTP11",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writerecordblock",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeRecordBlock",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeRecordBlock",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writerequestrecord",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeRequestRecord",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeRequestRecord",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writeresponserecord",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeResponseRecord",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeResponseRecord",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writewarcinforecord",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcInfoRecord",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeWarcInfoRecord",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writewarcmetadataoutlinks",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcMetadataOutlinks",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeWarcMetadataOutlinks",
+    "method"
   ]
 ]

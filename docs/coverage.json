@@ -1,12 +1,64 @@
 {
-  "coverage": "98.14%",
-  "expectCount": 108,
-  "actualCount": 106,
+  "coverage": "87.09%",
+  "expectCount": 155,
+  "actualCount": 135,
   "files": {
     "lib/parsers/index.js": {
       "expectCount": 4,
       "actualCount": 4,
       "undocumentLines": []
+    },
+    "lib/writers/remoteChrome.js": {
+      "expectCount": 9,
+      "actualCount": 5,
+      "undocumentLines": [
+        8,
+        7,
+        687,
+        678
+      ]
+    },
+    "lib/writers/warcFields.js": {
+      "expectCount": 8,
+      "actualCount": 0,
+      "undocumentLines": [
+        48,
+        49,
+        51,
+        1,
+        10,
+        19,
+        29,
+        39
+      ]
+    },
+    "lib/writers/electron.js": {
+      "expectCount": 9,
+      "actualCount": 7,
+      "undocumentLines": [
+        8,
+        7
+      ]
+    },
+    "lib/utils/getResBodyElectron.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        5
+      ]
+    },
+    "lib/utils/electronGetResError.js": {
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
+    },
+    "lib/writers/warcWriterBase.js": {
+      "expectCount": 13,
+      "actualCount": 11,
+      "undocumentLines": [
+        13,
+        14
+      ]
     },
     "lib/parsers/gzipDetector.js": {
       "expectCount": 5,
@@ -51,6 +103,13 @@
       "expectCount": 4,
       "actualCount": 4,
       "undocumentLines": []
+    },
+    "lib/utils/isEmptyPlainObject.js": {
+      "expectCount": 2,
+      "actualCount": 1,
+      "undocumentLines": [
+        1
+      ]
     }
   }
 }
