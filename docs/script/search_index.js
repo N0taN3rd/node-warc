@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "node-warc/lib/requestcapturers/electron.js~electronrequestcapturer",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html",
+    "<span>ElectronRequestCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/electron.js</span>",
+    "class"
+  ],
+  [
     "node-warc/lib/writers/electron.js~electronwarcgenerator",
     "class/lib/writers/electron.js~ElectronWARCGenerator.html",
     "<span>ElectronWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/electron.js</span>",
@@ -51,6 +57,12 @@ window.esdocSearchIndex = [
     "node-warc/lib/parsers/gzipdetector.js~gzipdetector",
     "class/lib/parsers/gzipDetector.js~GzipDetector.html",
     "<span>GzipDetector</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/requestcapturers/remotechrome.js~remotechromerequestcapturer",
+    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html",
+    "<span>RemoteChromeRequestCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/remoteChrome.js</span>",
     "class"
   ],
   [
@@ -681,6 +693,84 @@ window.esdocSearchIndex = [
     "lib/parsers/warcparser.js~warcparser#start",
     "class/lib/parsers/warcParser.js~WARCParser.html#instance-method-start",
     "lib/parsers/warcParser.js~WARCParser#start",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/electron.js",
+    "file/lib/requestCapturers/electron.js.html",
+    "lib/requestCapturers/electron.js",
+    "file"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#attach",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-attach",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#attach",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#constructor",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-constructor-constructor",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#constructor",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#maybenetworkmessage",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-maybeNetworkMessage",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#maybeNetworkMessage",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#set",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-member-set",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#set",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#startcapturing",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-startCapturing",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#startCapturing",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/electron.js~electronrequestcapturer#stopcapturing",
+    "class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-stopCapturing",
+    "lib/requestCapturers/electron.js~ElectronRequestCapturer#stopCapturing",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/index.js",
+    "file/lib/requestCapturers/index.js.html",
+    "lib/requestCapturers/index.js",
+    "file"
+  ],
+  [
+    "lib/requestcapturers/remotechrome.js",
+    "file/lib/requestCapturers/remoteChrome.js.html",
+    "lib/requestCapturers/remoteChrome.js",
+    "file"
+  ],
+  [
+    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#constructor",
+    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-constructor-constructor",
+    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#constructor",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#set",
+    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-member-set",
+    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#set",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#startcapturing",
+    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-method-startCapturing",
+    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#startCapturing",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#stopcapturing",
+    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-method-stopCapturing",
+    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#stopCapturing",
     "method"
   ],
   [

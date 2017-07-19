@@ -1,20 +1,12 @@
 {
-  "coverage": "88.38%",
-  "expectCount": 155,
-  "actualCount": 137,
+  "coverage": "87.42%",
+  "expectCount": 167,
+  "actualCount": 146,
   "files": {
     "lib/parsers/index.js": {
       "expectCount": 4,
       "actualCount": 4,
       "undocumentLines": []
-    },
-    "lib/writers/remoteChrome.js": {
-      "expectCount": 9,
-      "actualCount": 7,
-      "undocumentLines": [
-        8,
-        7
-      ]
     },
     "lib/writers/warcFields.js": {
       "expectCount": 8,
@@ -28,6 +20,14 @@
         19,
         29,
         39
+      ]
+    },
+    "lib/writers/remoteChrome.js": {
+      "expectCount": 9,
+      "actualCount": 7,
+      "undocumentLines": [
+        8,
+        7
       ]
     },
     "lib/writers/electron.js": {
@@ -50,18 +50,33 @@
       "actualCount": 4,
       "undocumentLines": []
     },
+    "lib/requestCapturers/electron.js": {
+      "expectCount": 7,
+      "actualCount": 5,
+      "undocumentLines": [
+        15,
+        24
+      ]
+    },
     "lib/writers/warcWriterBase.js": {
       "expectCount": 13,
       "actualCount": 11,
       "undocumentLines": [
-        13,
-        14
+        11,
+        12
       ]
     },
     "lib/parsers/gzipDetector.js": {
       "expectCount": 5,
       "actualCount": 5,
       "undocumentLines": []
+    },
+    "lib/requestCapturers/remoteChrome.js": {
+      "expectCount": 5,
+      "actualCount": 4,
+      "undocumentLines": [
+        25
+      ]
     },
     "lib/parsers/warcGzParser.js": {
       "expectCount": 5,

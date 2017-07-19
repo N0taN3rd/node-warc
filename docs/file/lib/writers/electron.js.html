@@ -38,6 +38,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNum">gzipMagicNum</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-gzipMagicNumLen">gzipMagicNumLen</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">requestCapturers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html">ElectronRequestCapturer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">utils</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isEmptyPlainObject">isEmptyPlainObject</a></span></span></li>
@@ -97,6 +99,8 @@ const UA = &apos;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
 
 /**
  * @desc WARC Generator for use with Electron
+ *
+ * Expects request data from {@link ElectronRequestCapturer}
  * @see https://electron.atom.io/docs/
  * @see https://electron.atom.io/docs/api/debugger/
  * @link WARCWriterBase
@@ -722,15 +726,14 @@ class ElectronWARCGenerator extends WARCWriterBase {
       if (!(head.host || head.Host)) {
         head[&apos;Host&apos;] = purl.host
       }
-      
       for (headerKey in head) {
         requestHeaders += `${headerKey}: ${head[headerKey]}${CRLF}`
       }
       requestHeaders += `${CRLF}`
     } else {
       requestHeaders = `${nreq.method} ${purl.path} ${res.protocol.toUpperCase()}${CRLF}`
-
     }
+
     await this.writeRequestRecord(nreq.url, requestHeaders)
 
     if (res.headersText) {
