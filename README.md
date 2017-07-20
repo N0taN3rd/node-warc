@@ -4,7 +4,7 @@ Parse And Write Web ARChive (WARC) files with node.js.
 Run `npm install node-warc` or `yarn add node-warc` to ge started
 
 
-[![npm Package](https://img.shields.io/npm/v/cdxj.svg?style=flat-square)](https://www.npmjs.com/package/node-warc)
+[![npm Package](https://img.shields.io/npm/v/node-warc.svg?style=flat-square)](https://www.npmjs.com/package/node-warc)
 
 ## API
 Full API documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
