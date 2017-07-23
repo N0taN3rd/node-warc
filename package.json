@@ -19,7 +19,11 @@
     "warc",
     "warc.gz",
     "warc-parsing",
-    "web-archiving"
+    "web-archiving",
+    "web archiving Electron",
+    "web archiving Chrome",
+    "Electron",
+    "Chrome"
   ],
   "scripts": {
     "lint": "standard | snazzy",
