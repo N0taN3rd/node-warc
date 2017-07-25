@@ -1,5 +1,5 @@
 # node-warc
-Parse And Write Web ARChive (WARC) files with node.js. 
+Parse Web Archive (WARC) files or create WARC files using [Electron](https://electron.atom.io/) or [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
 
 Run `npm install node-warc` or `yarn add node-warc` to ge started
 
