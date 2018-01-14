@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "2.0.0rc1",
+  "version": "2.0.0rc2",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -31,7 +31,10 @@
   "scripts": {
     "lint": "standard | snazzy",
     "fix-lint": "standard --fix",
-    "doc": "esdoc"
+    "doc": "esdoc",
+    "test": "ava --verbose",
+    "test-report": "nyc ava --verbose",
+    "report-html": "nyc report --reporter=html"
   },
   "eslintConfig": {
     "env": {
@@ -44,7 +47,8 @@
     "eventemitter3": "^3.0.0",
     "fs-extra": "^5.0.0",
     "lodash.isempty": "^4.4.0",
-    "moment": "^2.19.4",
+    "lodash.startcase": "^4.4.0",
+    "moment": "^2.20.1",
     "string": "^3.3.3",
     "through2": "^2.0.3",
     "untildify": "^3.0.2",
@@ -53,9 +57,24 @@
   "devDependencies": {
     "ava": "^0.24.0",
     "esdoc": "^1.0.4",
+    "nyc": "^11.4.1",
     "pretty-time": "^0.2.0",
+    "rxjs": "^5.5.6",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "source": [
+      "lib/**/*"
+    ]
+  },
+  "standard": {
+    "ignore": [
+      "test/**"
+    ]
   },
   "resolutions": {
     "readable-stream": "2.2.9",

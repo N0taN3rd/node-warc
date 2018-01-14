@@ -1,0 +1,101 @@
+{
+  "redir": [
+    {
+      "requestId": "18073.37",
+      "request": {
+        "url": "https://charts.reuters.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false",
+        "method": "GET",
+        "headers": {
+          "Referer": "https://www.reuters.com/",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.59 Safari/537.36"
+        }
+      }
+    },
+    {
+      "requestId": "18073.37",
+      "request": {
+        "url": "https://www.reuters.wallst.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false",
+        "method": "GET",
+        "headers": {
+          "Referer": "https://www.reuters.com/",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.59 Safari/537.36"
+        }
+      },
+      "redirectResponse": {
+        "url": "https://charts.reuters.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false",
+        "status": 301,
+        "statusText": "Moved Permanently",
+        "headers": {
+          "Location": "https://www.reuters.wallst.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false",
+          "Date": "Mon, 27 Nov 2017 22:25:34 GMT",
+          "Server": "nginx",
+          "Connection": "keep-alive",
+          "Content-Length": "178",
+          "Content-Type": "text/html"
+        },
+        "headersText": "HTTP/1.1 301 Moved Permanently\r\nServer: nginx\r\nDate: Mon, 27 Nov 2017 22:25:34 GMT\r\nContent-Type: text/html\r\nContent-Length: 178\r\nConnection: keep-alive\r\nLocation: https://www.reuters.wallst.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false\r\n\r\n",
+        "requestHeaders": "HTTP/1.1 301 Moved Permanently\r\nServer: nginx\r\nDate: Mon, 27 Nov 2017 22:25:34 GMT\r\nContent-Type: text/html\r\nContent-Length: 178\r\nConnection: keep-alive\r\nLocation: https://www.reuters.wallst.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false\r\n\r\n",
+        "requestHeadersText": "GET /reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false HTTP/1.1\r\nHost: charts.reuters.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.59 Safari/537.36\r\nAccept: image/webp,image/apng,image/*,*/*;q=0.8\r\nReferer: https://www.reuters.com/\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9\r\n"
+      }
+    },
+    {
+      "requestId": "18073.37",
+      "response": {
+        "url": "https://www.reuters.wallst.com/reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false",
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Date": "Mon, 27 Nov 2017 22:25:33 GMT",
+          "Server": "",
+          "X-AspNet-Version": "",
+          "X-Powered-By": "ASP.NET",
+          "P3P": "CP=\"NON PHY ONL UNI PUR FIN COM NAV INT DEM STA HEA CUR ADM DEV OUR IND\", policyref=\"/w3c/p3p.xml\"",
+          "Cache-Control": "private",
+          "Set-Cookie": "2175%5F0=CF8BF10A9C07D51A4508A300F634753C861CA392A90C1DB70D412E00DE1C1AF3; path=/; HttpOnly\nGZIP=1; expires=Sat, 26-Nov-2022 22:25:34 GMT; path=/",
+          "Content-Type": "image/png",
+          "Content-Length": "8353"
+        },
+        "headersText": "HTTP/1.1 200 OK\r\nCache-Control: private\r\nContent-Length: 8353\r\nContent-Type: image/png\r\nServer: \r\nX-AspNet-Version: \r\nP3P: CP=\"NON PHY ONL UNI PUR FIN COM NAV INT DEM STA HEA CUR ADM DEV OUR IND\", policyref=\"/w3c/p3p.xml\"\r\nSet-Cookie: 2175%5F0=CF8BF10A9C07D51A4508A300F634753C861CA392A90C1DB70D412E00DE1C1AF3; path=/; HttpOnly\r\nSet-Cookie: GZIP=1; expires=Sat, 26-Nov-2022 22:25:34 GMT; path=/\r\nX-Powered-By: ASP.NET\r\nDate: Mon, 27 Nov 2017 22:25:33 GMT\r\n\r\n",
+        "requestHeaders": "HTTP/1.1 200 OK\r\nCache-Control: private\r\nContent-Length: 8353\r\nContent-Type: image/png\r\nServer: \r\nX-AspNet-Version: \r\nP3P: CP=\"NON PHY ONL UNI PUR FIN COM NAV INT DEM STA HEA CUR ADM DEV OUR IND\", policyref=\"/w3c/p3p.xml\"\r\nSet-Cookie: 2175%5F0=CF8BF10A9C07D51A4508A300F634753C861CA392A90C1DB70D412E00DE1C1AF3; path=/; HttpOnly\r\nSet-Cookie: GZIP=1; expires=Sat, 26-Nov-2022 22:25:34 GMT; path=/\r\nX-Powered-By: ASP.NET\r\nDate: Mon, 27 Nov 2017 22:25:33 GMT\r\n\r\n",
+        "requestHeadersText": "GET /reuters/next/chart/pricelinechart?symbols=.SPX&numberOfDays=1&width=278&height=80&scaleFactor=2&realtime=0&showVolume=false&cultureName=en-US&darkStyle=false&show24hrLabels=false HTTP/1.1\r\nHost: www.reuters.wallst.com\r\nConnection: keep-alive\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.59 Safari/537.36\r\nAccept: image/webp,image/apng,image/*,*/*;q=0.8\r\nReferer: https://www.reuters.com/\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: en-US,en;q=0.9\r\n"
+      }
+    }
+  ],
+  "req": [
+    {
+      "requestId": "18073.1",
+      "request": {
+        "url": "https://www.reuters.com/",
+        "method": "GET",
+        "headers": {
+          "Upgrade-Insecure-Requests": "1",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.59 Safari/537.36"
+        }
+      }
+    },
+    {
+      "requestId": "18073.1",
+      "response": {
+        "url": "https://www.reuters.com/",
+        "status": 200,
+        "statusText": "",
+        "headers": {
+          "date": "Mon, 27 Nov 2017 22:24:18 GMT",
+          "content-encoding": "gzip",
+          "server": "nginx",
+          "age": "48",
+          "vary": "Accept-Encoding",
+          "x-cache": "Hit from cloudfront",
+          "content-type": "text/html;charset=UTF-8",
+          "status": "200",
+          "set-cookie": "JSESSIONID=443D1C3089E77BDB35E8A6FBCBAC8F2A; Path=/rcom-betaus/; HttpOnly",
+          "last-updatedl": "Mon, 27 Nov 2017 22:10:50 GMT",
+          "content-length": "25232",
+          "via": "1.1 d8e2175fcc8f75911462cb6cccc9c435.cloudfront.net (CloudFront)",
+          "x-amz-cf-id": "mUgwrH-DN71W-l6dqhR-yY_ByKChRMz6aZcDArndKjvYRdcv45b5ow==",
+          "expires": "Mon, 27 Nov 2017 22:24:41 GMT"
+        }
+      }
+    }
+  ]
+}
