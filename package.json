@@ -42,7 +42,6 @@
     "fs-extra": "^4.0.0",
     "lodash.isempty": "^4.4.0",
     "moment": "^2.18.1",
-    "string": "^3.3.3",
     "through2": "^2.0.3",
     "untildify": "^3.0.2",
     "uuid": "^3.1.0"
