@@ -1,7 +1,7 @@
 {
   "name": "node-warc",
-  "version": "1.1.1",
-  "description": "Parse And Write Web Archive Records (WARC) Files Via Node.js",
+  "version": "2.0.0rc2",
+  "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
     "name": "John Berlin",
@@ -25,10 +25,16 @@
     "Electron",
     "Chrome"
   ],
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "scripts": {
     "lint": "standard | snazzy",
     "fix-lint": "standard --fix",
-    "doc": "esdoc"
+    "doc": "esdoc",
+    "test": "ava --verbose",
+    "test-report": "nyc ava --verbose",
+    "report-html": "nyc report --reporter=html"
   },
   "eslintConfig": {
     "env": {
@@ -37,21 +43,42 @@
   },
   "dependencies": {
     "binary-split": "^1.0.3",
-    "bluebird": "^3.5.0",
-    "eventemitter3": "^2.0.3",
-    "fs-extra": "^4.0.0",
+    "bluebird": "^3.5.1",
+    "eventemitter3": "^3.0.0",
+    "fs-extra": "^5.0.0",
     "lodash.isempty": "^4.4.0",
-    "moment": "^2.18.1",
+    "lodash.startcase": "^4.4.0",
+    "moment": "^2.20.1",
     "string": "^3.3.3",
     "through2": "^2.0.3",
     "untildify": "^3.0.2",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "ava": "^0.21.0",
-    "esdoc": "^0.5.2",
+    "ava": "^0.24.0",
+    "esdoc": "^1.0.4",
+    "nyc": "^11.4.1",
     "pretty-time": "^0.2.0",
+    "rxjs": "^5.5.6",
     "snazzy": "^7.0.0",
-    "standard": "^10.0.2"
+    "standard": "^10.0.3"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "source": [
+      "lib/**/*"
+    ]
+  },
+  "standard": {
+    "ignore": [
+      "test/**"
+    ]
+  },
+  "resolutions": {
+    "readable-stream": "2.2.9",
+    "fs-extra": "5.0.0",
+    "graceful-fs": "4.1.11"
   }
 }
