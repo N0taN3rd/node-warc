@@ -1,5 +1,6 @@
 import test from 'ava'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 import AutoWARCParser from '../lib/parsers'
 import WARCGzParser from '../lib/parsers/warcGzParser'
 import WARCParser from '../lib/parsers/warcParser'
@@ -20,7 +21,7 @@ test.serial('AutoWARCParser should parse gzipped warcs', t => {
     t.false(parser.start(), 'AutoWARCParser.start should return false when started')
     t.false(parser.parseWARC(), 'AutoWARCParser.parseWARC should return false when started')
   })
-  return observable.map((rec) => t.truthy(rec))
+  return observable.pipe(map((rec) => t.truthy(rec)))
 })
 
 test.serial('AutoWARCParser should parse non-gzipped warcs', t => {
@@ -38,7 +39,7 @@ test.serial('AutoWARCParser should parse non-gzipped warcs', t => {
     t.false(parser.start(), 'AutoWARCParser.start should return false when started')
     t.false(parser.parseWARC(), 'AutoWARCParser.parseWARC should return false when started')
   })
-  return observable.map((rec) => t.truthy(rec))
+  return observable.pipe(map((rec) => t.truthy(rec)))
 })
 
 test.serial('AutoWARCParser should parse a gzipped warc and then a non-gzipped warc back to back', t => {
@@ -60,7 +61,7 @@ test.serial('AutoWARCParser should parse a gzipped warc and then a non-gzipped w
     t.false(parser.start(), 'AutoWARCParser.start should return false when started')
     t.false(parser.parseWARC(), 'AutoWARCParser.parseWARC should return false when started')
   })
-  return observable.map((rec) => t.truthy(rec))
+  return observable.pipe(map((rec) => t.truthy(rec)))
 })
 
 test.serial('WARCGzParser should parse gzipped warcs', t => {
@@ -81,7 +82,7 @@ test.serial('WARCGzParser should parse gzipped warcs', t => {
     t.false(parser.start(), 'AutoWARCParser.start should return false when started')
     t.false(parser.parseWARC(), 'AutoWARCParser.parseWARC should return false when started')
   })
-  return observable.map((rec) => t.truthy(rec))
+  return observable.pipe(map((rec) => t.truthy(rec)))
 })
 
 test.serial('WARCParser should parse non-gzipped warcs', t => {
@@ -102,7 +103,7 @@ test.serial('WARCParser should parse non-gzipped warcs', t => {
     t.false(parser.start(), 'AutoWARCParser.start should return false when started')
     t.false(parser.parseWARC(), 'AutoWARCParser.parseWARC should return false when started')
   })
-  return observable.map((rec) => t.truthy(rec))
+  return observable.pipe(map((rec) => t.truthy(rec)))
 })
 
 test('WARCParsers should throw errors when warc path is null or undefined when start or parseWARC is called', t => {
