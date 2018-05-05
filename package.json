@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "2.0.0rc2",
+  "version": "2.0.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
