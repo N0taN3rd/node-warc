@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -44,18 +44,18 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "eventemitter3": "^3.1.0",
-    "fs-extra": "^6.0.0",
+    "fs-extra": "^6.0.1",
     "lodash.isempty": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "moment": "^2.22.1",
     "readable-stream": "^2.3.6",
-    "untildify": "^3.0.2",
+    "untildify": "^3.0.3",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
     "ava": "^0.25.0",
     "esdoc": "^1.1.0",
-    "nyc": "^11.7.1",
+    "nyc": "^11.8.0",
     "pretty-time": "^1.0.0",
     "rxjs": "^6.1.0",
     "snazzy": "^7.1.1",
