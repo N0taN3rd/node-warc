@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import { requestsJson } from './helpers/filePaths'
 import { FakeNetwork, FakeNavMan } from './helpers/mocks'
 import { RemoteChromeCapturer, ElectronCapturer } from '../lib/requestCapturers'
-import CapturedRequest from '../lib/requestCapturers/capturedRequest2'
+import CapturedRequest from '../lib/requestCapturers/capturedRequest'
 
 let rawRequests
 const numCaptReqs = 194
