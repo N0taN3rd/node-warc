@@ -1,5 +1,5 @@
 import test from 'ava'
-import CapturedRequest from '../lib/requestCapturers/capturedRequest2'
+import CapturedRequest from '../lib/requestCapturers/capturedRequest'
 import fs from 'fs-extra'
 import { capturedReqTestData } from './helpers/filePaths'
 
