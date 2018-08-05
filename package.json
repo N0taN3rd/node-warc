@@ -44,7 +44,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "eventemitter3": "^3.1.0",
-    "fs-extra": "^6.0.1",
+    "fs-extra": "^7.0.0",
     "lodash.isempty": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "moment": "^2.22.2",
