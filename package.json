@@ -26,7 +26,7 @@
     "Chrome"
   ],
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "lint": "standard | snazzy",
@@ -48,7 +48,7 @@
     "lodash.isempty": "^4.4.0",
     "lodash.startcase": "^4.4.0",
     "moment": "^2.22.2",
-    "readable-stream": "^3.0.0",
+    "readable-stream": "^3.0.2",
     "untildify": "^3.0.3",
     "uuid": "^3.3.2"
   },
