@@ -1,6 +1,6 @@
 import test from 'ava'
 import WARCRecorderBuilder from '../lib/warcRecordBuilder'
-import warcRecords from '../lib/warcRecords'
+import warcRecords from '../lib/warcRecord'
 import buildKeys from '../lib/warcRecordBuilder/buildKeys'
 
 test.beforeEach(t => {
