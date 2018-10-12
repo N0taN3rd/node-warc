@@ -59,3 +59,6 @@ parser.start()
 - 5.3GB (269,464 records) took 4m. Max node process memory usage 198.2 MiB
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+## Environment
+* `NODEWARC_WRITE_GZIPPED` - writes gzipped records to WARC outputs.
