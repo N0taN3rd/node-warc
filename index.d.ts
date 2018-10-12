@@ -68,7 +68,7 @@ declare namespace node_warc {
 
         clear(...args: any[]): void;
 
-        iterateRequests(...args: any[]): void;
+        iterateRequests(...args: any[]): any[];
 
         requestWillBeSent(...args: any[]): void;
 
@@ -80,7 +80,7 @@ declare namespace node_warc {
 
     }
 
-    class PuppeteerWARCWriter {
+    class PuppeteerWARCWriter extends WARCWriterBase {
         constructor(...args: any[]);
 
         generateWarcEntry(...args: any[]): void;
@@ -96,7 +96,7 @@ declare namespace node_warc {
 
     }
 
-    class RemoteChromeWARCWriter {
+    class RemoteChromeWARCWriter extends WARCWriterBase {
         constructor(...args: any[]);
 
         generateWarcEntry(...args: any[]): void;
