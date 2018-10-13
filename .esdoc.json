@@ -1,21 +1,27 @@
 {
   "source": "./lib",
   "destination": "./docs",
-  "access": [
-    "public",
-    "protected",
-    "private"
-  ],
-  "unexportIdentifier": true,
-  "undocumentIdentifier": true,
-  "experimentalProposal": {
-    "classProperties": true,
-    "objectRestSpread": true,
-    "decorators": true,
-    "doExpressions": true,
-    "functionBind": true,
-    "asyncGenerators": true,
-    "exportExtensions": true,
-    "dynamicImport": true
-  }
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "lint": {"enable": true},
+        "coverage": {"enable": true},
+        "accessor": {"access": ["public", "protected", "private"], "autoPrivate": true},
+        "undocumentIdentifier": {"enable": true},
+        "unexportedIdentifier": {"enable": false},
+        "typeInference": {"enable": true},
+        "brand": {
+          "title": "node-warc",
+          "description": "A high fidelity, user scriptable, archival crawler that uses Chrome with/without a head.",
+          "repository": "https://github.com/N0taN3rd/node-warc",
+          "author": "https://twitter.com/johnaberlin"
+        }
+      }
+    },
+    {"name": "esdoc-external-nodejs-plugin", "option": {"enable": true}},
+    {"name": "esdoc-external-ecmascript-plugin", "option": {"enable": true}},
+    {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
+    {"name": "esdoc-node"}
+  ]
 }

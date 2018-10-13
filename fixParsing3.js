@@ -1,11 +1,9 @@
-const splitter = require('./lib/parsers/splitter')
+'use strict'
 const fs = require('fs-extra')
 const zlib = require('zlib')
 const GzipDetector = require('./lib/parsers/gzipDetector')
-const WFI = require('./lib/warcRecordBuilder/fieldIdentifiers')
-const ContentParser = require('./lib/warcRecords/warcContentParsers')
-const buildKeys = require('./lib/warcRecordBuilder/buildKeys')
-const WARCRecorderBuilder = require('./lib/warcRecordBuilder')
+const WFI = require('./lib/warcRecord/fieldIdentifiers')
+const ContentParser = require('./lib/warcRecord/warcContentParsers')
 const gzipped =
   '/home/john/WebstormProjects/node-warc/yt-working-20180702161433.warc.gz'
 const reg = 'test/files/parseMe.warc'
@@ -55,28 +53,34 @@ const WARCTypes = {
 class WARCRecord {
   /**
    * @desc Create a new WARCRecord
-   * @param {Buffer[]} header - warc header field buffers
-   * @param {Buffer[]} c1 content1 buffers
-   * @param {Buffer[]} c2 content2 buffers
+   * @param {{header: Buffer[], c1: Buffer[], c2: Buffer[]}} warcParts
    */
-  constructor (header, c1, c2) {
+  constructor (warcParts) {
     /**
      * @type {Object}
      */
-    this.warcHeader = ContentParser.parseWarcRecordHeader(header)
+    this.warcHeader = ContentParser.parseWarcRecordHeader(warcParts.header)
     this.httpInfo = null
-    this.contentBuffer = null
+    this.content = null
     const wt = this.warcType
     switch (wt) {
       case WARCTypes.request:
-        this.httpInfo = ContentParser.parseReqHTTP(c1)
-        break
       case WARCTypes.response:
       case WARCTypes.revisit:
-        this.httpInfo = ContentParser.parseResHTTP(c1)
+        this.httpInfo = ContentParser.parseHTTPPortion(
+          warcParts.c1,
+          wt === WARCTypes.request
+        )
+        this.content = Buffer.concat(warcParts.c2 || [])
+        break
+      case WARCTypes.warcinfo:
+      case WARCTypes.metadata:
+        this.content = ContentParser.parseWarcInfoMetaDataContent(warcParts.c1)
+        break
+      default:
+        this.content = Buffer.concat(warcParts.c1 || [])
         break
     }
-    this.contentBuffer = Buffer.concat(c2 || [])
   }
 
   /**
@@ -252,7 +256,7 @@ class WARCRecord {
 const SEP = Buffer.from('\r\n')
 
 function isJustWSep (line) {
-  if (line.length > 2) return false
+  if (line.length !== 2) return false
   return line[0] === SEP[0] && line[1] === SEP[1]
 }
 
@@ -268,16 +272,10 @@ class RecordBuilder {
 
   _buildRecord () {
     if (this._parts.header.length === 0) return null
-    const newRecord = new WARCRecord(
-      this._parts.header,
-      this._parts.c1,
-      this._parts.c2
-    )
-    this._parts = {
-      header: [],
-      c1: [],
-      c2: []
-    }
+    const newRecord = new WARCRecord(this._parts)
+    this._parts.header = []
+    this._parts.c1 = []
+    this._parts.c2 = []
     return newRecord
   }
 
@@ -324,30 +322,30 @@ class RecordBuilder {
         break
       case parsingStates.consumeCRLFContent2:
         break
-      default:
-        console.log(this._parsingState)
-        break
     }
     return newRecord
   }
 }
 
-function matchIndexFrom (buffer, offset) {
-  if (offset >= buffer.length) return -1
-  return buffer.indexOf(matcher, offset)
-}
-
 async function * readWARC2 (readStream) {
   let buffered
-  let offset, lastMatch, chunk, idx
+  let offset, lastMatch, chunk, idx, nextChunk
   let mlengh = matcher.length
   let chunkLen
-  for await (chunk of readStream) {
+  let chunkIter = readStream[Symbol.asyncIterator]()
+  while (true) {
+    nextChunk = await chunkIter.next()
+    if (nextChunk.done) break
     offset = 0
     lastMatch = 0
     if (buffered) {
-      chunk = Buffer.concat([buffered, chunk])
+      chunk = Buffer.concat(
+        [buffered, nextChunk.value],
+        buffered.length + nextChunk.value.length
+      )
       buffered = undefined
+    } else {
+      chunk = nextChunk.value
     }
     chunkLen = chunk.length
     while (true) {
@@ -363,7 +361,7 @@ async function * readWARC2 (readStream) {
     }
   }
 
-  if (buffered && buffered.length > 0) {
+  if (buffered != null && buffered.length > 0) {
     offset = 0
     lastMatch = 0
     chunkLen = buffered.length
@@ -381,22 +379,35 @@ async function * readWARC2 (readStream) {
   }
 }
 
+const warcRecordIterator = require('./lib/parsers/asyncParser')
+
 async function doIt () {
-  const readStream = await createWARCReadStream(gzipped)
-  let line
-  const builder = new RecordBuilder()
-  for await (line of readWARC2(readStream)) {
-    let newRecord = builder.consumeLine(line)
-    if (newRecord != null) {
-      console.log(newRecord)
-    }
+  // const builder = new RecordBuilder()
+  let record
+  for await (record of warcRecordIterator(
+    fs.createReadStream(gzipped).pipe(zlib.createGunzip())
+  )) {
+    console.log(record)
+    console.log('---------------------')
   }
-  console.log(builder._buildRecord())
+  // console.log(builder.buildRecord())
   // const rec =
   // await fs.writeFile('it.gif', Buffer.concat(rec.c2))
   // await new Promise(r => readStream.end(r))
 }
 
-doIt().catch(error => console.error(error))
+// doIt().catch(error => console.error(error))
 //
 // console.log(Buffer.from('WARC/0.18\r\n').length)
+
+const WARCInitOpts = {
+  appending: false,
+  gzip: process.env.NODEWARC_WRITE_GZIPPED != null
+}
+
+function dummy (opts = {}) {
+  const options = { ...opts, ...WARCInitOpts }
+  console.log(options)
+}
+
+dummy({ gzip: true })
