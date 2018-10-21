@@ -2,7 +2,7 @@
   "name": "node-warc",
   "version": "3.0.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": {
     "name": "John Berlin",
     "email": "n0tan3rd@gmail.com"
@@ -31,6 +31,7 @@
   "scripts": {
     "lint": "standard | snazzy",
     "fix-lint": "standard --fix",
+    "pretty": "prettier-standard lib/**/*.js",
     "doc": "esdoc",
     "test": "ava --verbose",
     "test-report": "nyc ava --verbose",
@@ -81,7 +82,7 @@
     "files": [
       "test/*.js"
     ],
-    "source": [
+    "sources": [
       "lib/**/*"
     ]
   },
