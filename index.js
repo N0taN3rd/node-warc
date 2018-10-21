@@ -1,6 +1,0 @@
-module.exports = require('./lib/parsers')
-module.exports.RemoteChromeWARCWriter = require('./lib/writers/remoteChrome')
-module.exports.RemoteChromeRequestCap = require('./lib/requestCapturers/remoteChrome')
-module.exports.ElectronWARCWriter = require('./lib/writers/electron')
-module.exports.ElectronRequestCap = require('./lib/requestCapturers/electron')
-module.exports.WARCWriterBase = require('./lib/writers/warcWriterBase')
