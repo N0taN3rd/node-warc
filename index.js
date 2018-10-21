@@ -1,8 +1,87 @@
-module.exports = require('./lib/parsers')
-module.exports.RemoteChromeWARCWriter = require('./lib/writers/remoteChrome')
-module.exports.RemoteChromeRequestCap = require('./lib/requestCapturers/remoteChrome')
-module.exports.ElectronWARCWriter = require('./lib/writers/electron')
-module.exports.ElectronRequestCap = require('./lib/requestCapturers/electron')
-module.exports.PuppeteerRequestCap = require('./lib/requestCapturers/puppeteer')
-module.exports.PuppeteerWARCWriter = require('./lib/writers/puppeteer')
-module.exports.WARCWriterBase = require('./lib/writers/warcWriterBase')
+'use strict'
+const {
+  WARCStreamTransform,
+  AutoWARCParser,
+  WARCGzParser,
+  WARCParser
+} = require('./lib/parsers')
+
+const {
+  ElectronWARCWriter,
+  PuppeteerCDPWARCGenerator,
+  PuppeteerWARCGenerator,
+  RemoteChromeWARCWriter,
+  WARCWriterBase
+} = require('./lib/writers')
+
+const {
+  ElectronCapturer,
+  PuppeteerCapturer,
+  PuppeteerCDPCapturer,
+  RemoteChromeCapturer
+} = require('./lib/requestCapturers')
+
+/**
+ * @type {WARCStreamTransform}
+ */
+exports.WARCStreamTransform = WARCStreamTransform
+
+/**
+ * @type {AutoWARCParser}
+ */
+exports.AutoWARCParser = AutoWARCParser
+
+/**
+ * @type {WARCGzParser}
+ */
+exports.WARCGzParser = WARCGzParser
+
+/**
+ * @type {WARCParser}
+ */
+exports.WARCParser = WARCParser
+
+/**
+ * @type {ElectronWARCGenerator}
+ */
+exports.ElectronWARCWriter = ElectronWARCWriter
+
+/**
+ * @type {PuppeteerCDPWARCGenerator}
+ */
+exports.PuppeteerCDPWARCGenerator = PuppeteerCDPWARCGenerator
+
+/**
+ * @type {PuppeteerWARCGenerator}
+ */
+exports.PuppeteerWARCGenerator = PuppeteerWARCGenerator
+
+/**
+ * @type {RemoteChromeWARCGenerator}
+ */
+exports.RemoteChromeWARCWriter = RemoteChromeWARCWriter
+
+/**
+ * @type {WARCWriterBase}
+ */
+exports.WARCWriterBase = WARCWriterBase
+
+/**
+ * @type {ElectronRequestCapturer}
+ */
+exports.ElectronCapturer = ElectronCapturer
+
+/**
+ * @type {PuppeteerRequestCapturer}
+ */
+exports.PuppeteerCapturer = PuppeteerCapturer
+
+/**
+ * @type {PuppeteerCDPRequestCapturer}
+ */
+exports.PuppeteerCDPCapturer = PuppeteerCDPCapturer
+
+/**
+ * @type {RemoteChromeRequestCapturer}
+ */
+exports.RemoteChromeCapturer = RemoteChromeCapturer

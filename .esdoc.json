@@ -22,6 +22,7 @@
     {"name": "esdoc-external-nodejs-plugin", "option": {"enable": true}},
     {"name": "esdoc-external-ecmascript-plugin", "option": {"enable": true}},
     {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
-    {"name": "esdoc-node"}
+    {"name": "esdoc-node"},
+    {"name": "esdoc-member-plugin"}
   ]
 }
