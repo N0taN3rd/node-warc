@@ -6,7 +6,7 @@ test.beforeEach(t => {
 })
 
 test.skip('WARCRecorderBuilder.determineWarcType should return the correct build key', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const empty = Buffer.from('')
   const begin = Buffer.from('WARC/1.0\r')
   const warcInfo = Buffer.from('WARC-Type: warcinfo\r')
@@ -25,7 +25,7 @@ test.skip('WARCRecorderBuilder.determineWarcType should return the correct build
 })
 
 test('WARCRecorderBuilder should correctly build a info record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: warcinfo\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -97,7 +97,7 @@ test('WARCRecorderBuilder should correctly build a info record', t => {
 })
 
 test('WARCRecorderBuilder should correctly build a info record if the record is indeed a info record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Filename: dummy.warc\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -133,7 +133,7 @@ test('WARCRecorderBuilder should correctly build a info record if the record is 
 })
 
 test('WARCRecorderBuilder should correctly build a metadata record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: metadata\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -198,7 +198,7 @@ test('WARCRecorderBuilder should correctly build a metadata record', t => {
 })
 
 test('WARCRecorderBuilder should correctly build a metadata record if the record is indeed a metadata record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Target-URI: http://stringjs.com/\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -231,7 +231,7 @@ test('WARCRecorderBuilder should correctly build a metadata record if the record
 })
 
 test('WARCRecorderBuilder should correctly build a request record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: request\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -310,7 +310,7 @@ Accept-Language: en-US`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a request record if the record is indeed a request record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Target-URI: http://stringjs.com/\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -348,7 +348,7 @@ Accept-Language: en-US`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a response record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: response\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -425,7 +425,7 @@ X-GitHub-Request-Id: AE92:0456:5576F1:80DBF9:596AFA30`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a response record if the record is indeed a response record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Target-URI: http://stringjs.com/\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -459,7 +459,7 @@ X-GitHub-Request-Id: AE92:0456:5576F1:80DBF9:596AFA30`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a revisit record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: revisit\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -534,7 +534,7 @@ Connection: keep-alive`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a revisit record if the record is indeed a revisit record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Target-URI: http://stringjs.com/\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -566,7 +566,7 @@ Connection: keep-alive`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a resource record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: resource\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -620,7 +620,7 @@ Content-Length: 408394`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a resource record if the record is indeed a resource record but the build key is unknown', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Record-ID: <urn:uuid:abe2831f-e80d-11e7-9e6f-10bf487d9875>\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -643,7 +643,7 @@ Content-Length: 408394`.split('\n')
 })
 
 test('WARCRecorderBuilder should correctly build a unknown record', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   const type = Buffer.from('WARC-Type: dummy\r')
   const begin = Buffer.from('WARC/1.0\r')
   const key = builder.determineWarcType(type, begin)
@@ -686,7 +686,7 @@ test('WARCRecorderBuilder should correctly build a unknown record', t => {
 })
 
 test('WARCRecorderBuilder should populate and clear all internal maps', t => {
-  const {context: {builder}} = t
+  const { context: { builder } } = t
   builder.initInfo('1', '2')
   builder.initMdata('1', '2')
   builder.initReq('1', '2')
