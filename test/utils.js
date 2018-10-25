@@ -84,6 +84,6 @@ test('gzipDetector', async t => {
   )
   t.throws(() => GZD.isGzippedSync(null), 'The filePath path is null')
   t.throws(() => GZD.isGzippedSync(undefined), 'The filePath path is undefined')
-  await t.throws(GZD.isGzipped(null), 'The filePath path is null')
-  await t.throws(GZD.isGzipped(undefined), 'The filePath path is undefined')
+  await t.throwsAsync(async () => GZD.isGzipped(null), 'The filePath path is null')
+  await t.throwsAsync(async () => GZD.isGzipped(undefined), 'The filePath path is undefined')
 })
