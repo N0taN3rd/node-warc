@@ -37,3 +37,7 @@
 /**
  * @external {AsyncIterator} https://github.com/tc39/proposal-async-iteration
  */
+
+/**
+ *  @external {symbol} https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol
+ */

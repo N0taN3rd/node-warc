@@ -2,7 +2,7 @@
   "name": "node-warc",
   "version": "3.0.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
-  "main": "lib/index.js",
+  "main": "index.js",
   "author": {
     "name": "John Berlin",
     "email": "n0tan3rd@gmail.com"
@@ -45,12 +45,9 @@
   "dependencies": {
     "bluebird": "^3.5.2",
     "chrome-remote-interface": "^0.26.1",
-    "deoptigate": "^0.4.2",
     "eventemitter3": "^3.1.0",
     "fs-extra": "^7.0.0",
     "lodash": "^4.17.11",
-    "lodash.isempty": "^4.4.0",
-    "lodash.startcase": "^4.4.0",
     "moment": "^2.22.2",
     "untildify": "^3.0.3",
     "uuid": "^3.3.2"
@@ -59,19 +56,17 @@
     "@types/fs-extra": "^5.0.4",
     "@types/node": "^10.12.0",
     "ava": "^1.0.0-beta.8",
-    "benchmark": "^2.1.4",
     "chalk": "^2.4.1",
     "esdoc": "^1.1.0",
-    "esdoc-member-plugin": "^1.0.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-external-ecmascript-plugin": "^1.0.0",
-    "esdoc-external-nodejs-plugin": "^1.0.0",
     "esdoc-inject-style-plugin": "^1.0.0",
     "esdoc-node": "^1.0.3",
-    "esdoc-node-plugin": "^0.2.1",
     "esdoc-standard-plugin": "^1.0.0",
+    "gh-pages": "^2.0.1",
     "microtime": "^2.1.8",
     "nyc": "^13.1.0",
+    "perfy": "^1.1.5",
     "prettier-standard": "^8.0.1",
     "pretty-time": "^1.1.0",
     "rxjs": "^6.3.3",
@@ -93,7 +88,6 @@
   },
   "resolutions": {
     "**/graceful-fs": "4.1.11",
-    "**/lodash": "4.17.11",
     "**/universalify": "0.1.2"
   }
 }
