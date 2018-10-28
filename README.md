@@ -85,3 +85,6 @@ parser.on('error', error => { console.error(error) })
 parser.start()
 ```
 
+
+## Environment
+* `NODEWARC_WRITE_GZIPPED` - writes gzipped records to WARC outputs.
