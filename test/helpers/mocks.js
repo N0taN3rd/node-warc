@@ -11,7 +11,7 @@ export class FakeElectronDebugger {
     this.commandSent = command
     this.args = args
     if (this._shouldError) {
-      cb({args}, null)
+      cb({ args }, null)
     } else {
       cb(null, 'dummy')
     }
@@ -134,7 +134,7 @@ export class FakeNetwork {
 
 export class FakeNavMan {
   constructor () {
-    this.calls = {reqStarted: 0, reqFinished: 0}
+    this.calls = { reqStarted: 0, reqFinished: 0 }
   }
 
   reqStarted (info) {

@@ -4,7 +4,7 @@ const {
   AutoWARCParser,
   WARCGzParser,
   WARCParser
-} = require('./parsers')
+} = require('./lib/parsers')
 
 const {
   ElectronWARCWriter,
@@ -12,14 +12,14 @@ const {
   PuppeteerWARCGenerator,
   RemoteChromeWARCWriter,
   WARCWriterBase
-} = require('./writers')
+} = require('./lib/writers')
 
 const {
   ElectronCapturer,
   PuppeteerCapturer,
   PuppeteerCDPCapturer,
   RemoteChromeCapturer
-} = require('./requestCapturers')
+} = require('./lib/requestCapturers')
 
 /**
  * @type {WARCStreamTransform}
@@ -86,3 +86,9 @@ exports.PuppeteerCDPCapturer = PuppeteerCDPCapturer
  */
 exports.RemoteChromeCapturer = RemoteChromeCapturer
 
+if (require('./lib/parsers/_canUseRecordIterator')) {
+  /**
+   * @type {function(ReadStream|Gunzip): AsyncIterator<WARCRecord>}
+   */
+  exports.recordIterator = require('./lib/parsers/recordterator')
+}
