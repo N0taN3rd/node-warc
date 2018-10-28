@@ -18,77 +18,33 @@ const {
   ElectronCapturer,
   PuppeteerCapturer,
   PuppeteerCDPCapturer,
-  RemoteChromeCapturer
+  RemoteChromeCapturer,
+  RequestHandler
 } = require('./lib/requestCapturers')
 
 /**
- * @type {WARCStreamTransform}
+ * @type {{WARCStreamTransform: WARCStreamTransform, AutoWARCParser: AutoWARCParser, WARCGzParser: WARCGzParser, WARCParser: WARCParser, ElectronWARCWriter: ElectronWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, WARCWriterBase: WARCWriterBase, RequestHandler: RequestHandler, ElectronCapturer: ElectronRequestCapturer, PuppeteerCapturer: PuppeteerRequestCapturer, PuppeteerCDPCapturer: PuppeteerCDPRequestCapturer, RemoteChromeCapturer: RemoteChromeRequestCapturer}}
  */
-exports.WARCStreamTransform = WARCStreamTransform
-
-/**
- * @type {AutoWARCParser}
- */
-exports.AutoWARCParser = AutoWARCParser
-
-/**
- * @type {WARCGzParser}
- */
-exports.WARCGzParser = WARCGzParser
-
-/**
- * @type {WARCParser}
- */
-exports.WARCParser = WARCParser
-
-/**
- * @type {ElectronWARCGenerator}
- */
-exports.ElectronWARCWriter = ElectronWARCWriter
-
-/**
- * @type {PuppeteerCDPWARCGenerator}
- */
-exports.PuppeteerCDPWARCGenerator = PuppeteerCDPWARCGenerator
-
-/**
- * @type {PuppeteerWARCGenerator}
- */
-exports.PuppeteerWARCGenerator = PuppeteerWARCGenerator
-
-/**
- * @type {RemoteChromeWARCGenerator}
- */
-exports.RemoteChromeWARCWriter = RemoteChromeWARCWriter
-
-/**
- * @type {WARCWriterBase}
- */
-exports.WARCWriterBase = WARCWriterBase
-
-/**
- * @type {ElectronRequestCapturer}
- */
-exports.ElectronCapturer = ElectronCapturer
-
-/**
- * @type {PuppeteerRequestCapturer}
- */
-exports.PuppeteerCapturer = PuppeteerCapturer
-
-/**
- * @type {PuppeteerCDPRequestCapturer}
- */
-exports.PuppeteerCDPCapturer = PuppeteerCDPCapturer
-
-/**
- * @type {RemoteChromeRequestCapturer}
- */
-exports.RemoteChromeCapturer = RemoteChromeCapturer
+module.exports = {
+  WARCStreamTransform,
+  AutoWARCParser,
+  WARCGzParser,
+  WARCParser,
+  ElectronWARCWriter,
+  PuppeteerCDPWARCGenerator,
+  PuppeteerWARCGenerator,
+  RemoteChromeWARCWriter,
+  WARCWriterBase,
+  RequestHandler,
+  ElectronCapturer,
+  PuppeteerCapturer,
+  PuppeteerCDPCapturer,
+  RemoteChromeCapturer
+}
 
 if (require('./lib/parsers/_canUseRecordIterator')) {
   /**
    * @type {function(ReadStream|Gunzip): AsyncIterator<WARCRecord>}
    */
-  exports.recordIterator = require('./lib/parsers/recordterator')
+  module.exports.recordIterator = require('./lib/parsers/recordterator')
 }
