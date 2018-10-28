@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | node-warc</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/warcRecord/warcContentParsers.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -66,71 +66,284 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
-<p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
-<p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
-<h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const zlib = require(&apos;zlib&apos;)
-// require only available if async iteration on readable streams is available
-const recordIterator = require(&apos;node-warc/recordterator&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/warcRecord/warcContentParsers.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+const { SPACE } = require(&apos;../utils/constants&apos;)
+const WFI = require(&apos;./fieldIdentifiers&apos;)
 
-async function iterateRecords (warcStream) {
-  for await (const record of recordIterator(warcStream)) {
-    console.log(record)
+/**
+ * @type {Buffer}
+ */
+const WARCVSlash = Buffer.from(&apos;/&apos;)
+
+/**
+ * @type {Buffer}
+ */
+const ColonSpace = Buffer.from(&apos;: &apos;)
+
+/**
+ * @type {Buffer}
+ */
+const CRLF = WFI.crlf
+
+/**
+ * @desc Utility class for parsing parts of WARC records
+ */
+class ContentParser {
+  /**
+   * @desc Slices the supplied buffer returning a UTF-8 string
+   * @param {Buffer} buf   - The buffer to slice
+   * @param {number} start - The start position of the slice
+   * @param {number} end   - The end position of the slice
+   * @return {string}
+   */
+  static utf8BufferSlice (buf, start, end) {
+    return buf.slice(start, end).toString(&apos;utf8&apos;)
+  }
+
+  /**
+   * @desc Returns the index of the end of the supplied buffer that does not include `\r\n`
+   * @param {Buffer} buf    - The buffer to receive the correct end index for
+   * @param {number} bufLen - The full length of the buffer
+   * @return {number}
+   */
+  static bufEndPosNoCRLF (buf, bufLen) {
+    if (buf[bufLen - 2] === CRLF[0] &amp;&amp; buf[bufLen - 1] === CRLF[1]) {
+      return bufLen - 2
+    }
+    return bufLen
+  }
+
+  /**
+   * @desc Parses the HTTP information of WARC request and response records
+   * @param {Buffer[]} bufs - Buffers containing the HTTP header information
+   * @param {boolean} req   - Should the buffers be parsed as request or response
+   * @returns {RequestHTTP|ResponseHTTP}
+   */
+  static parseHTTPPortion (bufs, req) {
+    if (req) return ContentParser.parseReqHTTP(bufs)
+    return ContentParser.parseResHTTP(bufs)
+  }
+
+  /**
+   * @desc Parse a WARC Records headers not HTTP Header parser
+   * @param {Buffer[]} bufs - the WARC Records header lines
+   * @return {Object}
+   */
+  static parseWarcRecordHeader (bufs) {
+    let rheader = {}
+    let len = bufs.length
+    let i = 0
+    let currentBuffer
+    let curLen
+    let sepPos
+    let headerKey
+    let headerValue
+    while (i &lt; len) {
+      currentBuffer = bufs[i]
+      curLen = currentBuffer.length
+      sepPos = currentBuffer.indexOf(ColonSpace)
+      if (sepPos !== -1) {
+        headerKey = ContentParser.utf8BufferSlice(currentBuffer, 0, sepPos)
+        headerValue = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          sepPos + 2,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+        rheader[headerKey] = headerValue
+      } else {
+        rheader[&apos;WARC&apos;] = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          currentBuffer.indexOf(WARCVSlash) + 1,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+      }
+      i++
+    }
+    return rheader
+  }
+
+  /**
+   * @desc Parse a WARC Metadata records metadata content
+   * @param {Buffer[]} bufs - the WARC Metadata records content lines
+   * @return {Object}
+   */
+  static parseWarcInfoMetaDataContent (bufs) {
+    let content = {}
+    let len = bufs.length
+    let i = 0
+    let sepPos
+    let key
+    let value
+    let currentBuffer
+    let curLen
+    while (i &lt; len) {
+      currentBuffer = bufs[i]
+      curLen = currentBuffer.length
+      sepPos = currentBuffer.indexOf(ColonSpace)
+      if (sepPos !== -1) {
+        key = ContentParser.utf8BufferSlice(currentBuffer, 0, sepPos)
+        value = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          sepPos + 2,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+        if (key === &apos;outlink&apos;) {
+          if (content.outlink == null) {
+            content.outlink = []
+          }
+          content.outlink.push(value)
+        } else {
+          content[key] = value
+        }
+      } else {
+        value = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          0,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+        if (content.unkeyed == null) {
+          content.unkeyed = []
+        }
+        content.unkeyed.push(value)
+      }
+      i++
+    }
+    return content
+  }
+
+  /**
+   * @desc Parses the request HTTP headers
+   * @param {Buffer[]} headerBuffs - the request HTTP headers
+   * @return {RequestHTTP}
+   */
+  static parseReqHTTP (headerBuffs) {
+    const content = {
+      requestLine: null,
+      path: null,
+      method: null,
+      httpVersion: null,
+      headers: null
+    }
+    if (headerBuffs.length === 0) {
+      return content
+    }
+    let currentBuffer = headerBuffs[0]
+    let curLen = currentBuffer.length
+    let requestLine = ContentParser.utf8BufferSlice(
+      currentBuffer,
+      0,
+      ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+    )
+    content.requestLine = requestLine
+    let spaceIDX = requestLine.indexOf(SPACE)
+    content.method = requestLine.substring(0, spaceIDX)
+    let lastIDX = spaceIDX + 1
+    spaceIDX = requestLine.indexOf(SPACE, lastIDX)
+    content.path = requestLine.substring(lastIDX, spaceIDX)
+    content.httpVersion = requestLine.substring(spaceIDX + 1)
+    content.headers = ContentParser._parseHeaders(headerBuffs)
+    return content
+  }
+
+  /**
+   * @desc Parses the response HTTP headers
+   * @param {Buffer[]} headerBuffs - the response HTTP headers
+   * @return {ResponseHTTP}
+   */
+  static parseResHTTP (headerBuffs) {
+    const content = {
+      statusLine: null,
+      statusCode: null,
+      statusReason: null,
+      httpVersion: null,
+      headers: null
+    }
+    if (headerBuffs.length === 0) {
+      return content
+    }
+    let currentBuffer = headerBuffs[0]
+    let curLen = currentBuffer.length
+    let statusLine = ContentParser.utf8BufferSlice(
+      currentBuffer,
+      0,
+      ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+    )
+    content.statusLine = statusLine
+    let spaceIDX = statusLine.indexOf(SPACE)
+    content.httpVersion = statusLine.substring(0, spaceIDX)
+    let lastIDX = spaceIDX + 1
+    spaceIDX = statusLine.indexOf(SPACE, lastIDX)
+    content.statusCode = statusLine.substring(lastIDX, spaceIDX)
+    content.statusReason = statusLine.substring(spaceIDX + 1)
+    content.headers = ContentParser._parseHeaders(headerBuffs)
+    return content
+  }
+
+  /**
+   * @desc Parses an array of buffers containing HTTP headers
+   * @param {Buffer[]} headerBuffs - The array of buffers representing HTTP headers
+   * @return {Object}
+   * @private
+   */
+  static _parseHeaders (headerBuffs) {
+    const headers = {}
+    let len = headerBuffs.length
+    let i = 1
+    let key
+    let lastKey = &apos;&apos;
+    let sepPos
+    let currentBuffer
+    let curLen
+    while (i &lt; len) {
+      currentBuffer = headerBuffs[i]
+      curLen = currentBuffer.length
+      sepPos = currentBuffer.indexOf(ColonSpace)
+      if (sepPos !== -1) {
+        key = ContentParser.utf8BufferSlice(currentBuffer, 0, sepPos)
+        lastKey = key
+        headers[key] = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          sepPos + 2,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+      } else {
+        headers[lastKey] = ContentParser.utf8BufferSlice(
+          currentBuffer,
+          0,
+          ContentParser.bufEndPosNoCRLF(currentBuffer, curLen)
+        )
+      }
+      i++
+    }
+    return headers
   }
 }
 
-iterateRecords(
-  fs.createReadStream(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;).pipe(zlib.createGunzip())
-).then(() =&gt; {
-  console.log(&apos;done&apos;)
-})</code>
-</code></pre>
-<p>Or using one of the parsers</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">for await (const record of new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
-    console.log(record)
-}</code>
-</code></pre>
-<h3 id="using-stream-transform">Using Stream Transform</h3><pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const { WARCStreamTransform } = require(&apos;node-warc&apos;)
+/**
+ * @type {ContentParser}
+ */
+module.exports = ContentParser
 
-fs
-  .createReadStream(&apos;someWARC.warc&apos;)
-  .pipe(new WARCStreamTransform())
-  .on(&apos;data&apos;, record =&gt; {
-    console.log(record)
-  })</code>
-</code></pre>
-<h3 id="both--code--warc--code--and--code--warc-gz--code-">Both <code>.warc</code> and <code>.warc.gz</code></h3><pre><code class="lang-js"><code class="source-code prettyprint">const { AutoWARCParser } = require(&apos;node-warc&apos;)
+/**
+ * @typedef {Object} RequestHTTP
+ * @property {?string} requestLine - The HTTP request line
+ * @property {?string} path - The path of the request
+ * @property {?string} method - The HTTP method used
+ * @property {?string} httpVersion - The HTTP version
+ * @property {?Object} headers - The parsed headers
+ */
 
-const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
+/**
+ * @typedef {Object} ResponseHTTP
+ * @property {?string} statusLine - The HTTP response line
+ * @property {?string} statusCode - The response code
+ * @property {?string} statusReason - The status reason
+ * @property {?string} httpVersion - The HTTP version
+ * @property {?Object} headers - The parsed headers
+ */
 </code></pre>
-<h3 id="only-gzip--39-d-warc-files">Only gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
 
-const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-non-gzip--39-d-warc-files">Only non gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCParser(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
-</ul>
-</div>
 </div>
 
 <footer class="footer">

@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | node-warc</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/requestCapturers/requestHandler.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -66,71 +66,186 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
-<p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
-<p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
-<h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const zlib = require(&apos;zlib&apos;)
-// require only available if async iteration on readable streams is available
-const recordIterator = require(&apos;node-warc/recordterator&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/requestCapturers/requestHandler.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const CapturedRequest = require(&apos;./capturedRequest&apos;)
 
-async function iterateRecords (warcStream) {
-  for await (const record of recordIterator(warcStream)) {
-    console.log(record)
+/**
+ * Class Responsible For Managing The Captured Request / Responses For A Page
+ */
+class RequestHandler {
+  /**
+   * @desc Create A New RequestHandler
+   */
+  constructor () {
+    /**
+     * @desc To Capture Requests Or Not To Capture Requests
+     * @type {boolean}
+     * @private
+     */
+    this._capture = true
+
+    /**
+     * @desc Association Of RequestIds To CapturedRequests
+     * @type {Map&lt;string,CapturedRequest&gt;}
+     * @private
+     */
+    this._requests = new Map()
+  }
+
+  /**
+   * @desc Sets an internal flag to begin capturing network requests.
+   * Clears Any Previously Captured Request Information
+   */
+  startCapturing () {
+    this._requests.clear()
+    this._capture = true
+  }
+
+  /**
+   * @desc Sets an internal flag to stop the capturing network requests
+   */
+  stopCapturing () {
+    this._capture = false
+  }
+
+  /**
+   * @desc Handles either the Network.requestWillBeSent or the Network.responseReceived events
+   * @see https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestWillBeSent
+   * @see https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-responseReceived
+   * @param {Object} info
+   */
+  addRequestInfo (info) {
+    if (this._capture) {
+      if (this._requests.has(info.requestId)) {
+        this._requests.get(info.requestId).addRequestInfo(info)
+      } else {
+        this._requests.set(info.requestId, new CapturedRequest(info))
+      }
+    }
+  }
+
+  /**
+   * @desc Handles the Network.requestWillBeSent event
+   * @see https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestWillBeSent
+   * @param {Object} info
+   */
+  requestWillBeSent (info) {
+    if (this._capture) {
+      if (this._requests.has(info.requestId)) {
+        this._requests.get(info.requestId).addRequestInfo(info)
+      } else {
+        this._requests.set(info.requestId, new CapturedRequest(info))
+      }
+    }
+  }
+
+  /**
+   * @desc Handles the Network.responseReceived event
+   * @see https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-responseReceived
+   * @param {Object} info
+   */
+  responseReceived (info) {
+    if (this._capture) {
+      if (!this._requests.has(info.requestId)) {
+        this._requests.set(info.requestId, new CapturedRequest(info))
+      } else {
+        this._requests.get(info.requestId).addRequestInfo(info)
+      }
+    }
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/@@iterator
+   * @desc Get An Iterator Over The Request Id, Request Object Pairs
+   * @returns {Iterator}
+   */
+  [Symbol.iterator] () {
+    return this._requests[Symbol.iterator]()
+  }
+
+  /**
+   * @desc Remove All Requests
+   */
+  clear () {
+    this._requests.clear()
+  }
+
+  /**
+   * @desc Does The Interceptor Have The Request Object Associated With A Request Id
+   * @param {!string} requestId
+   * @returns {boolean}
+   */
+  has (requestId) {
+    return this._requests.has(requestId)
+  }
+
+  /**
+   * @desc Retrieve The Corresponding Request Object For A Request Id
+   * @param {!string} requestId
+   * @returns {CapturedRequest}
+   */
+  get (requestId) {
+    return this._requests.get(requestId)
+  }
+
+  /**
+   * @returns {number}
+   */
+  size () {
+    return this._requests.size
+  }
+
+  /**
+   * @desc Get An Iterator Over The Request Id, Request Object Pairs
+   * @returns {Iterator}
+   */
+  entries () {
+    return this._requests.entries()
+  }
+
+  /**
+   * @desc Get An Iterator Over The Request Ids
+   * @returns {Iterator&lt;string&gt;}
+   */
+  keys () {
+    return this._requests.keys()
+  }
+
+  /**
+   * @desc Get An Iterator Over The Request Objects
+   * @returns {Iterator&lt;CapturedRequest&gt;}
+   */
+  values () {
+    return this._requests.values()
+  }
+
+  /**
+   * @desc Apply An Iteratee Once For Each Mapped Request Id, Request Object Pair
+   * @param {!function} iteratee the function to be applied
+   * @param {*} [thisArg] optional this argument
+   */
+  forEach (iteratee, thisArg) {
+    this._requests.forEach(iteratee, thisArg)
+  }
+
+  /**
+   * @return {Iterator&lt;CDPRequestInfo&gt;}
+   */
+  * iterateRequests () {
+    for (let cr of this._requests.values()) {
+      for (let ri of cr.values()) {
+        yield ri
+      }
+    }
   }
 }
 
-iterateRecords(
-  fs.createReadStream(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;).pipe(zlib.createGunzip())
-).then(() =&gt; {
-  console.log(&apos;done&apos;)
-})</code>
+/**
+ * @type {RequestHandler}
+ */
+module.exports = RequestHandler
 </code></pre>
-<p>Or using one of the parsers</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">for await (const record of new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
-    console.log(record)
-}</code>
-</code></pre>
-<h3 id="using-stream-transform">Using Stream Transform</h3><pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const { WARCStreamTransform } = require(&apos;node-warc&apos;)
 
-fs
-  .createReadStream(&apos;someWARC.warc&apos;)
-  .pipe(new WARCStreamTransform())
-  .on(&apos;data&apos;, record =&gt; {
-    console.log(record)
-  })</code>
-</code></pre>
-<h3 id="both--code--warc--code--and--code--warc-gz--code-">Both <code>.warc</code> and <code>.warc.gz</code></h3><pre><code class="lang-js"><code class="source-code prettyprint">const { AutoWARCParser } = require(&apos;node-warc&apos;)
-
-const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-gzip--39-d-warc-files">Only gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-non-gzip--39-d-warc-files">Only non gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCParser(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
-</ul>
-</div>
 </div>
 
 <footer class="footer">

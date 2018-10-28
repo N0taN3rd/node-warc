@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | node-warc</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/parsers/warcGzParser.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -66,71 +66,148 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
-<p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
-<p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
-<h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/parsers/warcGzParser.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const untildify = require(&apos;untildify&apos;)
+const fs = require(&apos;fs-extra&apos;)
 const zlib = require(&apos;zlib&apos;)
-// require only available if async iteration on readable streams is available
-const recordIterator = require(&apos;node-warc/recordterator&apos;)
+const EventEmitter = require(&apos;eventemitter3&apos;)
+const WARCStreamTransform = require(&apos;./warcStreamTransform&apos;)
+const canUseRecordIterator = require(&apos;./_canUseRecordIterator&apos;)
 
-async function iterateRecords (warcStream) {
-  for await (const record of recordIterator(warcStream)) {
-    console.log(record)
+/**
+ * @desc Parse a WARC.gz file
+ * @extends {EventEmitter}
+ * @example
+ *  const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
+ *  parser.on(&apos;record&apos;, record =&gt; { console.log(record); })
+ *  parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;); })
+ *  parser.on(&apos;error&apos;, error =&gt; { console.error(error); })
+ *  parser.start()
+ * @example
+ *  const parser = new WARCGzParser()
+ *  parser.on(&apos;record&apos;, record =&gt; { console.log(record); })
+ *  parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;); })
+ *  parser.on(&apos;error&apos;, error =&gt; { console.error(error); })
+ *  parser.parseWARC(&apos;&lt;path-to-warcfile&gt;&apos;)
+ * @example
+ *  // requires node &gt;= 10
+ *  for await (const record of new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
+ *    console.log(record)
+ *  }
+ */
+class WARCGzParser extends EventEmitter {
+  /**
+   * @desc Create a new WARCGzParser
+   * @param {?string} [wp] - path to the warc.gz file to be parsed
+   */
+  constructor (wp) {
+    super()
+    /**
+     * @type {?string} the path to the WARC.gz file to be parsed
+     * @private
+     */
+    this._wp = wp
+
+    /**
+     * @type {boolean} is the parser currently parsing the WARC.gz
+     * @private
+     */
+    this._parsing = false
+    this._onRecord = this._onRecord.bind(this)
+    this._onError = this._onError.bind(this)
+    this._onEnd = this._onEnd.bind(this)
+    if (canUseRecordIterator) {
+      const recordIterator = require(&apos;./recordterator&apos;)
+      /**
+       * @returns {AsyncIterator&lt;WARCRecord&gt;}
+       */
+      this[Symbol.asyncIterator] = () =&gt; {
+        return recordIterator(
+          fs.createReadStream(this._wp).pipe(zlib.createGunzip())
+        )
+      }
+    }
+  }
+
+  /**
+   * @desc Begin parsing the WARC.gz file. Once the start method has been called the parser will begin emitting
+   * @emits {record} emitted when the parser has parsed a full record, the argument supplied to the listener will be the parsed record
+   * @emits {done} emitted when the WARC.gz file has been completely parsed, the argument supplied to the listener will be last record
+   * @emits {error} emitted if an exception occurs, the argument supplied to the listener will be the error that occurred.
+   * @return {boolean} indication if the parser has begun or is currently parsing a WARC.gz file
+   * - true: indicates the parser has begun parsing the WARC.gz file true
+   * - false: indicated the parser is currently parsing a WARC.gz file
+   * @throws {Error} if the path to the WARC.gz file is null or undefined or another error occurred
+   */
+  start () {
+    let start = false
+    if (!this._parsing) {
+      if (this._wp == null) {
+        throw new Error(&apos;The path to the WARC file is null/undefined&apos;)
+      }
+      this._parsing = true
+      start = true
+      fs
+        .createReadStream(untildify(this._wp))
+        .pipe(zlib.createGunzip())
+        .pipe(new WARCStreamTransform())
+        .on(&apos;data&apos;, this._onRecord)
+        .on(&apos;error&apos;, this._onError)
+        .on(&apos;end&apos;, this._onEnd)
+    }
+    return start
+  }
+
+  /**
+   * @desc Callback for the read stream data event
+   * @param {WARCRecord} record
+   * @private
+   */
+  _onRecord (record) {
+    this.emit(&apos;record&apos;, record)
+  }
+
+  /**
+   * @desc Callback for the read stream error event
+   * @param {Error} error
+   * @private
+   */
+  _onError (error) {
+    this.emit(&apos;error&apos;, error)
+  }
+
+  /**
+   * @desc Callback for the read stream end event
+   * @private
+   */
+  _onEnd () {
+    this._parsing = false
+    this.emit(&apos;done&apos;)
+  }
+
+  /**
+   * @desc Alias for {@link start} except that you can supply the path to the WARC.gz file to be parsed
+   * if one was not supplied via the constructor or to parse another WARC.gz file. If the path to WARC.gz file
+   * to be parsed was supplied via the constructor and you supply a different path to this method.
+   * It will override the one supplied via the constructor
+   * @param {?string} [wp] - path to the WARC file to be parsed
+   * @return {boolean} indication if the parser has begun or is currently parsing a WARC.gz file
+   * @throws {Error} if the path to the WARC.gz file is null or undefined or another error occurred
+   */
+  parseWARC (wp) {
+    if (!this._parsing) {
+      this._wp = wp || this._wp
+    }
+    return this.start()
   }
 }
 
-iterateRecords(
-  fs.createReadStream(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;).pipe(zlib.createGunzip())
-).then(() =&gt; {
-  console.log(&apos;done&apos;)
-})</code>
+/**
+ * @type {WARCGzParser}
+ */
+module.exports = WARCGzParser
 </code></pre>
-<p>Or using one of the parsers</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">for await (const record of new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
-    console.log(record)
-}</code>
-</code></pre>
-<h3 id="using-stream-transform">Using Stream Transform</h3><pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const { WARCStreamTransform } = require(&apos;node-warc&apos;)
 
-fs
-  .createReadStream(&apos;someWARC.warc&apos;)
-  .pipe(new WARCStreamTransform())
-  .on(&apos;data&apos;, record =&gt; {
-    console.log(record)
-  })</code>
-</code></pre>
-<h3 id="both--code--warc--code--and--code--warc-gz--code-">Both <code>.warc</code> and <code>.warc.gz</code></h3><pre><code class="lang-js"><code class="source-code prettyprint">const { AutoWARCParser } = require(&apos;node-warc&apos;)
-
-const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-gzip--39-d-warc-files">Only gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-non-gzip--39-d-warc-files">Only non gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCParser(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
-</ul>
-</div>
 </div>
 
 <footer class="footer">

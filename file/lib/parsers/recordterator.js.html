@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | node-warc</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/parsers/recordterator.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -66,71 +66,27 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
-<p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
-<p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
-<h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const zlib = require(&apos;zlib&apos;)
-// require only available if async iteration on readable streams is available
-const recordIterator = require(&apos;node-warc/recordterator&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/parsers/recordterator.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+const WARCStreamTransform = require(&apos;./warcStreamTransform&apos;)
 
-async function iterateRecords (warcStream) {
-  for await (const record of recordIterator(warcStream)) {
-    console.log(record)
+/**
+ * @desc Creates async iterator that yields {@link WARCRecord}s given a readable stream of a WARC file
+ * @param {ReadStream|Gunzip} warcStream
+ * @returns {AsyncIterator&lt;WARCRecord&gt;}
+ */
+module.exports = async function * recordIterator (warcStream) {
+  const recordStream = warcStream.pipe(new WARCStreamTransform())
+  const recordIterator = recordStream[Symbol.asyncIterator]()
+  let nextRecord
+  while (true) {
+    nextRecord = await recordIterator.next()
+    if (nextRecord.done) break
+    yield nextRecord.value
   }
 }
+</code></pre>
 
-iterateRecords(
-  fs.createReadStream(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;).pipe(zlib.createGunzip())
-).then(() =&gt; {
-  console.log(&apos;done&apos;)
-})</code>
-</code></pre>
-<p>Or using one of the parsers</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">for await (const record of new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
-    console.log(record)
-}</code>
-</code></pre>
-<h3 id="using-stream-transform">Using Stream Transform</h3><pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const { WARCStreamTransform } = require(&apos;node-warc&apos;)
-
-fs
-  .createReadStream(&apos;someWARC.warc&apos;)
-  .pipe(new WARCStreamTransform())
-  .on(&apos;data&apos;, record =&gt; {
-    console.log(record)
-  })</code>
-</code></pre>
-<h3 id="both--code--warc--code--and--code--warc-gz--code-">Both <code>.warc</code> and <code>.warc.gz</code></h3><pre><code class="lang-js"><code class="source-code prettyprint">const { AutoWARCParser } = require(&apos;node-warc&apos;)
-
-const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-gzip--39-d-warc-files">Only gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-non-gzip--39-d-warc-files">Only non gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCParser(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
-</ul>
-</div>
 </div>
 
 <footer class="footer">

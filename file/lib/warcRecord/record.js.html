@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | node-warc</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/warcRecord/record.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -66,71 +66,259 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
-<p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
-<p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
-<h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const zlib = require(&apos;zlib&apos;)
-// require only available if async iteration on readable streams is available
-const recordIterator = require(&apos;node-warc/recordterator&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/warcRecord/record.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+const ContentParser = require(&apos;./warcContentParsers&apos;)
 
-async function iterateRecords (warcStream) {
-  for await (const record of recordIterator(warcStream)) {
-    console.log(record)
+/**
+ * @type {{warcinfo: string, metadata: string, request: string, response: string, revisit: string, resource: string, conversion: string, unknown: string, continuation: string}}
+ */
+const WARCTypes = {
+  warcinfo: &apos;warcinfo&apos;,
+  metadata: &apos;metadata&apos;,
+  request: &apos;request&apos;,
+  response: &apos;response&apos;,
+  revisit: &apos;revisit&apos;,
+  resource: &apos;resource&apos;,
+  conversion: &apos;conversion&apos;,
+  unknown: &apos;unknown&apos;,
+  continuation: &apos;continuation&apos;
+}
+
+/**
+ * @desc WARC record class. The WARC named fields are properties on this object
+ */
+class WARCRecord {
+  /**
+   * @desc Create a new WARCRecord
+   * @param {{header: Buffer[], c1: Buffer[], c2: Buffer[]}} warcParts - The parts of a warc record
+   */
+  constructor (warcParts) {
+    /**
+     * @desc An object containing the parsed WARC header
+     * @type {Object}
+     */
+    this.warcHeader = ContentParser.parseWarcRecordHeader(warcParts.header)
+
+    /**
+     * @desc An object containing the parsed request or response records HTTP information
+     * @type {?RequestHTTP|?ResponseHTTP}
+     */
+    this.httpInfo = null
+
+    /**
+     * @desc The content of the record.
+     * @type {Buffer}
+     */
+    this.content = null
+
+    const wt = this.warcType
+    switch (wt) {
+      case WARCTypes.request:
+      case WARCTypes.response:
+        this.httpInfo = ContentParser.parseHTTPPortion(
+          warcParts.c1,
+          wt === WARCTypes.request
+        )
+        this.content = Buffer.concat(warcParts.c2 || [])
+        break
+      case WARCTypes.revisit:
+        this.httpInfo = ContentParser.parseResHTTP(warcParts.c1)
+        break
+      default:
+        this.content = Buffer.concat(warcParts.c1 || [])
+        break
+    }
+  }
+
+  /**
+   * @desc Determine if this warc record header has the supplied WARC named field.
+   * If the supplied header key does not start with WARC then this it will be added.
+   * @example
+   *  // both ways are equivalent to determine if the record has the WARC-Type field
+   *  record.hasWARCHeader(&apos;WARC-Type&apos;)
+   *  record.hasWARCHeader(&apos;Type&apos;)
+   * @param {!string} headerKey - The WARC header key (named field)
+   * @return {boolean}
+   */
+  hasWARCHeader (headerKey) {
+    if (!headerKey.startsWith(&apos;WARC&apos;)) {
+      headerKey = `WARC-${headerKey}`
+    }
+    return this.warcHeader[headerKey] != null
+  }
+
+  /**
+   * @desc Retrieve the value of this records header field.
+   * If the supplied header key does not start with WARC then this it will be added.
+   * @example
+   *  // both ways are equivalent to retrieve WARC-Type field
+   *  record.getWARCHeader(&apos;WARC-Type&apos;)
+   *  record.getWARCHeader(&apos;Type&apos;)
+   * @param {!string} headerKey - The WARC header key (named field)
+   * @return {?string}
+   */
+  getWARCHeader (headerKey) {
+    if (!headerKey.startsWith(&apos;WARC&apos;)) {
+      headerKey = `WARC-${headerKey}`
+    }
+    return this.warcHeader[headerKey]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcType () {
+    return this.warcHeader[&apos;WARC-Type&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcRecordID () {
+    return this.warcHeader[&apos;WARC-Record-ID&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcDate () {
+    return this.warcHeader[&apos;WARC-Date&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcContentLength () {
+    return this.warcHeader[&apos;Content-Length&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcContentType () {
+    return this.warcHeader[&apos;Content-Type&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcConcurrentTo () {
+    return this.warcHeader[&apos;WARC-Concurrent-To&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcBlockDigest () {
+    return this.warcHeader[&apos;WARC-Block-Digest&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcPayloadDigest () {
+    return this.warcHeader[&apos;WARC-Payload-Digest&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcIPAddress () {
+    return this.warcHeader[&apos;WARC-IP-Address&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcRefersTo () {
+    return this.warcHeader[&apos;WARC-Refers-To&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcRefersToTargetURI () {
+    return this.warcHeader[&apos;WARC-Refers-To-Target-URI&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcRefersToDate () {
+    return this.warcHeader[&apos;WARC-Refers-To-Date&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcTargetURI () {
+    return this.warcHeader[&apos;WARC-Target-URI&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcTruncated () {
+    return this.warcHeader[&apos;WARC-Truncated&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcWarcinfoID () {
+    return this.warcHeader[&apos;WARC-Warcinfo-ID&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcFilename () {
+    return this.warcHeader[&apos;WARC-Filename&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcProfile () {
+    return this.warcHeader[&apos;WARC-Profile&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcIdentifiedPayloadType () {
+    return this.warcHeader[&apos;WARC-Identified-Payload-Type&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcSegmentOriginID () {
+    return this.warcHeader[&apos;WARC-Segment-Origin-ID&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcSegmentNumber () {
+    return this.warcHeader[&apos;WARC-Segment-Number&apos;]
+  }
+
+  /**
+   * @return {?string}
+   */
+  get warcSegmentTotalLength () {
+    return this.warcHeader[&apos;WARC-Segment-Total-Length&apos;]
   }
 }
 
-iterateRecords(
-  fs.createReadStream(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;).pipe(zlib.createGunzip())
-).then(() =&gt; {
-  console.log(&apos;done&apos;)
-})</code>
+/**
+ * @type {WARCRecord}
+ */
+module.exports = WARCRecord
 </code></pre>
-<p>Or using one of the parsers</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">for await (const record of new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)) {
-    console.log(record)
-}</code>
-</code></pre>
-<h3 id="using-stream-transform">Using Stream Transform</h3><pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
-const { WARCStreamTransform } = require(&apos;node-warc&apos;)
 
-fs
-  .createReadStream(&apos;someWARC.warc&apos;)
-  .pipe(new WARCStreamTransform())
-  .on(&apos;data&apos;, record =&gt; {
-    console.log(record)
-  })</code>
-</code></pre>
-<h3 id="both--code--warc--code--and--code--warc-gz--code-">Both <code>.warc</code> and <code>.warc.gz</code></h3><pre><code class="lang-js"><code class="source-code prettyprint">const { AutoWARCParser } = require(&apos;node-warc&apos;)
-
-const parser = new AutoWARCParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-gzip--39-d-warc-files">Only gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCGzParser(&apos;&lt;path-to-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h3 id="only-non-gzip--39-d-warc-files">Only non gzip&apos;d warc files</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { WARCGzParser } = require(&apos;node-warc&apos;)
-
-const parser = new WARCParser(&apos;&lt;path-to-gzipd-warcfile&gt;&apos;)
-parser.on(&apos;record&apos;, record =&gt; { console.log(record) })
-parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
-parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
-parser.start()</code>
-</code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
-</ul>
-</div>
 </div>
 
 <footer class="footer">
