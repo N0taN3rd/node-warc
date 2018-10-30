@@ -109,7 +109,7 @@ export class WARCRecord {
 
 export class RecordBuilder {
     buildRecord(): WARCRecord | null;
-    consumeLine(): WARCRecord | null;
+    consumeLine(line: Buffer): WARCRecord | null;
 }
 
 export class WARCWriterBase extends EventEmitter {
