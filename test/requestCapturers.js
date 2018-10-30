@@ -74,11 +74,6 @@ test('RemoteChromeCapturer should set up correctly when a navMan is not supplied
     network.rr,
     'the chrome capturer should set the responseReceived callback of the network'
   )
-  chromeRC.withNavigationManager(network, navMan)
-  t.truthy(
-    chromeRC._navMan,
-    'the navigation manager should be defined when supplied using withNavigationManager'
-  )
   t.is(
     chromeRC.loadingFinished,
     network.lfin,
@@ -250,7 +245,6 @@ test('RemoteChromeCapturer when a navMan is supplied via the constructor the nav
 test('RemoteChromeCapturer when a navMan is supplied via withNavigationManager the navMan reqStarted and reqFinished methods should be called', t => {
   const { context: { network, navMan } } = t
   const chromeRC = new RemoteChromeCapturer(network)
-  chromeRC.withNavigationManager(network, navMan)
   network.go()
   t.is(
     chromeRC._requests.size,
@@ -281,7 +275,6 @@ test('RemoteChromeCapturer when a navMan is supplied via the constructor and cap
 test('RemoteChromeCapturer when a navMan is supplied via withNavigationManager and capture is false the navMan reqStarted and reqFinished methods should not be called', t => {
   const { context: { network, navMan } } = t
   const chromeRC = new RemoteChromeCapturer(network)
-  chromeRC.withNavigationManager(network, navMan)
   chromeRC.stopCapturing()
   network.go()
   t.is(navMan.calls.reqStarted, 0, 'NavMan reqStarted should not have been called')
@@ -370,20 +363,6 @@ test('ElectronCapturer should set up correctly when a navMan is supplied', t => 
   const { context: { navMan } } = t
   const electronRC = new ElectronCapturer(navMan)
   t.truthy(electronRC._navMan, 'the navigation manager should be defined when supplied')
-})
-
-test('ElectronCapturer should set up correctly when a navMan is not supplied to the constructor but added with withNavigationManager', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer()
-  t.falsy(
-    electronRC._navMan,
-    'the navigation manager should be undefined if not supplied'
-  )
-  electronRC.withNavigationManager(network, navMan)
-  t.truthy(
-    electronRC._navMan,
-    'the navigation manager should be defined when supplied using withNavigationManager'
-  )
 })
 
 test('ElectronCapturer should set and unset the capture flag', t => {
