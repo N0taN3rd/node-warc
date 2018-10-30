@@ -35,7 +35,8 @@
     "doc": "esdoc",
     "test": "ava --verbose",
     "test-report": "nyc ava --verbose",
-    "report-html": "nyc report --reporter=html"
+    "report-html": "nyc report --reporter=html",
+    "publish-docs": "gh-pages -d docs"
   },
   "eslintConfig": {
     "env": {
@@ -44,7 +45,6 @@
   },
   "dependencies": {
     "bluebird": "^3.5.2",
-    "chrome-remote-interface": "^0.26.1",
     "eventemitter3": "^3.1.0",
     "fs-extra": "^7.0.0",
     "lodash": "^4.17.11",
@@ -55,6 +55,7 @@
   "devDependencies": {
     "@types/fs-extra": "^5.0.4",
     "@types/node": "^10.12.0",
+    "@types/puppeteer": "^1.9.1",
     "ava": "^1.0.0-beta.8",
     "chalk": "^2.4.1",
     "esdoc": "^1.1.0",

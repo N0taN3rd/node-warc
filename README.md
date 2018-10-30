@@ -16,8 +16,8 @@ Full documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.
 ```js
 const fs = require('fs')
 const zlib = require('zlib')
-// require only available if async iteration on readable streams is available
-const recordIterator = require('node-warc/recordterator')
+// recordIterator only exported if async iteration on readable streams is available
+const { recordIterator } = require('node-warc')
 
 async function iterateRecords (warcStream) {
   for await (const record of recordIterator(warcStream)) {
@@ -45,7 +45,7 @@ const fs = require('fs')
 const { WARCStreamTransform } = require('node-warc')
 
 fs
-  .createReadStream('someWARC.warc')
+  .createReadStream('<path-to-warcfile>')
   .pipe(new WARCStreamTransform())
   .on('data', record => {
     console.log(record)
