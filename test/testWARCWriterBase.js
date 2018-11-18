@@ -3,11 +3,15 @@ import uuid from 'uuid/v4'
 import fs from 'fs-extra'
 import { fakeResponse } from './helpers/filePaths'
 import restore from './helpers/warcWriterBaseMonkeyPatches'
+import {
+  crlfRe,
+  dateRe,
+  parseWrittenRequestRecord,
+  parseWrittenResponseRecord,
+  parseWARCHeader,
+  checkRecordId
+} from './helpers/warcHelpers'
 import WARCWriterBase from '../lib/writers/warcWriterBase'
-
-const crlfRe = /\r\n/g
-const idRe = /<urn:uuid:[0-9a-z]+-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+>/
-const dateRe = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/
 
 const fakeReqResHttpData = {
   targetURI: 'http://stringjs.com/',
@@ -39,84 +43,124 @@ const fakeReqResHttpData = {
   }
 }
 
-function parseWrittenInfoMdataRecord (bufferString) {
-  const parts = bufferString.split('\r\n')
-  let i = 0
-  const parsed = {
-    WARC: parts.shift().split('/')[1]
-  }
-  for (; i < parts.length; ++i) {
-    let part = parts[i]
-    if (part) {
-      let sep = part.indexOf(': ')
-      parsed[part.substring(0, sep)] = part.substring(sep + 2)
-    }
-  }
-  return parsed
-}
-
-function parseWrittenRequestRecord (bufferString) {
-  const parts = bufferString.split('\r\n')
-  const parsed = {
-    WARC: parts.shift().split('/')[1]
-  }
-  let part = parts.shift()
-  while (part) {
-    let sep = part.indexOf(': ')
-    parsed[part.substring(0, sep)] = part.substring(sep + 2)
-    part = parts.shift()
-  }
-  const http = []
-  part = parts.shift()
-  while (part) {
-    http.push(`${part}\r\n`)
-    part = parts.shift()
-  }
-  parsed.http = http.join('')
-  return parsed
-}
-
-function parseWrittenResponseRecord (bufferString) {
-  const parts = bufferString.split('\r\n')
-  const parsed = {
-    WARC: parts.shift().split('/')[1]
-  }
-  while (true) {
-    let part = parts.shift()
-    if (part) {
-      let sep = part.indexOf(': ')
-      parsed[part.substring(0, sep)] = part.substring(sep + 2)
-    } else {
-      break
-    }
-  }
-  const http = []
-  let part = parts.shift()
-  while (part) {
-    http.push(`${part}\r\n`)
-    part = parts.shift()
-  }
-  parsed.http = http.join('')
-  const body = []
-  part = parts.shift()
-  while (part) {
-    body.push(`${part}`)
-    part = parts.shift()
-  }
-  parsed.body = body.join('')
-  return parsed
-}
-
 test.after.always(t => {
   restore()
 })
 
 test.beforeEach(t => {
+  /**
+   * @type {WARCWriterBase}
+   */
   t.context.writer = new WARCWriterBase()
 })
 
 test.afterEach(t => {
+  t.context.writer.removeAllListeners()
+  if (t.context.writer._warcOutStream != null) {
+    t.context.writer._warcOutStream.clearAll()
+  }
   t.context.writer = null
+})
+
+test('WARCWriterBase should attach finish and error handlers to the write stream', t => {
+  const { writer } = t.context
+  writer.initWARC('dummy.warc')
+  const checkingWOS = writer._warcOutStream
+  t.is(
+    checkingWOS.listenerCount('finish'),
+    1,
+    'The finish event for the write stream should have 1 handler'
+  )
+  t.truthy(
+    checkingWOS.passedOnFinish,
+    'The finish event handler should have been set on the write stream'
+  )
+  t.is(
+    checkingWOS.passedOnFinish,
+    writer._onFinish,
+    'The finish event handler set on the write stream should be WARCWriterBase._onFinish'
+  )
+  t.is(
+    checkingWOS.listenerCount('error'),
+    1,
+    'The error event for the write stream should have 1 handler'
+  )
+  t.truthy(
+    checkingWOS.passedOnError,
+    'The error event handler should have been set on the write stream'
+  )
+  t.is(
+    checkingWOS.passedOnError,
+    writer._onError,
+    'The error event handler set on the write stream should be WARCWriterBase._onError'
+  )
+})
+
+test('WARCWriterBase should emit the error event if the write stream emits an error', async t => {
+  const { writer } = t.context
+  writer.initWARC('dummy.warc')
+  const checkingWOS = writer._warcOutStream
+  const ep = new Promise(resolve => {
+    writer.once('error', resolve)
+  })
+  checkingWOS.emitError('Hey some error happened')
+  const emittedError = await ep
+  t.is(emittedError.message, 'Hey some error happened')
+})
+
+test('WARCWriterBase should clean up after itself once the end method is called', async t => {
+  const { writer } = t.context
+  writer.initWARC('dummy.warc')
+  const checkingWOS = writer._warcOutStream
+  writer.end()
+  t.true(
+    checkingWOS.endCalled,
+    'Once the end method of WARCWriterBase is called the end method of the write stream should be called'
+  )
+  const lastError = await new Promise((resolve, reject) => {
+    const to = setTimeout(() => reject(new Error('timeout')), 5000)
+    writer.once('finished', le => {
+      clearTimeout(to)
+      resolve(le)
+    })
+    checkingWOS.emitFinish()
+  })
+  t.falsy(
+    lastError,
+    'When no error occurs during the warc writting process, WARCWriterBase should not emit an error with the finish event'
+  )
+  t.true(
+    checkingWOS.destroyCalled,
+    'Once warc writting has ended the write stream should be destroyed'
+  )
+  t.true(
+    checkingWOS.removeAllListenersCalled,
+    'Once warc writting has ended the write stream should have all registered listeners removed'
+  )
+})
+
+test('WARCWriterBase should wait for the drain event if the write function returns false', async t => {
+  const { writer } = t.context
+  writer.initWARC('dummy.warc')
+  const checkingWOS = writer._warcOutStream
+  checkingWOS.enableDrain()
+  await Promise.all([
+    writer.writeRecordChunks(Buffer.from([])),
+    new Promise(resolve => {
+      checkingWOS.emitDrain()
+      resolve()
+    })
+  ])
+  t.is(
+    checkingWOS.onceListeners.length,
+    1,
+    'A once listener should have been added'
+  )
+  t.is(
+    checkingWOS.onceListeners[0].event,
+    'drain',
+    'A once listener should have been attacked to the drain event'
+  )
 })
 
 test('initWARC should only use the default options when no options or env variables are used', t => {
@@ -235,11 +279,11 @@ test('writeWarcInfoRecord should write a correct info record', async t => {
     bufferString.endsWith('\r\n\r\n'),
     'The written record should end with 2 CRLFs'
   )
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'warcinfo', 'The warc type should be info')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -296,11 +340,11 @@ test('writeWarcRawInfoRecord should write a correct info record', async t => {
     bufferString.endsWith('\r\n\r\n'),
     'The written record should end with 2 CRLFs'
   )
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'warcinfo', 'The warc type should be info')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -339,7 +383,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when no w
   )
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be metadata')
   t.true(
@@ -352,7 +396,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when no w
     'something is wrong with the headers field content-length'
   )
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.is(
@@ -389,11 +433,11 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when a wa
   )
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be info')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -442,7 +486,7 @@ test('writeWarcMetadata should write a correct metadata record when no warc info
   )
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be metadata')
   t.true(
@@ -455,7 +499,7 @@ test('writeWarcMetadata should write a correct metadata record when no warc info
     'something is wrong with the headers field content-length'
   )
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.is(
@@ -492,11 +536,11 @@ test('writeWarcMetadata should write a correct metadata record when a warc info 
   )
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
-  const parsed = parseWrittenInfoMdataRecord(bufferString)
+  const parsed = parseWARCHeader(bufferString)
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be info')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -564,7 +608,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -611,7 +655,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
-    idRe.test(parsed2['WARC-Record-ID']),
+    checkRecordId(parsed2['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -678,7 +722,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -701,7 +745,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     'WARC-Target-URI for the request record should match the supplied target URI'
   )
   t.true(
-    idRe.test(parsed['WARC-Warcinfo-ID']),
+    checkRecordId(parsed['WARC-Warcinfo-ID']),
     'something is wrong with the requests WARC-Warcinfo-ID'
   )
   t.is(
@@ -737,13 +781,13 @@ test('writeRequestResponseRecords should write correct request and response reco
     'the request record should be concurrent to the response records id'
   )
   t.true(
-    idRe.test(parsed['WARC-Concurrent-To']),
+    checkRecordId(parsed['WARC-Concurrent-To']),
     'something is wrong with the requests WARC-Concurrent-To'
   )
   t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
-    idRe.test(parsed2['WARC-Record-ID']),
+    checkRecordId(parsed2['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -776,7 +820,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     'The WARC-Warcinfo-ID field of the response record should be equal to the warc info records id if one was previously written exists'
   )
   t.true(
-    idRe.test(parsed2['WARC-Warcinfo-ID']),
+    checkRecordId(parsed2['WARC-Warcinfo-ID']),
     'something is wrong with the responses WARC-Warcinfo-ID'
   )
   t.is(parsed2.http, fakeReqResHttpData.resData.headers)
@@ -821,7 +865,7 @@ test('writeRequestRecord should write correct request when no warc info record w
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -886,7 +930,7 @@ test('writeRequestRecord should write correct request when a warc info record wa
   t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
-    idRe.test(parsed['WARC-Record-ID']),
+    checkRecordId(parsed['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -955,7 +999,7 @@ test('writeResponseRecord should write correct response when no warc info record
   t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
-    idRe.test(parsed2['WARC-Record-ID']),
+    checkRecordId(parsed2['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -1022,7 +1066,7 @@ test('writeResponseRecord should write correct response when a warc info record 
   t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
-    idRe.test(parsed2['WARC-Record-ID']),
+    checkRecordId(parsed2['WARC-Record-ID']),
     'something is wrong with the warc record id'
   )
   t.true(
@@ -1050,7 +1094,7 @@ test('writeResponseRecord should write correct response when a warc info record 
     'WARC-Target-URI for the request record should match the supplied target URI'
   )
   t.true(
-    idRe.test(parsed2['WARC-Warcinfo-ID']),
+    checkRecordId(parsed2['WARC-Warcinfo-ID']),
     'something is wrong with the responses WARC-Warcinfo-ID'
   )
   t.is(
@@ -1077,5 +1121,21 @@ test('writeRecordBlock should just write the buffer', async t => {
       b => b.buffer.length === 0 && b.encoding === 'utf8'
     ),
     'No additional content should have been added'
+  )
+})
+
+test('writeRecordBlock should just gzip the buffer if gzip is enabled', async t => {
+  const { writer } = t.context
+  writer.initWARC('dummy.warc', { gzip: true })
+  const ungzipped = Buffer.from('Please gzip me', 'utf8')
+  await writer.writeRecordBlock(ungzipped)
+  const checkingWOS = writer._warcOutStream
+  const proxiedZlib = require('zlib')
+  t.is(proxiedZlib.gzipSyncCallCount, 1)
+  const { buffer } = checkingWOS.getAWrite()
+  const ungzWrittenBuffer = proxiedZlib.gunzipSync(buffer)
+  t.true(
+    ungzWrittenBuffer.equals(ungzipped),
+    'When ungzipped the gzipped buffers contents should equal the original buffers contents'
   )
 })

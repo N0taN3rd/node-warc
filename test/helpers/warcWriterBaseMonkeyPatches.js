@@ -1,65 +1,7 @@
 import Module from 'module'
 import zlib from 'zlib'
 import fs from 'fs-extra'
-
-export class CheckableWriteStream {
-  constructor (path, options) {
-    this.path = path
-    this.options = options
-    this.passedOnFinish = null
-    this.passedOnError = null
-    this.endCalled = false
-    this.destroyCalled = false
-    this.writeSequence = []
-    this.drain = false
-  }
-
-  on (event, handler) {
-    switch (event) {
-      case 'finish':
-        this.passedOnFinish = handler
-        break
-      case 'error':
-        this.passedOnError = handler
-        break
-      default:
-        console.log(event, handler)
-        break
-    }
-  }
-
-  getAWrite () {
-    return this.writeSequence.shift()
-  }
-
-  numWrites () {
-    return this.writeSequence.length
-  }
-
-  clearWrites () {
-    this.writeSequence = []
-  }
-
-  once (event, handler) {
-    console.log(event, handler)
-  }
-
-  write (buffer, encoding) {
-    // console.log(buffer, encoding)
-    this.writeSequence.push({ buffer, encoding })
-    return !this.drain
-  }
-
-  destroy () {
-    this.destroyCalled = true
-  }
-
-  end () {
-    this.endCalled = true
-  }
-
-  removeAllListeners () {}
-}
+import { CheckableWriteStream } from './mocks'
 
 function createCheckableWriteStream (path, options) {
   return new CheckableWriteStream(path, options)
