@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.4",
-    "@types/node": "^10.12.9",
+    "@types/node": "^10.12.10",
     "@types/puppeteer": "^1.10.0",
     "ava": "^1.0.0-beta.8",
     "chalk": "^2.4.1",
