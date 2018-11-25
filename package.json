@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -17,13 +17,13 @@
   },
   "keywords": [
     "warc",
-    "warc.gz",
-    "warc-parsing",
-    "web-archiving",
-    "web archiving Electron",
-    "web archiving Chrome",
+    "warc parsing",
+    "warc creation",
+    "web archiving",
     "Electron",
-    "Chrome"
+    "Chrome",
+    "puppeteer",
+    "request"
   ],
   "engines": {
     "node": ">=8.0.0"
@@ -44,7 +44,6 @@
     }
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
     "eventemitter3": "^3.1.0",
     "fs-extra": "^7.0.1",
     "lodash": "^4.17.11",

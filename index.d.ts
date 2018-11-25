@@ -315,3 +315,7 @@ export class RemoteChromeWARCGenerator extends WARCWriterBase {
     generateWARC (capturer: RemoteChromeRequestCapturer, network: object, genOpts: WARCGenOpts): Promise<NullableEr>;
     generateWarcEntry (nreq: CDPRequestInfo, network: object): Promise<void>;
 }
+
+export class RequestLibWARCGenerator extends WARCWriterBase {
+    generateWarcEntry (resp: object): Promise<void>;
+}
