@@ -122,5 +122,8 @@ typings/
 .next
 
 test
+docs
+misc
+.travis.yml
 .esdoc.json
 .gitignore

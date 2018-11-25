@@ -1,5 +1,5 @@
 # node-warc
-Parse Web Archive (WARC) files or create WARC files using [Electron](https://electron.atom.io/), [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface), or [Puppeteer](https://github.com/GoogleChrome/puppeteer)
+Parse Web Archive (WARC) files or create WARC files using [Electron](https://electron.atom.io/), [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface), [Puppeteer](https://github.com/GoogleChrome/puppeteer), or [request](https://github.com/request/request)
 
 Run `npm install node-warc` or `yarn add node-warc` to ge started
 
@@ -105,7 +105,8 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
   ])
   const cap = new RemoteChromeCapturer(client.Network)
   await client.Page.navigate({ url: 'http://example.com' });
-  // wait for some stopping condition, eg. network idle
+  // actual code should wait for a better stopping condition, eg. network idle
+  await client.Page.loadEventFired()
   const warcGen = new RemoteChromeWARCGenerator()
   await warcGen.generateWARC(cap, client.Network, {
     warcOpts: {
