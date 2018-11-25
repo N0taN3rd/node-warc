@@ -75,7 +75,7 @@
 <p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
 <p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
 <h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
-<h2 id="example-parsing-usage">Example parsing usage</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
+<h2 id="parsing">Parsing</h2><h3 id="using-async-iteration">Using async iteration</h3><p><strong>Requires node 10 or greater</strong></p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const fs = require(&apos;fs&apos;)
 const zlib = require(&apos;zlib&apos;)
 // recordIterator only exported if async iteration on readable streams is available
@@ -132,9 +132,59 @@ parser.on(&apos;done&apos;, () =&gt; { console.log(&apos;finished&apos;) })
 parser.on(&apos;error&apos;, error =&gt; { console.error(error) })
 parser.start()</code>
 </code></pre>
-<h2 id="environment">Environment</h2><ul>
-<li><code>NODEWARC_WRITE_GZIPPED</code> - writes gzipped records to WARC outputs.</li>
+<h2 id="warc-creation">WARC Creation</h2><h3 id="environment">Environment</h3><ul>
+<li><code>NODEWARC_WRITE_GZIPPED</code> - enable writing gzipped records to WARC outputs.</li>
 </ul>
+<h3 id="examples">Examples</h3><h4 id="using-chrome-remote-interface">Using chrome-remote-interface</h4><pre><code class="lang-js"><code class="source-code prettyprint">const CRI = require(&apos;chrome-remote-interface&apos;)
+const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require(&apos;node-warc&apos;)
+
+;(async () =&gt; {
+  const client = await CRI()
+  await Promise.all([
+    client.Page.enable(),
+    client.Network.enable(),
+  ])
+  const cap = new RemoteChromeCapturer(client.Network)
+  await client.Page.navigate({ url: &apos;http://example.com&apos; });
+  // wait for some stopping condition, eg. network idle
+  const warcGen = new RemoteChromeWARCGenerator()
+  await warcGen.generateWARC(cap, client.Network, {
+    warcOpts: {
+      warcPath: &apos;myWARC.warc&apos;
+    },
+    winfo: {
+      warcInfoDescription: &apos;I created a warc!&apos;,
+      isPartOfV: &apos;My awesome pywb collection&apos;
+    }
+  })
+  await client.close()
+})()</code>
+</code></pre>
+<h4 id="using-puppeteer">Using puppeteer</h4><pre><code class="lang-js"><code class="source-code prettyprint">const puppeteer = require(&apos;puppeteer&apos;)
+const { PuppeteerWARCGenerator, PuppeteerCapturer } = require(&apos;node-warc&apos;)
+
+;(async () =&gt; {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  const cap = new PuppeteerCapturer(page)
+  await page.goto(&apos;http://example.com&apos;, { waitUntil: &apos;networkidle0&apos; })
+  const warcGen = new PuppeteerWARCGenerator()
+  await warcGen.generateWARC(cap, {
+    warcOpts: {
+      warcPath: &apos;myWARC.warc&apos;
+    },
+    winfo: {
+      warcInfoDescription: &apos;I created a warc!&apos;,
+      isPartOfV: &apos;My awesome pywb collection&apos;
+    }
+  })
+  await page.close()
+  await browser.close()
+})()</code>
+</code></pre>
+<h4 id="note">Note</h4><p>The generateWARC method used in the following examples is helper function for making 
+the WARC generation process simple. See its implementation for a full example 
+of WARC generation using node-warc</p>
 </div>
 </div>
 
