@@ -1,7 +1,7 @@
 {
-  "coverage": "95.6%",
-  "expectCount": 273,
-  "actualCount": 261,
+  "coverage": "95.72%",
+  "expectCount": 281,
+  "actualCount": 269,
   "files": {
     "lib/parsers/_canUseRecordIterator.js": {
       "expectCount": 1,
@@ -57,8 +57,8 @@
       "expectCount": 13,
       "actualCount": 11,
       "undocumentLines": [
-        27,
-        31
+        26,
+        30
       ]
     },
     "lib/requestCapturers/puppeteerCDP.js": {
@@ -103,11 +103,16 @@
       "undocumentLines": []
     },
     "lib/utils/headerSerializers.js": {
-      "expectCount": 3,
-      "actualCount": 3,
+      "expectCount": 4,
+      "actualCount": 4,
       "undocumentLines": []
     },
     "lib/utils/isEmptyPlainObject.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/url-helpers.js": {
       "expectCount": 1,
       "actualCount": 1,
       "undocumentLines": []
@@ -121,11 +126,9 @@
       ]
     },
     "lib/warcRecord/record.js": {
-      "expectCount": 29,
+      "expectCount": 28,
       "actualCount": 28,
-      "undocumentLines": [
-        22
-      ]
+      "undocumentLines": []
     },
     "lib/warcRecord/warcContentParsers.js": {
       "expectCount": 12,
@@ -157,6 +160,13 @@
       "actualCount": 3,
       "undocumentLines": []
     },
+    "lib/writers/requestLib.js": {
+      "expectCount": 6,
+      "actualCount": 5,
+      "undocumentLines": [
+        21
+      ]
+    },
     "lib/writers/warcFields.js": {
       "expectCount": 22,
       "actualCount": 20,
@@ -166,10 +176,10 @@
       ]
     },
     "lib/writers/warcWriterBase.js": {
-      "expectCount": 28,
-      "actualCount": 27,
+      "expectCount": 29,
+      "actualCount": 28,
       "undocumentLines": [
-        61
+        68
       ]
     }
   }

@@ -56,6 +56,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteer.js~PuppeteerWARCGenerator.html">PuppeteerWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteerCDP.js~PuppeteerCDPWARCGenerator.html">PuppeteerCDPWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
@@ -89,7 +90,7 @@ const recordSeparator = &apos;\r\n\r\n&apos;
 /**
  * @type {string}
  */
-const WARCV = &apos;1.1&apos;
+const WARCV = &apos;1.0&apos;
 
 /**
  * @type {string}
@@ -122,7 +123,7 @@ const WARCContentTypes = {
  * @return {string}
  */
 function recordId (uuid) {
-  return `WARC-Record-ID: &lt;urn:uuid:${uuid}&gt;\r\n`
+  return `WARC-Record-ID: &lt;urn:uuid:${uuid}&gt;${CRLF}`
 }
 
 /**
@@ -178,7 +179,7 @@ function warcContentType (contentType) {
  * @return {string}
  */
 function warcConcurrentTo (concurrentTo) {
-  return `WARC-Concurrent-To: ${concurrentTo}${CRLF}`
+  return `WARC-Concurrent-To: &lt;urn:uuid:${concurrentTo}&gt;${CRLF}`
 }
 
 /**
@@ -193,19 +194,19 @@ function warcWarcInfoId (wid) {
  *
  * @param {string} type
  * @param {Object} reqFields
- * @param {string} reqFields.id
+ * @param {string} reqFields.rid
  * @param {string} reqFields.date
  * @param {number} reqFields.len
- * @param {string} reqFields.targetURI
+ * @param {?string} [reqFields.targetURI]
  * @return {string}
  */
-function requiredHeaderFields (type, { id, date, len, targetURI }) {
+function requiredHeaderFields (type, { rid, date, len, targetURI }) {
   if (targetURI != null) {
-    return `${WARCSlashV}${warcType(type)}${recordId(id)}${warcDate(
+    return `${WARCSlashV}${warcType(type)}${recordId(rid)}${warcDate(
       date
     )}${warcTargetURI(targetURI)}${warcContentLength(len)}`
   }
-  return `${WARCSlashV}${warcType(type)}${recordId(id)}${warcDate(
+  return `${WARCSlashV}${warcType(type)}${recordId(rid)}${warcDate(
     date
   )}${warcContentLength(len)}`
 }
@@ -213,7 +214,8 @@ function requiredHeaderFields (type, { id, date, len, targetURI }) {
 /**
  * @typedef {Object} WARCInfoHeader
  * @property {string} date - The date value for WARC-Date
- * @property {string} fileName - The name of the warc file
+ * @property {?string} [fileName] - The name of the warc file
+ * @property {?string} [targetURI] - The target URI for the record
  * @property {string} rid - The id of the record
  * @property {number} len - The length of the records content
  */
@@ -279,13 +281,13 @@ function warcMetadataHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
     requiredHeaderFields(WARCTypes.metadata, {
       date: now,
       len,
-      id: rid,
+      rid,
       targetURI
     }),
     WARCContentTypes.warcFields
   ]
   if (concurrentTo != null) {
-    base.join(warcConcurrentTo(concurrentTo))
+    base.push(warcConcurrentTo(concurrentTo))
   }
   if (wid != null) {
     base.push(warcWarcInfoId(wid))
@@ -309,11 +311,11 @@ function warcMetadataHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
  */
 function warcRequestHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
   const base = [
-    requiredHeaderFields(WARCTypes.request, { date: now, len, id: rid, targetURI }),
+    requiredHeaderFields(WARCTypes.request, { date: now, len, rid, targetURI }),
     WARCContentTypes.httpRequest
   ]
   if (concurrentTo != null) {
-    base.join(warcConcurrentTo(concurrentTo))
+    base.push(warcConcurrentTo(concurrentTo))
   }
   if (wid != null) {
     base.push(warcWarcInfoId(wid))
@@ -336,7 +338,12 @@ function warcRequestHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
  */
 function warcResponseHeader ({ targetURI, now, rid, len, wid }) {
   const base = [
-    requiredHeaderFields(WARCTypes.response, { date: now, len, id: rid, targetURI }),
+    requiredHeaderFields(WARCTypes.response, {
+      date: now,
+      len,
+      rid,
+      targetURI
+    }),
     WARCContentTypes.httpResponse
   ]
   if (wid != null) {
@@ -346,6 +353,7 @@ function warcResponseHeader ({ targetURI, now, rid, len, wid }) {
 }
 
 module.exports = {
+  requiredHeaderFields,
   /**
    * @type {function(headerInfo: WARCInfoHeader): string}
    */
@@ -362,7 +370,10 @@ module.exports = {
   warcMetadataHeader,
   recordSeparator,
   CRLF,
-  CRLF2x
+  CRLF2x,
+  WARCTypes,
+  WARCV,
+  WARCContentTypes
 }
 </code></pre>
 

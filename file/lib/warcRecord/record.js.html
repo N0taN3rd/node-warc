@@ -56,6 +56,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteer.js~PuppeteerWARCGenerator.html">PuppeteerWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteerCDP.js~PuppeteerCDPWARCGenerator.html">PuppeteerCDPWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
@@ -73,21 +74,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">lib/warcRecord/record.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
 const ContentParser = require(&apos;./warcContentParsers&apos;)
-
-/**
- * @type {{warcinfo: string, metadata: string, request: string, response: string, revisit: string, resource: string, conversion: string, unknown: string, continuation: string}}
- */
-const WARCTypes = {
-  warcinfo: &apos;warcinfo&apos;,
-  metadata: &apos;metadata&apos;,
-  request: &apos;request&apos;,
-  response: &apos;response&apos;,
-  revisit: &apos;revisit&apos;,
-  resource: &apos;resource&apos;,
-  conversion: &apos;conversion&apos;,
-  unknown: &apos;unknown&apos;,
-  continuation: &apos;continuation&apos;
-}
+const { WARCTypes } = require(&apos;../writers/warcFields&apos;)
 
 /**
  * @desc WARC record class. The WARC named fields are properties on this object

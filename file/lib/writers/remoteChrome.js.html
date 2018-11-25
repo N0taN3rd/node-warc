@@ -56,6 +56,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteer.js~PuppeteerWARCGenerator.html">PuppeteerWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/puppeteerCDP.js~PuppeteerCDPWARCGenerator.html">PuppeteerCDPWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
@@ -90,9 +91,6 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
    * @return {Promise&lt;?Error&gt;} - A Promise that resolves when WARC generation is complete
    */
   async generateWARC (capturer, network, genOpts) {
-    const donePromise = new Promise(resolve =&gt; {
-      this.once(&apos;finished&apos;, resolve)
-    })
     const { warcOpts, winfo, metadata } = genOpts
     this.initWARC(warcOpts.warcPath, warcOpts)
     if (winfo != null) {
@@ -112,8 +110,10 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
         console.error(error)
       }
     }
-    this.end()
-    return donePromise
+    return new Promise(resolve =&gt; {
+      this.once(&apos;finished&apos;, resolve)
+      this.end()
+    })
   }
 
   /**
@@ -157,6 +157,12 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
           responseHeaders = responseHeaders.replace(
             replaceContentLen,
             `Content-Length: ${Buffer.byteLength(resData, &apos;utf8&apos;)}${CRLF}`
+          )
+        } else {
+          // indicate that this record has 0 content
+          responseHeaders = responseHeaders.replace(
+            replaceContentLen,
+            `Content-Length: 0${CRLF}`
           )
         }
       }
