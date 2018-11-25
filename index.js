@@ -42,6 +42,8 @@ module.exports = {
   RemoteChromeCapturer
 }
 
+module.exports.RequestLibWARCWriter = require('./lib/writers/requestLib')
+
 if (require('./lib/parsers/_canUseRecordIterator')) {
   /**
    * @type {function(ReadStream|Gunzip): AsyncIterator<WARCRecord>}
