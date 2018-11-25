@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/utils/electronGetResError.js | node-warc</title>
+  <title data-ice="title">lib/utils/electron.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -70,39 +70,57 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/utils/electronGetResError.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
- * @desc Electron debugger errors passed to the callback are plain objects not Errors
- * but contain information concerning the error.
- */
-class ElectronGetResError extends Error {
-  /**
-   * @param {Object} oError - the error supplied to the callback
-   * @param {string} rid - the request id of the request retrieval of the response body failed for
-   */
-  constructor (oError, rid) {
-    super(
-      oError.message ||
-        `An Error Occurred retrieving the response body for ${rid}`
-    )
+<div class="content" data-ice="content"><h1 data-ice="title">lib/utils/electron.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const isEmpty = require(&apos;lodash/isEmpty&apos;)
 
-    /**
-     * @desc the original error object supplied to the callback
-     * @type {Object}
-     */
-    this.oError = oError
-    /**
-     * @desc the request id of the request retrieval of the response body failed for
-     * @type {string}
-     */
-    this.rid = rid
-  }
+/**
+ * @desc Electron requires the use of the debugger to retrieve the requests response body
+ * @param {string} requestId - the request to fetch the response body for
+ * @param {Object} wcDebugger - the Electron debugger to use to get the response body
+ * @see https://electron.atom.io/docs/api/debugger/
+ * @return {Promise&lt;?Buffer&gt;} body - the response body as a node buffer
+ */
+function getResBody (requestId, wcDebugger) {
+  return new Promise((resolve) =&gt; {
+    wcDebugger.sendCommand(
+      &apos;Network.getResponseBody&apos;,
+      { requestId },
+      (error, body) =&gt; {
+        resolve(!isEmpty(error) ? null : body)
+      }
+    )
+  })
 }
 
 /**
- * @type {ElectronGetResError}
+ * @desc Electron requires the use of the debugger to retrieve the requests post data
+ * @param {string} requestId - the request to fetch the post data for
+ * @param {Object} wcDebugger - the Electron debugger to use to get the post data
+ * @see https://electron.atom.io/docs/api/debugger/
+ * @return {Promise&lt;?Buffer&gt;} body - the response body as a node buffer
  */
-module.exports = ElectronGetResError
+function getPostData (requestId, wcDebugger) {
+  return new Promise((resolve) =&gt; {
+    wcDebugger.sendCommand(
+      &apos;Network.getRequestPostData&apos;,
+      { requestId },
+      (error, body) =&gt; {
+        resolve(!isEmpty(error) ? null : body)
+      }
+    )
+  })
+}
+
+module.exports = {
+  /**
+   * @type {function(string, Object): Promise&lt;?Buffer&gt;}
+   */
+  getResBody,
+  /**
+   * @type {function(string, Object): Promise&lt;?Buffer&gt;}
+   */
+  getPostData
+}
 </code></pre>
 
 </div>

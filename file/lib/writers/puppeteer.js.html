@@ -62,6 +62,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -96,19 +100,52 @@ class PuppeteerWARCGenerator extends WARCWriterBase {
   }
 
   /**
+   * @desc
+   * @param {PuppeteerRequestCapturer} capturer - The Puppeteer request capturer that contains requests
+   * to be serialized to the WARC
+   * @param {WARCGenOpts} genOpts - Options for generating the WARC and optionally generating
+   * WARC info and metadata records
+   * @return {Promise&lt;?Error&gt;} - A Promise that resolves when WARC generation is complete
+   */
+  async generateWARC (capturer, genOpts) {
+    const donePromise = new Promise(resolve =&gt; {
+      this.once(&apos;finished&apos;, resolve)
+    })
+    const { warcOpts, winfo, metadata } = genOpts
+    this.initWARC(warcOpts.warcPath, warcOpts)
+    if (winfo != null) {
+      await this.writeWarcInfoRecord(
+        winfo.isPartOfV,
+        winfo.warcInfoDescription,
+        winfo.ua
+      )
+    }
+    if (metadata != null) {
+      await this.writeWarcMetadata(metadata.targetURI, metadata.content)
+    }
+    for (let request of capturer.iterateRequests()) {
+      try {
+        await this.generateWarcEntry(request)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    this.end()
+    return donePromise
+  }
+
+  /**
    * @desc Generate a WARC record
-   * @param {Request}  request
+   * @param {Request} request - A Puppeteer Request object
    * @return {Promise&lt;void&gt;}
    */
   async generateWarcEntry (request) {
-    let response = request.response()
+    if (request.url().indexOf(&apos;data:&apos;) === 0) return
+    const response = request.response()
     this._UP.href = request.url()
     let reqHTTP = `${request.method()} ${this._UP.pathname +
       this._UP.searchParams.toString() +
-      this._UP.hash} HTTP/1.1${CRLF}`
-    reqHTTP += stringifyRequestHeaders(request.headers(), this._UP.host)
-    const pd = request.method() === &apos;POST&apos; ? request.postData() : null
-    await this.writeRequestRecord(this._UP.href, reqHTTP, pd)
+      this._UP.hash} HTTP/1.1${CRLF}${stringifyRequestHeaders(request.headers(), this._UP.host)}`
     if (response) {
       let resHTTP = `HTTP/1.1 ${response.status()} ${
         STATUS_CODES[response.status()]
@@ -127,8 +164,13 @@ class PuppeteerWARCGenerator extends WARCWriterBase {
           `Content-Length: ${Buffer.byteLength(body, &apos;utf8&apos;)}${CRLF}`
         )
       }
-      await this.writeResponseRecord(this._UP.href, resHTTP, body)
+      return this.writeRequestResponseRecords(
+        this._UP.href,
+        { headers: reqHTTP, data: request.postData() },
+        { headers: resHTTP, data: body }
+      )
     }
+    return this.writeRequestRecord(this._UP.href, reqHTTP, request.postData())
   }
 }
 

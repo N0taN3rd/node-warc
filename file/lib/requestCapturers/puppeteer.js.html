@@ -62,6 +62,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -72,7 +76,7 @@
  */
 class PuppeteerRequestCapturer {
   /**
-   * @param {Page} page - The puppeteer page object
+   * @param {?Page} [page] - The puppeteer page object
    */
   constructor (page) {
     /**
@@ -89,14 +93,16 @@ class PuppeteerRequestCapturer {
      */
     this._requests = []
 
-    /**
-     * @type {Page}
-     */
-    this.page = page
-
-    /** @ignore */
     this.requestWillBeSent = this.requestWillBeSent.bind(this)
-    this.page.on(&apos;request&apos;, this.requestWillBeSent)
+    this.attach(page)
+  }
+
+  attach (page) {
+    page.on(&apos;request&apos;, this.requestWillBeSent)
+  }
+
+  detach (page) {
+    page.removeListener(&apos;request&apos;, this.requestWillBeSent)
   }
 
   /**

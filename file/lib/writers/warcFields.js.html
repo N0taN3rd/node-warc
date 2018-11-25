@@ -62,30 +62,175 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">lib/writers/warcFields.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @type {string}
+ */
+const CRLF = &apos;\r\n&apos;
+
+/**
+ * @type {string}
+ */
+const CRLF2x = &apos;\r\n\r\n&apos;
+
+/**
+ * @type {string}
+ */
+const recordSeparator = &apos;\r\n\r\n&apos;
+
+/**
+ * @type {string}
+ */
+const WARCV = &apos;1.1&apos;
+
+/**
+ * @type {string}
+ */
+const WARCSlashV = `WARC/${WARCV}${CRLF}`
+
+/**
+ * @type {{warcinfo: string, metadata: string, request: string, response: string, revisit: string, resource: string, conversion: string, unknown: string, continuation: string}}
+ */
+const WARCTypes = {
+  warcinfo: &apos;warcinfo&apos;,
+  metadata: &apos;metadata&apos;,
+  request: &apos;request&apos;,
+  response: &apos;response&apos;,
+  revisit: &apos;revisit&apos;,
+  resource: &apos;resource&apos;,
+  conversion: &apos;conversion&apos;,
+  unknown: &apos;unknown&apos;,
+  continuation: &apos;continuation&apos;
+}
+
+const WARCContentTypes = {
+  warcFields: &apos;Content-Type: application/warc-fields\r\n&apos;,
+  httpRequest: &apos;Content-Type: application/http; msgtype=request\r\n&apos;,
+  httpResponse: &apos;Content-Type: application/http; msgtype=response\r\n&apos;
+}
+
+/**
+ * @param {string} uuid
+ * @return {string}
+ */
+function recordId (uuid) {
+  return `WARC-Record-ID: &lt;urn:uuid:${uuid}&gt;\r\n`
+}
+
+/**
+ * @param {string} date
+ * @return {string}
+ */
+function warcDate (date) {
+  return `WARC-Date: ${date}${CRLF}`
+}
+
+/**
+ * @param {string} targetURI
+ * @return {string}
+ */
+function warcTargetURI (targetURI) {
+  return `WARC-Target-URI: ${targetURI}${CRLF}`
+}
+
+/**
+ * @param {string} type
+ * @return {string}
+ */
+function warcType (type) {
+  return `WARC-Type: ${type}${CRLF}`
+}
+
+/**
+ * @param {string} fileName
+ * @return {string}
+ */
+function warcFilename (fileName) {
+  return `WARC-Filename: ${fileName}${CRLF}`
+}
+
+/**
+ * @param {string|number} contentLen
+ * @return {string}
+ */
+function warcContentLength (contentLen) {
+  return `Content-Length: ${contentLen}${CRLF}`
+}
+
+/**
+ * @param {string} contentType
+ * @return {string}
+ */
+function warcContentType (contentType) {
+  return `Content-Type: ${contentType}${CRLF}`
+}
+
+/**
+ * @param {string} concurrentTo
+ * @return {string}
+ */
+function warcConcurrentTo (concurrentTo) {
+  return `WARC-Concurrent-To: ${concurrentTo}${CRLF}`
+}
+
+/**
+ * @param {string} wid
+ * @return {string}
+ */
+function warcWarcInfoId (wid) {
+  return `WARC-Warcinfo-ID: &lt;urn:uuid:${wid}&gt;${CRLF}`
+}
+
+/**
+ *
+ * @param {string} type
+ * @param {Object} reqFields
+ * @param {string} reqFields.id
+ * @param {string} reqFields.date
+ * @param {number} reqFields.len
+ * @param {string} reqFields.targetURI
+ * @return {string}
+ */
+function requiredHeaderFields (type, { id, date, len, targetURI }) {
+  if (targetURI != null) {
+    return `${WARCSlashV}${warcType(type)}${recordId(id)}${warcDate(
+      date
+    )}${warcTargetURI(targetURI)}${warcContentLength(len)}`
+  }
+  return `${WARCSlashV}${warcType(type)}${recordId(id)}${warcDate(
+    date
+  )}${warcContentLength(len)}`
+}
+
+/**
  * @typedef {Object} WARCInfoHeader
- * @property {string} now - The date value for WARC-Date
+ * @property {string} date - The date value for WARC-Date
  * @property {string} fileName - The name of the warc file
  * @property {string} rid - The id of the record
  * @property {number} len - The length of the records content
  */
 
 /**
- * @param {WARCInfoHeader} headerInfo
- * @returns {string}
+ * @param {WARCInfoHeader} infoHeader
+ * @return {string}
  */
-const warcHeader = ({ now, fileName, rid, len }) =&gt; `WARC/1.0\r
-WARC-Type: warcinfo\r
-WARC-Date: ${now}\r
-WARC-Filename: ${fileName}\r
-WARC-Record-ID: &lt;urn:uuid:${rid}&gt;\r
-Content-Type: application/warc-fields\r
-Content-Length: ${len}\r\n`
+function warcInfoHeader (infoHeader) {
+  const required = `${requiredHeaderFields(WARCTypes.warcinfo, infoHeader)}${
+    WARCContentTypes.warcFields
+  }`
+  if (infoHeader.fileName != null) {
+    return `${required}${warcFilename(infoHeader.fileName)}`
+  }
+  return required
+}
 
 /**
  * @typedef {Object} WARCInfoContent
@@ -96,21 +241,24 @@ Content-Length: ${len}\r\n`
  */
 
 /**
- * @param {WARCInfoContent} headerContent
- * @returns {string}
+ * @param {WARCInfoContent} infoContent
+ * @return {string}
  */
-const warcHeaderContent = ({
-  version,
-  isPartOfV,
-  warcInfoDescription,
-  ua
-}) =&gt; `software: node-warc/${version}\r
-format: WARC File Format 1.0\r
-conformsTo: http://bibnum.bnf.fr/WARC/WARC_ISO_28500_version1_latestdraft.pdf\r
-isPartOf: ${isPartOfV}\r
-description: ${warcInfoDescription}\r
-robots: ignore\r
-http-header-user-agent: ${ua}\r\n`
+function warcInfoContent ({ version, isPartOfV, warcInfoDescription, ua }) {
+  const base = [
+    `software: node-warc/${version}${CRLF}format: WARC File Format ${WARCV}${CRLF}robots: ignore${CRLF}`
+  ]
+  if (isPartOfV != null) {
+    base.push(`isPartOf: ${isPartOfV}${CRLF}`)
+  }
+  if (warcInfoDescription != null) {
+    base.push(`description: ${warcInfoDescription}${CRLF}`)
+  }
+  if (ua != null) {
+    base.push(`http-header-user-agent: ${ua}${CRLF}`)
+  }
+  return base.join(&apos;&apos;)
+}
 
 /**
  * @typedef {Object} WARCMetadataHeader
@@ -126,22 +274,24 @@ http-header-user-agent: ${ua}\r\n`
  * @param {WARCMetadataHeader} metadataHeader
  * @returns {string}
  */
-const warcMetadataHeader = ({
-  targetURI,
-  now,
-  concurrentTo,
-  rid,
-  len,
-  wid
-}) =&gt; `WARC/1.0\r
-WARC-Type: metadata\r
-WARC-Target-URI: ${targetURI}\r
-WARC-Date: ${now}\r
-WARC-Concurrent-To: &lt;urn:uuid:${concurrentTo}&gt;\r
-WARC-Record-ID: &lt;urn:uuid:${rid}&gt;\r\
-${wid ? `\nWARC-Warcinfo-ID: &lt;urn:uuid:${wid}&gt;\r` : &apos;&apos;}
-Content-Type: application/warc-fields\r
-Content-Length: ${len}\r\n`
+function warcMetadataHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
+  const base = [
+    requiredHeaderFields(WARCTypes.metadata, {
+      date: now,
+      len,
+      id: rid,
+      targetURI
+    }),
+    WARCContentTypes.warcFields
+  ]
+  if (concurrentTo != null) {
+    base.join(warcConcurrentTo(concurrentTo))
+  }
+  if (wid != null) {
+    base.push(warcWarcInfoId(wid))
+  }
+  return base.join(&apos;&apos;)
+}
 
 /**
  * @typedef {Object} WARCRequestHeader
@@ -157,22 +307,19 @@ Content-Length: ${len}\r\n`
  * @param {WARCRequestHeader} requestHeader
  * @returns {string}
  */
-const warcRequestHeader = ({
-  targetURI,
-  now,
-  concurrentTo,
-  rid,
-  len,
-  wid
-}) =&gt; `WARC/1.0\r
-WARC-Type: request\r
-WARC-Target-URI: ${targetURI}\r
-WARC-Date: ${now}\r
-WARC-Concurrent-To: &lt;urn:uuid:${concurrentTo}&gt;\r
-WARC-Record-ID: &lt;urn:uuid:${rid}&gt;\r\
-${wid ? `\nWARC-Warcinfo-ID: &lt;urn:uuid:${wid}&gt;\r` : &apos;&apos;}
-Content-Type: application/http; msgtype=request\r
-Content-Length: ${len}\r\n`
+function warcRequestHeader ({ targetURI, now, concurrentTo, rid, len, wid }) {
+  const base = [
+    requiredHeaderFields(WARCTypes.request, { date: now, len, id: rid, targetURI }),
+    WARCContentTypes.httpRequest
+  ]
+  if (concurrentTo != null) {
+    base.join(warcConcurrentTo(concurrentTo))
+  }
+  if (wid != null) {
+    base.push(warcWarcInfoId(wid))
+  }
+  return base.join(&apos;&apos;)
+}
 
 /**
  * @typedef {Object} WARCResponseHeader
@@ -187,36 +334,35 @@ Content-Length: ${len}\r\n`
  * @param {WARCResponseHeader} responseHeader
  * @returns {string}
  */
-const warcResponseHeader = ({ targetURI, now, rid, len, wid }) =&gt; `WARC/1.0\r
-WARC-Type: response\r
-WARC-Target-URI: ${targetURI}\r
-WARC-Date: ${now}\r
-WARC-Record-ID: &lt;urn:uuid:${rid}&gt;\r\
-${wid ? `\nWARC-Warcinfo-ID: &lt;urn:uuid:${wid}&gt;\r` : &apos;&apos;}
-Content-Type: application/http; msgtype=response\r
-Content-Length: ${len}\r\n`
+function warcResponseHeader ({ targetURI, now, rid, len, wid }) {
+  const base = [
+    requiredHeaderFields(WARCTypes.response, { date: now, len, id: rid, targetURI }),
+    WARCContentTypes.httpResponse
+  ]
+  if (wid != null) {
+    base.push(warcWarcInfoId(wid))
+  }
+  return base.join(&apos;&apos;)
+}
 
-/**
- * @type {string}
- */
-const CRLF = &apos;\r\n&apos;
-
-/**
- * @type {string}
- */
-const recordSeparator = `${CRLF}${CRLF}`
-
-/**
- * @type {{warcHeader: function(headerInfo: WARCInfoHeader): string, warcHeaderContent: function(headerContent: WARCInfoContent): string, warcRequestHeader: function(requestHeader: WARCRequestHeader): string, warcResponseHeader: function(responseHeader: WARCResponseHeader): string, warcMetadataHeader: function(metadataHeader: WARCMetadataHeader): string, recordSeparator: string, CRLF: string}}
- */
 module.exports = {
-  warcHeader,
-  warcHeaderContent,
+  /**
+   * @type {function(headerInfo: WARCInfoHeader): string}
+   */
+  warcInfoHeader,
+  /**
+   * @type {function(infoContent: WARCInfoContent): string}
+   */
+  warcInfoContent,
+  /**
+   * @type {function(reqiestData: WARCRequestHeader): string}
+   */
   warcRequestHeader,
   warcResponseHeader,
   warcMetadataHeader,
   recordSeparator,
-  CRLF
+  CRLF,
+  CRLF2x
 }
 </code></pre>
 

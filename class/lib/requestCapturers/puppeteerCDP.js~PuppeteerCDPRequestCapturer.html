@@ -62,6 +62,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -142,7 +146,69 @@
 </tbody>
 </table>
 </div>
-
+<div data-ice="memberSummary"><h2>Member Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Public Members</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-requestWillBeSent">requestWillBeSent</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-responseReceived">responseReceived</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
 <div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
   <tbody>
@@ -162,6 +228,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-method-attach">attach</a></span></span><span class="code" data-ice="signature">(client: <span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-method-detach">detach</a></span></span><span class="code" data-ice="signature">(client: <span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span>)</span>
         </p>
       </div>
       <div>
@@ -718,7 +812,7 @@
       <td data-ice="name" class="code" data-depth="0">client</td>
       <td data-ice="type" class="code"><span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span></td>
       <td data-ice="appendix"><ul><li>optional</li>
-<li>nullable: false</li></ul></td>
+<li>nullable: true</li></ul></td>
       <td data-ice="description"><p>The CDPSession client to be attached to</p>
 </td>
     </tr>
@@ -745,7 +839,97 @@
   
 </div>
 </div>
+<div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-requestWillBeSent">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">requestWillBeSent</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#lineNumber12">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Handles the Network.requestWillBeSent event</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-requestWillBeSent">RequestHandler#requestWillBeSent</a></span></div>
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-responseReceived">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">responseReceived</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#lineNumber13">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Handles the Network.responseReceived event</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-responseReceived">RequestHandler#responseReceived</a></span></div>
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+</div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
 <div class="detail" data-ice="detail">
@@ -760,7 +944,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#lineNumber22">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#lineNumber20">source</a></span></span>
     </span>
   </h3>
 
@@ -782,9 +966,68 @@
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">client</td>
       <td data-ice="type" class="code"><span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span></td>
-      <td data-ice="appendix"><ul><li>optional</li>
-<li>nullable: false</li></ul></td>
+      <td data-ice="appendix"></td>
       <td data-ice="description"><p>The CDPSession client to be attached to</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-detach">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">detach</span><span class="code" data-ice="signature">(client: <span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#lineNumber30">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">client</td>
+      <td data-ice="type" class="code"><span><a href="https://pptr.dev/#?product=Puppeteer&amp;version=v1.9.0&amp;show=api-class-cdpsession">CDPSession</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>The CDPSession client to detach from</p>
 </td>
     </tr>
 </tbody>

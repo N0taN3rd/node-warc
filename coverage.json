@@ -1,7 +1,7 @@
 {
-  "coverage": "98.36%",
-  "expectCount": 245,
-  "actualCount": 241,
+  "coverage": "95.6%",
+  "expectCount": 273,
+  "actualCount": 261,
   "files": {
     "lib/parsers/_canUseRecordIterator.js": {
       "expectCount": 1,
@@ -54,19 +54,28 @@
       "undocumentLines": []
     },
     "lib/requestCapturers/puppeteer.js": {
-      "expectCount": 12,
-      "actualCount": 12,
-      "undocumentLines": []
+      "expectCount": 13,
+      "actualCount": 11,
+      "undocumentLines": [
+        27,
+        31
+      ]
     },
     "lib/requestCapturers/puppeteerCDP.js": {
-      "expectCount": 5,
-      "actualCount": 5,
-      "undocumentLines": []
+      "expectCount": 6,
+      "actualCount": 4,
+      "undocumentLines": [
+        12,
+        13
+      ]
     },
     "lib/requestCapturers/remoteChrome.js": {
-      "expectCount": 4,
+      "expectCount": 6,
       "actualCount": 4,
-      "undocumentLines": []
+      "undocumentLines": [
+        17,
+        18
+      ]
     },
     "lib/requestCapturers/requestHandler.js": {
       "expectCount": 19,
@@ -76,6 +85,11 @@
     "lib/utils/constants.js": {
       "expectCount": 1,
       "actualCount": 1,
+      "undocumentLines": []
+    },
+    "lib/utils/electron.js": {
+      "expectCount": 2,
+      "actualCount": 2,
       "undocumentLines": []
     },
     "lib/utils/electronGetResError.js": {
@@ -124,35 +138,38 @@
       "undocumentLines": []
     },
     "lib/writers/electron.js": {
-      "expectCount": 2,
-      "actualCount": 2,
+      "expectCount": 3,
+      "actualCount": 3,
       "undocumentLines": []
     },
     "lib/writers/puppeteer.js": {
-      "expectCount": 4,
-      "actualCount": 4,
+      "expectCount": 5,
+      "actualCount": 5,
       "undocumentLines": []
     },
     "lib/writers/puppeteerCDP.js": {
-      "expectCount": 2,
-      "actualCount": 2,
+      "expectCount": 3,
+      "actualCount": 3,
       "undocumentLines": []
     },
     "lib/writers/remoteChrome.js": {
-      "expectCount": 2,
-      "actualCount": 2,
+      "expectCount": 3,
+      "actualCount": 3,
       "undocumentLines": []
     },
     "lib/writers/warcFields.js": {
-      "expectCount": 7,
-      "actualCount": 7,
-      "undocumentLines": []
+      "expectCount": 22,
+      "actualCount": 20,
+      "undocumentLines": [
+        41,
+        51
+      ]
     },
     "lib/writers/warcWriterBase.js": {
-      "expectCount": 25,
-      "actualCount": 24,
+      "expectCount": 28,
+      "actualCount": 27,
       "undocumentLines": [
-        67
+        61
       ]
     }
   }

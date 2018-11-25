@@ -62,6 +62,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -87,14 +91,13 @@ function ensureHTTP2Headers (headerKey) {
  */
 exports.stringifyHeaders = function stringifyHeaders (headers) {
   let headerKey
-  let outString = &apos;&apos;
+  let outString = []
   for (headerKey in headers) {
-    outString += `${ensureHTTP2Headers(headerKey)}: ${
-      headers[headerKey]
-    }${CRLF}`
+    outString.push(`${ensureHTTP2Headers(headerKey)}: ${headers[headerKey]}${CRLF}`)
   }
-  outString += CRLF
-  return outString
+  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
+  // affects node
+  return outString.join(&apos;&apos;)
 }
 
 /**
@@ -103,25 +106,22 @@ exports.stringifyHeaders = function stringifyHeaders (headers) {
  * @param {string} host - The host for the request to be used if the HTTP headers object does not contain the Host field
  * @returns {string}
  */
-exports.stringifyRequestHeaders = function stringifyRequestHeaders (
-  headers,
-  host
-) {
+exports.stringifyRequestHeaders = function stringifyRequestHeaders (headers, host) {
   let hasHost = false
   let headerKey
-  let outString = &apos;&apos;
+  let outString = []
   for (headerKey in headers) {
     if (headerKey === &apos;host&apos; || headerKey === &apos;Host&apos;) {
       hasHost = true
     }
-    outString += `${ensureHTTP2Headers(headerKey)}: ${
-      headers[headerKey]
-    }${CRLF}`
+    outString.push(`${ensureHTTP2Headers(headerKey)}: ${headers[headerKey]}${CRLF}`)
   }
   if (!hasHost) {
-    return outString + `Host: ${host}${CRLF}${CRLF}`
+    outString.push(`Host: ${host}${CRLF}`)
   }
-  return outString + CRLF
+  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
+  // affects node
+  return outString.join(&apos;&apos;)
 }
 </code></pre>
 

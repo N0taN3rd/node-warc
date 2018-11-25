@@ -62,6 +62,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -166,13 +170,13 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-attach">attach</a></span></span><span class="code" data-ice="signature">(wcDebugger: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-attach">attach</a></span></span><span class="code" data-ice="signature">(wcDebugger: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Attach to the debugger <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-responseReceived">responseReceived</a></span></p>
+        <div data-ice="description"><p>Attach to the debugger <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-responseReceived">responseReceived</a></span></p>
 </div>
       </div>
     </td>
@@ -774,7 +778,7 @@ of the listener to this method.</p>
     
     
     
-    <span class="code" data-ice="name">attach</span><span class="code" data-ice="signature">(wcDebugger: <span>*</span>)</span>
+    <span class="code" data-ice="name">attach</span><span class="code" data-ice="signature">(wcDebugger: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
     <span class="right-info">
       
       
@@ -785,7 +789,7 @@ of the listener to this method.</p>
   
   
   
-  <div data-ice="description"><p>Attach to the debugger <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-responseReceived">responseReceived</a></span></p>
+  <div data-ice="description"><p>Attach to the debugger <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-responseReceived">responseReceived</a></span></p>
 </div>
 
   
@@ -800,7 +804,7 @@ of the listener to this method.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">wcDebugger</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>the debugger</p>
 </td>
@@ -848,7 +852,7 @@ of the listener to this method.</p>
   
   <div data-ice="description"><p>Rather than adding an additional listener to the debugger pass the two relevant parameters
 of the listener to this method. Useful if you are already listening to some other event.
-<span><a href="class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-attach">attach</a></span>, <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-responseReceived">responseReceived</a></span></p>
+<span><a href="class/lib/requestCapturers/electron.js~ElectronRequestCapturer.html#instance-method-attach">attach</a></span>, <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-method-requestWillBeSent">requestWillBeSent</a></span> and <span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-responseReceived">responseReceived</a></span></p>
 </div>
 
   

@@ -62,15 +62,19 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCResponseHeader">WARCResponseHeader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Metadata">Metadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInitOpts">WARCInitOpts</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">lib/writers/electron.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const getResBodyElectron = require(&apos;../utils/getResBodyElectron&apos;)
-const WARCWriterBase = require(&apos;./warcWriterBase&apos;)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const WARCWriterBase = require(&apos;./warcWriterBase&apos;)
 const { CRLF } = require(&apos;./warcFields&apos;)
 const { noGZ, replaceContentLen } = require(&apos;./constants&apos;)
+const { getPostData, getResBody } = require(&apos;../utils/electron&apos;)
 
 /**
  * @desc WARC Generator for use with Electron
@@ -80,20 +84,56 @@ const { noGZ, replaceContentLen } = require(&apos;./constants&apos;)
  */
 class ElectronWARCGenerator extends WARCWriterBase {
   /**
+   * @param {ElectronRequestCapturer} capturer - The Electron request capturer that contains requests
+   * to be serialized to the WARC
+   * @param {Object} wcDebugger - the Electron debugger to use to get the response body
+   * @param {WARCGenOpts} genOpts - Options for generating the WARC and optionally generating
+   * WARC info and metadata records
+   * @return {Promise&lt;?Error&gt;} - A Promise that resolves when WARC generation is complete
+   */
+  async generateWARC (capturer, wcDebugger, genOpts) {
+    const donePromise = new Promise(resolve =&gt; {
+      this.once(&apos;finished&apos;, resolve)
+    })
+    const { warcOpts, winfo, metadata } = genOpts
+    this.initWARC(warcOpts.warcPath, warcOpts)
+    if (winfo != null) {
+      await this.writeWarcInfoRecord(
+        winfo.isPartOfV,
+        winfo.warcInfoDescription,
+        winfo.ua
+      )
+    }
+    if (metadata != null) {
+      await this.writeWarcMetadata(metadata.targetURI, metadata.content)
+    }
+    for (let request of capturer.iterateRequests()) {
+      try {
+        await this.generateWarcEntry(request, wcDebugger)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    this.end()
+    return donePromise
+  }
+
+  /**
    * @desc Generate a WARC record
-   * @param {CDPRequestInfo} nreq the captured HTTP info
-   * @param {Object} wcDebugger the electron webcontents debugger object
+   * @param {CDPRequestInfo} nreq - The captured HTTP info
+   * @param {Object} wcDebugger - The Electron webcontents debugger object
    * @return {Promise&lt;void&gt;}
    */
   async generateWarcEntry (nreq, wcDebugger) {
+    if (nreq.url.indexOf(&apos;data:&apos;) === 0) return
+    let postData
     if (nreq.postData) {
-      await this.writeRequestRecord(
-        nreq.url,
-        nreq.serializeRequestHeaders(),
-        nreq.postData
-      )
-    } else {
-      await this.writeRequestRecord(nreq.url, nreq.serializeRequestHeaders())
+      postData = nreq.postData
+    } else if (nreq.hasPostData) {
+      try {
+        let post = await getPostData(nreq.requestId, wcDebugger)
+        postData = Buffer.from(post.postData, &apos;base64&apos;)
+      } catch (e) {}
     }
     if (nreq.canSerializeResponse()) {
       let resData
@@ -101,7 +141,7 @@ class ElectronWARCGenerator extends WARCWriterBase {
       if (nreq.getBody) {
         let wasError = false
         try {
-          let rbody = await getResBodyElectron(nreq.requestId, wcDebugger)
+          let rbody = await getResBody(nreq.requestId, wcDebugger)
           if (rbody.base64Encoded) {
             resData = Buffer.from(rbody.body, &apos;base64&apos;)
           } else {
@@ -118,8 +158,23 @@ class ElectronWARCGenerator extends WARCWriterBase {
           )
         }
       }
-      await this.writeResponseRecord(nreq.url, responseHeaders, resData)
+      return this.writeRequestResponseRecords(
+        nreq.url,
+        {
+          headers: nreq.serializeRequestHeaders(),
+          data: postData
+        },
+        {
+          headers: responseHeaders,
+          data: resData
+        }
+      )
     }
+    return this.writeRequestRecord(
+      nreq.url,
+      nreq.serializeRequestHeaders(),
+      postData
+    )
   }
 }
 
