@@ -1,0 +1,7 @@
+dist: xenial
+language: node_js
+node_js:
+  - "11.0.0"
+before_install:
+  # for puppeteer
+  - "sysctl kernel.unprivileged_userns_clone=1"
