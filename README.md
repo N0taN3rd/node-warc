@@ -8,8 +8,7 @@ Run `npm install node-warc` or `yarn add node-warc` to ge started
 ## Documentation
 Full documentation available at [n0tan3rd.github.io/node-warc](https://n0tan3rd.github.io/node-warc/)
 
-## Example parsing usage
-
+## Parsing
 
 ### Using async iteration
 **Requires node 10 or greater**
@@ -85,6 +84,68 @@ parser.on('error', error => { console.error(error) })
 parser.start()
 ```
 
+## WARC Creation 
 
-## Environment
-* `NODEWARC_WRITE_GZIPPED` - writes gzipped records to WARC outputs.
+### Environment
+* `NODEWARC_WRITE_GZIPPED` - enable writing gzipped records to WARC outputs.
+
+### Examples
+
+#### Using chrome-remote-interface
+
+```js
+const CRI = require('chrome-remote-interface')
+const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
+
+;(async () => {
+  const client = await CRI()
+  await Promise.all([
+    client.Page.enable(),
+    client.Network.enable(),
+  ])
+  const cap = new RemoteChromeCapturer(client.Network)
+  await client.Page.navigate({ url: 'http://example.com' });
+  // wait for some stopping condition, eg. network idle
+  const warcGen = new RemoteChromeWARCGenerator()
+  await warcGen.generateWARC(cap, client.Network, {
+    warcOpts: {
+      warcPath: 'myWARC.warc'
+    },
+    winfo: {
+      warcInfoDescription: 'I created a warc!',
+      isPartOfV: 'My awesome pywb collection'
+    }
+  })
+  await client.close()
+})()
+```
+
+#### Using puppeteer
+```js
+const puppeteer = require('puppeteer')
+const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
+
+;(async () => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  const cap = new PuppeteerCapturer(page)
+  await page.goto('http://example.com', { waitUntil: 'networkidle0' })
+  const warcGen = new PuppeteerWARCGenerator()
+  await warcGen.generateWARC(cap, {
+    warcOpts: {
+      warcPath: 'myWARC.warc'
+    },
+    winfo: {
+      warcInfoDescription: 'I created a warc!',
+      isPartOfV: 'My awesome pywb collection'
+    }
+  })
+  await page.close()
+  await browser.close()
+})()
+```
+
+#### Note
+The generateWARC method used in the following examples is helper function for making 
+the WARC generation process simple. See its implementation for a full example 
+of WARC generation using node-warc
