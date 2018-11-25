@@ -9,7 +9,7 @@ test('getResBodyElectron', async t => {
   const fed = new FakeElectronDebugger()
   const requestId = 12345
   const errorMessage = `An Error Occurred retrieving the response body for ${requestId}`
-  await t.notThrows(
+  await t.notThrowsAsync(
     getResBodyElectron(requestId, fed),
     'getResBodyElectron should not throw an error when the request id has a body'
   )
@@ -25,7 +25,7 @@ test('getResBodyElectron', async t => {
     'the command sent should be Network.getResponseBody'
   )
   fed.reset(true)
-  const error = await t.throws(getResBodyElectron(requestId, fed), ElectronGetResError)
+  const error = await t.throwsAsync(getResBodyElectron(requestId, fed), ElectronGetResError)
   t.is(1, fed.calls, 'the debugger sendCommand function should be called when rejects')
   t.is(
     requestId,
@@ -84,6 +84,6 @@ test('gzipDetector', async t => {
   )
   t.throws(() => GZD.isGzippedSync(null), 'The filePath path is null')
   t.throws(() => GZD.isGzippedSync(undefined), 'The filePath path is undefined')
-  await t.throws(GZD.isGzipped(null), 'The filePath path is null')
-  await t.throws(GZD.isGzipped(undefined), 'The filePath path is undefined')
+  await t.throwsAsync(async () => GZD.isGzipped(null), 'The filePath path is null')
+  await t.throwsAsync(async () => GZD.isGzipped(undefined), 'The filePath path is undefined')
 })

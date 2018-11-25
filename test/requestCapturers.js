@@ -1,7 +1,7 @@
 import test from 'ava'
 import fs from 'fs-extra'
 import { requestsJson } from './helpers/filePaths'
-import { FakeNetwork, FakeNavMan } from './helpers/mocks'
+import { FakeNetwork } from './helpers/mocks'
 import { RemoteChromeCapturer, ElectronCapturer } from '../lib/requestCapturers'
 import CapturedRequest from '../lib/requestCapturers/capturedRequest'
 
@@ -14,14 +14,12 @@ test.before(async t => {
 
 test.beforeEach(t => {
   t.context.network = new FakeNetwork(rawRequests)
-  t.context.navMan = new FakeNavMan()
   t.context.haveReqId = '6230.258'
 })
 
 test('RemoteChromeCapturer should set up correctly when no navMan is supplied', t => {
   const { context: { network } } = t
   const chromeRC = new RemoteChromeCapturer(network)
-  t.falsy(chromeRC._navMan, 'the navigation manager should be undefined if not supplied')
   t.is(
     chromeRC.requestWillBeSent,
     network.rwbs,
@@ -34,36 +32,10 @@ test('RemoteChromeCapturer should set up correctly when no navMan is supplied', 
   )
 })
 
-test('RemoteChromeCapturer should set up correctly when a navMan is supplied', t => {
-  const { context: { network, navMan } } = t
-  const chromeRC = new RemoteChromeCapturer(network, navMan)
-  t.truthy(chromeRC._navMan, 'the navigation manager should be defined when supplied')
-  t.is(
-    chromeRC.requestWillBeSent,
-    network.rwbs,
-    'the chrome capturer should set the requestWillBeSent callback of the network'
-  )
-  t.is(
-    chromeRC.responseReceived,
-    network.rr,
-    'the chrome capturer should set the responseReceived callback of the network'
-  )
-  t.is(
-    chromeRC.loadingFinished,
-    network.lfin,
-    'the chrome capturer should set the loadingFinished callback of the network'
-  )
-  t.is(
-    chromeRC.loadingFailed,
-    network.lfa,
-    'the chrome capturer should set the loadingFailed callback of the network'
-  )
-})
 
 test('RemoteChromeCapturer should set up correctly when a navMan is not supplied to the constructor but added with withNavigationManager', t => {
-  const { context: { network, navMan } } = t
+  const { context: { network } } = t
   const chromeRC = new RemoteChromeCapturer(network)
-  t.falsy(chromeRC._navMan, 'the navigation manager should be undefined if not supplied')
   t.is(
     chromeRC.requestWillBeSent,
     network.rwbs,
@@ -73,11 +45,6 @@ test('RemoteChromeCapturer should set up correctly when a navMan is not supplied
     chromeRC.responseReceived,
     network.rr,
     'the chrome capturer should set the responseReceived callback of the network'
-  )
-  chromeRC.withNavigationManager(network, navMan)
-  t.truthy(
-    chromeRC._navMan,
-    'the navigation manager should be defined when supplied using withNavigationManager'
   )
   t.is(
     chromeRC.loadingFinished,
@@ -228,68 +195,6 @@ test('RemoteChromeCapturer map like methods should work as expected', t => {
   t.is(c, numCaptReqs, 'the forEach method should be applied to each captured request')
 })
 
-test('RemoteChromeCapturer when a navMan is supplied via the constructor the navMan reqStarted and reqFinished methods should be called', t => {
-  const { context: { network, navMan } } = t
-  const chromeRC = new RemoteChromeCapturer(network, navMan)
-  network.go()
-  t.is(
-    chromeRC._requests.size,
-    numCaptReqs,
-    'there should be requests in the request map when the capture flag is true'
-  )
-  t.is(
-    navMan.calls.reqStarted,
-    numReqInfo,
-    'NavMan reqStarted should have been called twice'
-  )
-  chromeRC.loadingFinished({})
-  chromeRC.loadingFailed({})
-  t.is(navMan.calls.reqFinished, 2, 'NavMan reqFinished should have been called twice')
-})
-
-test('RemoteChromeCapturer when a navMan is supplied via withNavigationManager the navMan reqStarted and reqFinished methods should be called', t => {
-  const { context: { network, navMan } } = t
-  const chromeRC = new RemoteChromeCapturer(network)
-  chromeRC.withNavigationManager(network, navMan)
-  network.go()
-  t.is(
-    chromeRC._requests.size,
-    numCaptReqs,
-    'there should be requests in the request map when the capture flag is true'
-  )
-  t.is(
-    navMan.calls.reqStarted,
-    numReqInfo,
-    'NavMan reqStarted should have been called twice'
-  )
-  chromeRC.loadingFinished({})
-  chromeRC.loadingFailed({})
-  t.is(navMan.calls.reqFinished, 2, 'NavMan reqFinished should have been called twice')
-})
-
-test('RemoteChromeCapturer when a navMan is supplied via the constructor and capture is false the navMan reqStarted and reqFinished methods should not be called', t => {
-  const { context: { network, navMan } } = t
-  const chromeRC = new RemoteChromeCapturer(network, navMan)
-  chromeRC.stopCapturing()
-  network.go()
-  t.is(navMan.calls.reqStarted, 0, 'NavMan reqStarted should not have been called')
-  chromeRC.loadingFinished({})
-  chromeRC.loadingFailed({})
-  t.is(navMan.calls.reqFinished, 0, 'NavMan reqFinished should not have been called')
-})
-
-test('RemoteChromeCapturer when a navMan is supplied via withNavigationManager and capture is false the navMan reqStarted and reqFinished methods should not be called', t => {
-  const { context: { network, navMan } } = t
-  const chromeRC = new RemoteChromeCapturer(network)
-  chromeRC.withNavigationManager(network, navMan)
-  chromeRC.stopCapturing()
-  network.go()
-  t.is(navMan.calls.reqStarted, 0, 'NavMan reqStarted should not have been called')
-  chromeRC.loadingFinished({})
-  chromeRC.loadingFailed({})
-  t.is(navMan.calls.reqFinished, 0, 'NavMan reqFinished should not have been called')
-})
-
 test('RemoteChromeCapturer should handle the case of no request but response', t => {
   const { context: { network } } = t
   const chromeRC = new RemoteChromeCapturer(network)
@@ -357,34 +262,6 @@ test('RemoteChromeCapturer should handle the case of no request but response', t
 })
 
 /* electron */
-
-test('ElectronCapturer should set up correctly when no navMan is supplied', t => {
-  const electronRC = new ElectronCapturer()
-  t.falsy(
-    electronRC._navMan,
-    'the navigation manager should be undefined if not supplied'
-  )
-})
-
-test('ElectronCapturer should set up correctly when a navMan is supplied', t => {
-  const { context: { navMan } } = t
-  const electronRC = new ElectronCapturer(navMan)
-  t.truthy(electronRC._navMan, 'the navigation manager should be defined when supplied')
-})
-
-test('ElectronCapturer should set up correctly when a navMan is not supplied to the constructor but added with withNavigationManager', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer()
-  t.falsy(
-    electronRC._navMan,
-    'the navigation manager should be undefined if not supplied'
-  )
-  electronRC.withNavigationManager(network, navMan)
-  t.truthy(
-    electronRC._navMan,
-    'the navigation manager should be defined when supplied using withNavigationManager'
-  )
-})
 
 test('ElectronCapturer should set and unset the capture flag', t => {
   const electronRC = new ElectronCapturer()
@@ -642,66 +519,6 @@ test('ElectronCapturer map like methods should work as expected maybeNetworkMess
     electronRC.has('9'),
     'ElectronCapturer should indicate it does not have a request by its id'
   )
-})
-
-test('ElectronCapturer when a navMan is supplied via the constructor the navMan reqStarted and reqFinished methods should be called', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer(navMan)
-  electronRC.attach(network)
-  network.goElectronAttach()
-  t.is(
-    electronRC._requests.size,
-    numCaptReqs,
-    'there should be requests in the request map when the capture flag is true'
-  )
-  t.is(
-    navMan.calls.reqStarted,
-    numReqInfo,
-    'NavMan reqStarted should have been called twice'
-  )
-  network.loadFinFailAttach()
-  t.is(navMan.calls.reqFinished, 2, 'NavMan reqFinished should have been called twice')
-})
-
-test('ElectronCapturer when a navMan is supplied via withNavigationManager the navMan reqStarted and reqFinished methods should be called', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer()
-  electronRC.withNavigationManager(navMan)
-  network.goElectronMNM(electronRC.maybeNetworkMessage)
-  t.is(
-    electronRC._requests.size,
-    numCaptReqs,
-    'there should be requests in the request map when the capture flag is true'
-  )
-  t.is(
-    navMan.calls.reqStarted,
-    numReqInfo,
-    'NavMan reqStarted should have been called twice'
-  )
-  network.loadFinFailMNM(electronRC.maybeNetworkMessage)
-  t.is(navMan.calls.reqFinished, 2, 'NavMan reqFinished should have been called twice')
-})
-
-test('ElectronCapturer when a navMan is supplied via the constructor and capture is false the navMan reqStarted and reqFinished methods should not be called', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer(navMan)
-  electronRC.attach(network)
-  electronRC.stopCapturing()
-  network.goElectronAttach()
-  t.is(navMan.calls.reqStarted, 0, 'NavMan reqStarted should not have been called')
-  network.loadFinFailAttach()
-  t.is(navMan.calls.reqFinished, 0, 'NavMan reqFinished should not have been called')
-})
-
-test('ElectronCapturer when a navMan is supplied via withNavigationManager and capture is false the navMan reqStarted and reqFinished methods should not be called', t => {
-  const { context: { network, navMan } } = t
-  const electronRC = new ElectronCapturer()
-  electronRC.withNavigationManager(navMan)
-  electronRC.stopCapturing()
-  network.goElectronMNM(electronRC.maybeNetworkMessage)
-  t.is(navMan.calls.reqStarted, 0, 'NavMan reqStarted should not have been called')
-  network.loadFinFailMNM(electronRC.maybeNetworkMessage)
-  t.is(navMan.calls.reqFinished, 0, 'NavMan reqFinished should not have been called')
 })
 
 test('ElectronCapturer should handle the case of no request but response', t => {

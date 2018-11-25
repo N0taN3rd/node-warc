@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "2.1.0",
+  "version": "3.0.2",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -31,10 +31,12 @@
   "scripts": {
     "lint": "standard | snazzy",
     "fix-lint": "standard --fix",
+    "pretty": "prettier-standard lib/**/*.js",
     "doc": "esdoc",
     "test": "ava --verbose",
     "test-report": "nyc ava --verbose",
-    "report-html": "nyc report --reporter=html"
+    "report-html": "nyc report --reporter=html",
+    "publish-docs": "gh-pages -d docs"
   },
   "eslintConfig": {
     "env": {
@@ -42,31 +44,42 @@
     }
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.3",
     "eventemitter3": "^3.1.0",
-    "fs-extra": "^7.0.0",
-    "lodash.isempty": "^4.4.0",
-    "lodash.startcase": "^4.4.0",
+    "fs-extra": "^7.0.1",
+    "lodash": "^4.17.11",
     "moment": "^2.22.2",
-    "readable-stream": "^3.0.2",
     "untildify": "^3.0.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/node": "^10.12.10",
+    "@types/puppeteer": "^1.10.0",
+    "ava": "^1.0.0-beta.8",
+    "chalk": "^2.4.1",
     "esdoc": "^1.1.0",
-    "nyc": "^12.0.2",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-external-ecmascript-plugin": "^1.0.0",
+    "esdoc-inject-style-plugin": "^1.0.0",
+    "esdoc-node": "^1.0.3",
+    "esdoc-standard-plugin": "^1.0.0",
+    "gh-pages": "^2.0.1",
+    "microtime": "^2.1.8",
+    "nyc": "^13.1.0",
+    "perfy": "^1.1.5",
     "prettier-standard": "^8.0.1",
     "pretty-time": "^1.1.0",
-    "rxjs": "^6.2.2",
-    "snazzy": "^7.1.1",
-    "standard": "^11.0.1"
+    "puppeteer": "^1.10.0",
+    "rxjs": "^6.3.3",
+    "snazzy": "^8.0.0",
+    "standard": "^12.0.1"
   },
   "ava": {
     "files": [
       "test/*.js"
     ],
-    "source": [
+    "sources": [
       "lib/**/*"
     ]
   },
@@ -76,6 +89,7 @@
     ]
   },
   "resolutions": {
-    "graceful-fs": "4.1.11"
+    "**/graceful-fs": "4.1.11",
+    "**/universalify": "0.1.2"
   }
 }

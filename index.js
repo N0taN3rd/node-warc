@@ -1,9 +1,50 @@
-module.exports = require('./lib/parsers')
-module.exports.RemoteChromeWARCWriter = require('./lib/writers/remoteChrome')
-module.exports.RemoteChromeRequestCap = require('./lib/requestCapturers/remoteChrome')
-module.exports.ElectronWARCWriter = require('./lib/writers/electron')
-module.exports.ElectronRequestCap = require('./lib/requestCapturers/electron')
-module.exports.PuppeteerRequestCap = require('./lib/requestCapturers/puppeteer')
-module.exports.PuppeteerWARCWriter = require('./lib/writers/puppeteer')
-module.exports.RequestLibWARCWriter = require('./lib/writers/requestLib')
-module.exports.WARCWriterBase = require('./lib/writers/warcWriterBase')
+'use strict'
+const {
+  WARCStreamTransform,
+  AutoWARCParser,
+  WARCGzParser,
+  WARCParser
+} = require('./lib/parsers')
+
+const {
+  ElectronWARCWriter,
+  PuppeteerCDPWARCGenerator,
+  PuppeteerWARCGenerator,
+  RemoteChromeWARCWriter,
+  WARCWriterBase
+} = require('./lib/writers')
+
+const {
+  ElectronCapturer,
+  PuppeteerCapturer,
+  PuppeteerCDPCapturer,
+  RemoteChromeCapturer,
+  RequestHandler
+} = require('./lib/requestCapturers')
+
+/**
+ * @type {{WARCStreamTransform: WARCStreamTransform, AutoWARCParser: AutoWARCParser, WARCGzParser: WARCGzParser, WARCParser: WARCParser, ElectronWARCWriter: ElectronWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, WARCWriterBase: WARCWriterBase, RequestHandler: RequestHandler, ElectronCapturer: ElectronRequestCapturer, PuppeteerCapturer: PuppeteerRequestCapturer, PuppeteerCDPCapturer: PuppeteerCDPRequestCapturer, RemoteChromeCapturer: RemoteChromeRequestCapturer}}
+ */
+module.exports = {
+  WARCStreamTransform,
+  AutoWARCParser,
+  WARCGzParser,
+  WARCParser,
+  ElectronWARCWriter,
+  PuppeteerCDPWARCGenerator,
+  PuppeteerWARCGenerator,
+  RemoteChromeWARCWriter,
+  WARCWriterBase,
+  RequestHandler,
+  ElectronCapturer,
+  PuppeteerCapturer,
+  PuppeteerCDPCapturer,
+  RemoteChromeCapturer
+}
+
+if (require('./lib/parsers/_canUseRecordIterator')) {
+  /**
+   * @type {function(ReadStream|Gunzip): AsyncIterator<WARCRecord>}
+   */
+  module.exports.recordIterator = require('./lib/parsers/recordterator')
+}
