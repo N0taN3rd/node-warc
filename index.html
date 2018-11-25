@@ -71,7 +71,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, or <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a></p>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="node-warc">node-warc</h1><p>Parse Web Archive (WARC) files or create WARC files using <a href="https://electron.atom.io/">Electron</a>, <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a>, <a href="https://github.com/GoogleChrome/puppeteer">Puppeteer</a>, or <a href="https://github.com/request/request">request</a></p>
 <p>Run <code>npm install node-warc</code> or <code>yarn add node-warc</code> to ge started</p>
 <p><a href="https://www.npmjs.com/package/node-warc"><img src="https://img.shields.io/npm/v/node-warc.svg?style=flat-square" alt="npm Package"></a></p>
 <h2 id="documentation">Documentation</h2><p>Full documentation available at <a href="https://n0tan3rd.github.io/node-warc/">n0tan3rd.github.io/node-warc</a></p>
@@ -146,7 +146,8 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require(&apos;node-w
   ])
   const cap = new RemoteChromeCapturer(client.Network)
   await client.Page.navigate({ url: &apos;http://example.com&apos; });
-  // wait for some stopping condition, eg. network idle
+  // actual code should wait for a better stopping condition, eg. network idle
+  await client.Page.loadEventFired()
   const warcGen = new RemoteChromeWARCGenerator()
   await warcGen.generateWARC(cap, client.Network, {
     warcOpts: {
