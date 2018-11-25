@@ -11,6 +11,7 @@ import {
   parseWARCHeader,
   checkRecordId
 } from './helpers/warcHelpers'
+import { WARCV } from '../lib/writers/warcFields'
 import WARCWriterBase from '../lib/writers/warcWriterBase'
 
 const fakeReqResHttpData = {
@@ -280,7 +281,7 @@ test('writeWarcInfoRecord should write a correct info record', async t => {
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'warcinfo', 'The warc type should be info')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -292,7 +293,7 @@ test('writeWarcInfoRecord should write a correct info record', async t => {
   )
   t.is(
     parsed['Content-Length'],
-    '177',
+    '175',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -333,7 +334,7 @@ test('writeWarcRawInfoRecord should write a correct info record', async t => {
   const bufferString = buffer.toString()
   t.is(
     (bufferString.match(crlfRe) || []).length,
-    9,
+    10,
     'The written info record with empty content should only contain 9 CRLFs'
   )
   t.true(
@@ -341,7 +342,7 @@ test('writeWarcRawInfoRecord should write a correct info record', async t => {
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'warcinfo', 'The warc type should be info')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -384,7 +385,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when no w
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be metadata')
   t.true(
     dateRe.test(parsed['WARC-Date']),
@@ -392,7 +393,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when no w
   )
   t.is(
     parsed['Content-Length'],
-    '54',
+    '52',
     'something is wrong with the headers field content-length'
   )
   t.true(
@@ -434,7 +435,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when a wa
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be info')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -446,7 +447,7 @@ test('writeWarcMetadataOutlinks should write a correct metadata record when a wa
   )
   t.is(
     parsed['Content-Length'],
-    '54',
+    '52',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -487,7 +488,7 @@ test('writeWarcMetadata should write a correct metadata record when no warc info
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be metadata')
   t.true(
     dateRe.test(parsed['WARC-Date']),
@@ -495,7 +496,7 @@ test('writeWarcMetadata should write a correct metadata record when no warc info
   )
   t.is(
     parsed['Content-Length'],
-    '54',
+    '52',
     'something is wrong with the headers field content-length'
   )
   t.true(
@@ -537,7 +538,7 @@ test('writeWarcMetadata should write a correct metadata record when a warc info 
   t.truthy(buffer, 'The buffer written should not be null')
   const bufferString = buffer.toString()
   const parsed = parseWARCHeader(bufferString)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'metadata', 'The warc type should be info')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -549,7 +550,7 @@ test('writeWarcMetadata should write a correct metadata record when a warc info 
   )
   t.is(
     parsed['Content-Length'],
-    '54',
+    '52',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -605,7 +606,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWrittenRequestRecord(reqBufferStr)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -617,7 +618,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   )
   t.is(
     parsed['Content-Length'],
-    '398',
+    '396',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -652,7 +653,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     'The written record should end with 2 CRLFs'
   )
   const parsed2 = parseWrittenResponseRecord(resBufferStr)
-  t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed2['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
     checkRecordId(parsed2['WARC-Record-ID']),
@@ -664,7 +665,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   )
   t.is(
     parsed2['Content-Length'],
-    '69647',
+    '69645',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -719,7 +720,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWrittenRequestRecord(reqBufferStr)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -731,7 +732,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   )
   t.is(
     parsed['Content-Length'],
-    '398',
+    '396',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -784,7 +785,7 @@ test('writeRequestResponseRecords should write correct request and response reco
     checkRecordId(parsed['WARC-Concurrent-To']),
     'something is wrong with the requests WARC-Concurrent-To'
   )
-  t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed2['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
     checkRecordId(parsed2['WARC-Record-ID']),
@@ -796,7 +797,7 @@ test('writeRequestResponseRecords should write correct request and response reco
   )
   t.is(
     parsed2['Content-Length'],
-    '69647',
+    '69645',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -862,7 +863,7 @@ test('writeRequestRecord should write correct request when no warc info record w
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWrittenRequestRecord(reqBufferStr)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -874,7 +875,7 @@ test('writeRequestRecord should write correct request when no warc info record w
   )
   t.is(
     parsed['Content-Length'],
-    '398',
+    '396',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -927,7 +928,7 @@ test('writeRequestRecord should write correct request when a warc info record wa
     'The written record should end with 2 CRLFs'
   )
   const parsed = parseWrittenRequestRecord(reqBufferStr)
-  t.is(parsed['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed['WARC-Type'], 'request', 'The warc type should be request')
   t.true(
     checkRecordId(parsed['WARC-Record-ID']),
@@ -939,7 +940,7 @@ test('writeRequestRecord should write correct request when a warc info record wa
   )
   t.is(
     parsed['Content-Length'],
-    '398',
+    '396',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -996,7 +997,7 @@ test('writeResponseRecord should write correct response when no warc info record
     'The written record should end with 2 CRLFs'
   )
   const parsed2 = parseWrittenResponseRecord(resBufferStr)
-  t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed2['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
     checkRecordId(parsed2['WARC-Record-ID']),
@@ -1008,7 +1009,7 @@ test('writeResponseRecord should write correct response when no warc info record
   )
   t.is(
     parsed2['Content-Length'],
-    '69647',
+    '69645',
     'something is wrong with the headers field content-length'
   )
   t.is(
@@ -1063,7 +1064,7 @@ test('writeResponseRecord should write correct response when a warc info record 
     'The written record should end with 2 CRLFs'
   )
   const parsed2 = parseWrittenResponseRecord(resBufferStr)
-  t.is(parsed2['WARC'], '1.1', 'The warc version should be 1.1')
+  t.is(parsed2['WARC'], WARCV, `The warc version should be ${WARCV}`)
   t.is(parsed2['WARC-Type'], 'response', 'The warc type should be request')
   t.true(
     checkRecordId(parsed2['WARC-Record-ID']),
@@ -1075,7 +1076,7 @@ test('writeResponseRecord should write correct response when a warc info record 
   )
   t.is(
     parsed2['Content-Length'],
-    '69647',
+    '69645',
     'something is wrong with the headers field content-length'
   )
   t.is(

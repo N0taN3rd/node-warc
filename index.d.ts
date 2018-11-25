@@ -4,8 +4,8 @@ import {ReadStream} from "fs";
 import {Gunzip} from "zlib";
 import {Transform} from "stream";
 import {URL} from 'url';
-import {EventEmitter} from 'eventemitter3';
 import {Page, Request, CDPSession} from "puppeteer";
+import EventEmitter from "eventemitter3";
 
 interface Error {
     stack?: string;
@@ -27,7 +27,7 @@ export class AutoWARCParser extends EventEmitter {
     on(event: 'record', cb: (record: WARCRecord) => any): this;
     on(event: 'error', cb: (error: Error) => any): this;
     on(event: 'done', cb: () => any): this;
-    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>
+    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>;
 }
 
 export class WARCGzParser extends EventEmitter {
@@ -42,7 +42,7 @@ export class WARCGzParser extends EventEmitter {
     on(event: 'record', cb: (record: WARCRecord) => any): this;
     on(event: 'error', cb: (error: Error) => any): this;
     on(event: 'done', cb: () => any): this;
-    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>
+    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>;
 }
 
 export class WARCParser extends EventEmitter {
@@ -57,16 +57,23 @@ export class WARCParser extends EventEmitter {
     on(event: 'record', cb: (record: WARCRecord) => any): this;
     on(event: 'error', cb: (error: Error) => any): this;
     on(event: 'done', cb: () => any): this;
-    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>
+    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>;
 }
 
 export class WARCStreamTransform extends Transform {
     _consumeChunk(chunk: Buffer, done: () => void, pushLast?: boolean): void;
     _transform(buf: Buffer, enc: string, done: () => void): void;
     _flush(done: () => void): void;
+    push(record: WARCRecord): boolean;
+    [Symbol.asyncIterator](): AsyncIterableIterator<WARCRecord>;
 }
 
 export function recordIterator(warcStream: ReadStream | Gunzip): AsyncIterableIterator<WARCRecord>;
+
+export class GzipDetector {
+    static isGzipped(filePath: string): Promise<boolean>;
+    static isGzippedSync(filePath: string): boolean;
+}
 
 export interface WARCRecordParts {
     header: Buffer[];
@@ -79,7 +86,7 @@ export interface RequestHTTPInfo {
     path: string;
     method: string;
     httpVersion: string;
-    headers: Object;
+    headers: object;
 }
 
 export interface ResponseHTTPInfo {
@@ -87,11 +94,11 @@ export interface ResponseHTTPInfo {
     statusCode: string;
     statusReason: string;
     httpVersion: string;
-    headers: Object;
+    headers: object;
 }
 
 export class WARCRecord {
-    warcHeader: Object;
+    warcHeader: object;
     httpInfo?: RequestHTTPInfo | ResponseHTTPInfo;
     content: Buffer;
     warcType: string;
@@ -128,6 +135,17 @@ export class RecordBuilder {
     consumeLine(line: Buffer): WARCRecord | null;
 }
 
+export class ContentParser {
+    static utf8BufferSlice (buf: Buffer, start: number, end: number): string;
+    static bufEndPosNoCRLF (buf: Buffer, bufLen: number): number;
+    static parseHTTPPortion (bufs: Buffer[], req: boolean): RequestHTTPInfo | ResponseHTTPInfo;
+    static parseWarcRecordHeader (bufs: Buffer[]): object;
+    static parseWarcInfoMetaDataContent (bufs: Buffer[]): object;
+    static parseReqHTTP (bufs: Buffer[]): object;
+    static parseResHTTP (bufs: Buffer[]): object;
+    static _parseHeaders (headerBuffs: Buffer[]): object;
+}
+
 export class CDPRequestInfo {
     requestId?: string;
     _url?: string;
@@ -137,39 +155,39 @@ export class CDPRequestInfo {
     status?: string;
     statusText?: string;
     postData?: string;
-    requestHeaders?: Object;
-    requestHeaders_?: Object;
+    requestHeaders?: object;
+    requestHeaders_?: object;
     requestHeadersText?: string;
-    responseHeaders?: Object;
+    responseHeaders?: object;
     responseHeadersText?: string;
     getBody: boolean;
     hasPostData: boolean;
-    addResponse(res: Object, not3xx?: boolean): void;
+    addResponse(res: object, not3xx: boolean = true): void;
     getParsedURL(): URL;
     serializeRequestHeaders(): string;
     serializeResponseHeaders(): string;
     canSerializeResponse(): boolean;
+    static fromRequest(info: object): CDPRequestInfo;
+    static fromRedir(info: object): CDPRequestInfo;
+    static fromResponse(info: object): CDPRequestInfo;
     _serializeRequestHeadersText(): string;
     _serializeRequestHeadersObj(): string;
-    _getReqHeaderObj(): Object | null;
+    _getReqHeaderObj(): object | null;
     _ensureProto(): void;
     _checkMethod(): void;
     _methProtoFromReqHeadText(requestHeadersText?: string): void;
     _correctProtocol(originalProtocol: string): string;
-    static fromRequest(info: Object): CDPRequestInfo;
-    static fromRedir(info: Object): CDPRequestInfo;
-    static fromResponse(info: Object): CDPRequestInfo;
 }
 
 export class CapturedRequest {
     requestId: string;
     _reqs: Map<string, CDPRequestInfo>;
-    constructor(info: Object);
-    addRequestInfo(info: Object): void;
-    url(): string | Array<string>;
+    constructor(info: object);
+    addRequestInfo(info: object): void;
+    url(): string | string[];
     keys(): Iterator<string>;
     values(): Iterator<CDPRequestInfo>;
-    static newOne(info: Object): CapturedRequest;
+    static newOne(info: object): CapturedRequest;
     [Symbol.iterator](): Iterator<CDPRequestInfo>;
 }
 
@@ -178,27 +196,27 @@ export class RequestHandler {
     requests: Map<string, CapturedRequest>;
     startCapturing(): void;
     stopCapturing(): void;
-    addRequestInfo(info: Object): void;
+    addRequestInfo(info: object): void;
     clear(): void;
     size(): number;
     entries(): Iterator<[string, CapturedRequest]>;
     values(): Iterator<CapturedRequest>;
     keys(): Iterator<string>;
     forEach(iteratee: (entry: [string, CapturedRequest]) => any, thisArg?: any): void;
-    requestWillBeSent(info: Object): void;
-    responseReceived(info: Object): void;
+    requestWillBeSent(info: object): void;
+    responseReceived(info: object): void;
     iterateRequests(): Iterator<CDPRequestInfo>;
     [Symbol.iterator](): Iterator<[string, CapturedRequest]>;
 }
 
 export class ElectronRequestCapturer extends RequestHandler {
-    attach (wcDebugger: Object): void;
+    attach (wcDebugger: object): void;
     maybeNetworkMessage(method: string, params: string): void;
 }
 
 export class PuppeteerRequestCapturer {
     _capture: boolean;
-    _requests: Array<Request>;
+    _requests: Request[];
     constructor (page?: Page);
     attach (page: Page): void;
     detach (page: Page): void;
@@ -206,7 +224,7 @@ export class PuppeteerRequestCapturer {
     stopCapturing(): void;
     requestWillBeSent(r: Request): void;
     iterateRequests(): Iterator<Request>;
-    requests(): Array<Request>;
+    requests(): Request[];
     [Symbol.iterator](): Iterator<Request>;
 }
 
@@ -217,9 +235,9 @@ export class PuppeteerCDPRequestCapturer extends RequestHandler {
 }
 
 export class RemoteChromeRequestCapturer extends RequestHandler {
-    constructor(network?: Object);
-    attach(network: Object);
-    detach(cdpClient: Object);
+    constructor(network?: object);
+    attach(network: object);
+    detach(cdpClient: object);
 }
 
 export type WARCContentData = Buffer | string
@@ -269,7 +287,7 @@ export class WARCWriterBase extends EventEmitter {
     writeResponseRecord (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     writeRecordBlock (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     writeRecordChunks (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
-    end(): Promise<void>;
+    end(): void;
     _writeRequestRecord(targetURI: string, resId: string | null, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     _writeResponseRecord(targetURI: string, resId: string | null, httpHeaderString: string, responseData?: WARCContentData): Promise<void>;
     _onFinish(): void;
@@ -279,8 +297,8 @@ export class WARCWriterBase extends EventEmitter {
 }
 
 export class ElectronWARCGenerator extends WARCWriterBase {
-    generateWARC (capturer: ElectronRequestCapturer, network: Object, genOpts: WARCGenOpts): Promise<NullableEr>;
-    generateWarcEntry (nreq: CDPRequestInfo, wcDebugger: Object): Promise<void>;
+    generateWARC (capturer: ElectronRequestCapturer, network: object, genOpts: WARCGenOpts): Promise<NullableEr>;
+    generateWarcEntry (nreq: CDPRequestInfo, wcDebugger: object): Promise<void>;
 }
 
 export class PuppeteerWARCGenerator extends WARCWriterBase {
@@ -294,6 +312,6 @@ export class PuppeteerCDPWARCGenerator extends WARCWriterBase {
 }
 
 export class RemoteChromeWARCGenerator extends WARCWriterBase {
-    generateWARC (capturer: RemoteChromeRequestCapturer, network: Object, genOpts: WARCGenOpts): Promise<NullableEr>;
-    generateWarcEntry (nreq: CDPRequestInfo, network: Object): Promise<void>;
+    generateWARC (capturer: RemoteChromeRequestCapturer, network: object, genOpts: WARCGenOpts): Promise<NullableEr>;
+    generateWarcEntry (nreq: CDPRequestInfo, network: object): Promise<void>;
 }
