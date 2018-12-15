@@ -212,7 +212,7 @@ test('initWARC should init the warc and be in gzip mode when the options state t
   const { path, options } = writer._warcOutStream
   t.is(
     path,
-    'dummy.warc',
+    'dummy.warc.gz',
     'the path WARCWriterBase should have used is dummy.warc'
   )
   t.deepEqual(
@@ -252,11 +252,11 @@ test('writeRecordChunks should just write the buffer chunks', async t => {
 test('writeWarcInfoRecord should write a correct info record', async t => {
   const { writer } = t.context
   writer.initWARC('dummy.warc')
-  await writer.writeWarcInfoRecord(
-    'testing',
-    'createdByTesting',
-    'superduper awesome browser'
-  )
+  await writer.writeWarcInfoRecord({
+    isPartOf: 'testing',
+    description: 'createdByTesting',
+    'http-header-user-agent': 'superduper awesome browser'
+  })
   const checkingWOS = writer._warcOutStream
   t.is(
     checkingWOS.numWrites(),
@@ -273,8 +273,8 @@ test('writeWarcInfoRecord should write a correct info record', async t => {
   const bufferString = buffer.toString()
   t.is(
     (bufferString.match(crlfRe) || []).length,
-    16,
-    'The written record should only contain 16 CRLFs'
+    15,
+    'The written record should only contain 15 CRLFs'
   )
   t.true(
     bufferString.endsWith('\r\n\r\n'),
@@ -293,7 +293,7 @@ test('writeWarcInfoRecord should write a correct info record', async t => {
   )
   t.is(
     parsed['Content-Length'],
-    '175',
+    '159',
     'something is wrong with the headers field content-length'
   )
   t.is(

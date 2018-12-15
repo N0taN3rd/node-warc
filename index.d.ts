@@ -5,7 +5,7 @@ import {Gunzip} from "zlib";
 import {Transform} from "stream";
 import {URL} from 'url';
 import {Page, Request, CDPSession} from "puppeteer";
-import EventEmitter from "eventemitter3";
+import { EventEmitter } from "eventemitter3";
 
 interface Error {
     stack?: string;
@@ -162,7 +162,7 @@ export class CDPRequestInfo {
     responseHeadersText?: string;
     getBody: boolean;
     hasPostData: boolean;
-    addResponse(res: object, not3xx: boolean = true): void;
+    addResponse(res: object, not3xx: boolean): void;
     getParsedURL(): URL;
     serializeRequestHeaders(): string;
     serializeResponseHeaders(): string;
@@ -263,30 +263,29 @@ export interface Metadata {
     content?: WARCContentData
 }
 
-export interface WARCInfoContent {
-    version: string,
-    isPartOfV?: string,
-    warcInfoDescription?: string,
-    ua?: string,
-}
+export type WARCInfoContent = Object | Buffer | string
 
 export interface WARCGenOpts {
     warcOpts: WARCInitOpts,
     winfo?: WARCInfoContent,
-    metadata?: Metadata
+    metadata?: Metadata,
+    pages?: string | string[]
 }
 
 export class WARCWriterBase extends EventEmitter {
+    constructor (defaultOpts?: WARCFileOpts);
+    setDefaultOpts (defaultOpts: WARCFileOpts): void;
     initWARC (warcPath: string, options: WARCFileOpts): void;
     writeRequestResponseRecords (targetURI: string, reqData: ResReqData, resData: ResReqData): Promise<void>;
-    writeWarcInfoRecord (isPartOfV: string, warcInfoDescription: string, ua: string): Promise<void>;
+    writeWarcInfoRecord (winfo: WARCInfoContent): Promise<void>;
     writeWarcRawInfoRecord (warcInfoContent: WARCContentData): Promise<void>;
+    writeWebrecorderBookmarksInfoRecord (pages: string | string[]): Promise<void>;
     writeWarcMetadataOutlinks (targetURI: string, outlinks: string): Promise<void>;
     writeWarcMetadata (targetURI: string, metaData: WARCContentData): Promise<void>;
     writeRequestRecord (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     writeResponseRecord (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     writeRecordBlock (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
-    writeRecordChunks (targetURI: string, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
+    writeRecordChunks (...recordParts: Buffer[]): Promise<void>;
     end(): void;
     _writeRequestRecord(targetURI: string, resId: string | null, httpHeaderString: string, requestData?: WARCContentData): Promise<void>;
     _writeResponseRecord(targetURI: string, resId: string | null, httpHeaderString: string, responseData?: WARCContentData): Promise<void>;

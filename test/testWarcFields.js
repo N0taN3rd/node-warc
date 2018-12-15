@@ -4,6 +4,7 @@ import {
   makeDate,
   countCRLFs,
   parseWARCHeader,
+  parseKVContent,
   checkRecordId
 } from './helpers/warcHelpers'
 import {
@@ -171,60 +172,25 @@ test('The warcInfoHeader function should not include the targetURI or fileName f
   t.is(noTU['Content-Type'], WARCContentTypes.warcFields.split(': ')[1].trim())
 })
 
-test('warcInfoContent should not include isPartOf, description, or ua if they are not supplied', t => {
-  const infoContent = warcInfoContent({ version })
-  t.is(countCRLFs(infoContent), 3)
-  const parsed = parseWARCHeader(infoContent)
-  t.is(parsed['software: node-warc'], version)
+test('warcInfoContent should only include format if nothing else is supplied', t => {
+  const infoContent = warcInfoContent({})
+  t.is(countCRLFs(infoContent), 1)
+  const parsed = parseKVContent(infoContent)
   t.is(parsed['format'], `WARC File Format ${WARCV}`)
-  t.is(parsed['robots'], 'ignore')
 })
 
-test('warcInfoContent should include isPartOf if is is supplied', t => {
-  const infoContent = warcInfoContent({ version, isPartOfV })
-  t.is(countCRLFs(infoContent), 4)
-  const parsed = parseWARCHeader(infoContent)
-  t.is(parsed['software: node-warc'], version)
-  t.is(parsed['format'], `WARC File Format ${WARCV}`)
-  t.is(parsed['isPartOf'], isPartOfV)
-  t.is(parsed['robots'], 'ignore')
-})
-
-test('warcInfoContent should include warcInfoDescription if is is supplied', t => {
-  const infoContent = warcInfoContent({ version, warcInfoDescription })
-  t.is(countCRLFs(infoContent), 4)
-  const parsed = parseWARCHeader(infoContent)
-  t.is(parsed['software: node-warc'], version)
-  t.is(parsed['format'], `WARC File Format ${WARCV}`)
-  t.is(parsed['description'], warcInfoDescription)
-  t.is(parsed['robots'], 'ignore')
-})
-
-test('warcInfoContent should include ua if is is supplied', t => {
-  const infoContent = warcInfoContent({ version, ua })
-  t.is(countCRLFs(infoContent), 4)
-  const parsed = parseWARCHeader(infoContent)
-  t.is(parsed['software: node-warc'], version)
-  t.is(parsed['format'], `WARC File Format ${WARCV}`)
-  t.is(parsed['http-header-user-agent'], ua)
-  t.is(parsed['robots'], 'ignore')
-})
-
-test('warcInfoContent should include isPartOf, description, and ua if they are supplied', t => {
+test('warcInfoContent should include the key values of the supplied object', t => {
   const infoContent = warcInfoContent({
-    version,
-    warcInfoDescription,
-    ua,
-    isPartOfV
+    software: version,
+    isPartOf: isPartOfV,
+    description: warcInfoDescription
   })
-  t.is(countCRLFs(infoContent), 6)
-  const parsed = parseWARCHeader(infoContent)
-  t.is(parsed['software: node-warc'], version)
+  t.is(countCRLFs(infoContent), 4)
+  const parsed = parseKVContent(infoContent)
+  t.is(parsed['software'], version)
   t.is(parsed['format'], `WARC File Format ${WARCV}`)
-  t.is(parsed['description'], warcInfoDescription)
   t.is(parsed['isPartOf'], isPartOfV)
-  t.is(parsed['http-header-user-agent'], ua)
-  t.is(parsed['robots'], 'ignore')
+  t.is(parsed['description'], warcInfoDescription)
 })
 
 test('warcMetadataHeader should not include concurrentTo or warc info id they are supplied', t => {
