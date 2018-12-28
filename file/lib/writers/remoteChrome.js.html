@@ -43,6 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html">RequestHandler</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyHeaders">stringifyHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyRequestHeaders">stringifyRequestHeaders</a></span></span></li>
@@ -58,7 +59,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
@@ -87,19 +87,20 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
    * to be serialized to the WARC
    * @param {Object} network - The chrome-remote-interface Network object
    * @param {WARCGenOpts} genOpts - Options for generating the WARC and optionally generating
-   * WARC info and metadata records
+   * WARC info, WARC info + Webrecorder Player bookmark list, metadata records
    * @return {Promise&lt;?Error&gt;} - A Promise that resolves when WARC generation is complete
    */
   async generateWARC (capturer, network, genOpts) {
     const { warcOpts, winfo, metadata } = genOpts
     this.initWARC(warcOpts.warcPath, warcOpts)
+    /* istanbul ignore if */
     if (winfo != null) {
-      await this.writeWarcInfoRecord(
-        winfo.isPartOfV,
-        winfo.warcInfoDescription,
-        winfo.ua
-      )
+      await this.writeWarcInfoRecord(winfo)
     }
+    if (genOpts.pages) {
+      await this.writeWebrecorderBookmarksInfoRecord(genOpts.pages)
+    }
+    /* istanbul ignore if */
     if (metadata != null) {
       await this.writeWarcMetadata(metadata.targetURI, metadata.content)
     }
@@ -107,6 +108,7 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
       try {
         await this.generateWarcEntry(request, network)
       } catch (error) {
+        /* istanbul ignore next */
         console.error(error)
       }
     }
@@ -132,7 +134,7 @@ class RemoteChromeWARCGenerator extends WARCWriterBase {
         let post = await network.getRequestPostData({
           requestId: nreq.requestId
         })
-        postData = Buffer.from(post.postData, &apos;base64&apos;)
+        postData = Buffer.from(post.postData, &apos;utf8&apos;)
       } catch (e) {}
     }
     if (nreq.canSerializeResponse()) {

@@ -43,6 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html">RequestHandler</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyHeaders">stringifyHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyRequestHeaders">stringifyRequestHeaders</a></span></span></li>
@@ -58,7 +59,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
@@ -87,6 +87,7 @@ const {
   CRLF,
   CRLF2x
 } = require(&apos;./warcFields&apos;)
+const ensureWARCFileName = require(&apos;../utils/ensureWARCFilename&apos;)
 
 /**
  * @type {Buffer}
@@ -128,11 +129,17 @@ function makeContentBuffer (string, maybeBuffer) {
 
 /**
  * @desc Default options that control how WARC writting is done
- * @type {{appending: boolean, gzip: boolean}}
+ * @param {WARCFileOpts} [opts]
+ * @return {WARCFileOpts}
  */
-const defaultOpts = {
-  appending: false,
-  gzip: process.env.NODEWARC_WRITE_GZIPPED != null
+function ensureOptions (opts) {
+  if (opts == null) {
+    opts = {}
+  }
+  return {
+    appending: opts.appending || false,
+    gzip: opts.gzip || process.env.NODEWARC_WRITE_GZIPPED != null
+  }
 }
 
 /**
@@ -142,8 +149,9 @@ const defaultOpts = {
 class WARCWriterBase extends EventEmitter {
   /**
    * @desc Create a new WARCWriter
+   * @param {?WARCFileOpts} [defaultOpts] - Optional default WARC file options
    */
-  constructor () {
+  constructor (defaultOpts) {
     super()
     /**
      * @type {?WriteStream}
@@ -172,9 +180,14 @@ class WARCWriterBase extends EventEmitter {
     this._warcInfoId = null
 
     /**
-     * @type {{appending: boolean, gzip: boolean}}
+     * @type {?WARCFileOpts}
      */
-    this.opts = defaultOpts
+    this.opts = null
+
+    /**
+     * @type {WARCFileOpts}
+     */
+    this.defaultOpts = ensureOptions(defaultOpts)
 
     /**
      * @type {string}
@@ -186,6 +199,14 @@ class WARCWriterBase extends EventEmitter {
   }
 
   /**
+   * @desc Set the default WARC creation options
+   * @param {WARCFileOpts} defaultOpts - The new default options
+   */
+  setDefaultOpts (defaultOpts) {
+    this.defaultOpts = ensureOptions(defaultOpts)
+  }
+
+  /**
    * @desc Initialize the writer. The options object is optional and defaults to `appending = false` and `gzip = process.env.NODEWARC_WRITE_GZIPPED != null`.
    * Writing gzipped records is also controllable by setting `NODEWARC_WRITE_GZIPPED` environment variable.
    * Options supplied to this method override the default options.
@@ -193,26 +214,27 @@ class WARCWriterBase extends EventEmitter {
    * @param {?WARCFileOpts} [options] - write options controlling how the WARC should be written
    */
   initWARC (warcPath, options) {
-    this.opts = Object.assign({}, defaultOpts, options || {})
+    this.opts = Object.assign({}, this.defaultOpts, options || {})
+    const wfp = ensureWARCFileName(warcPath, this.opts.gzip)
     if (this.opts.appending) {
-      this._warcOutStream = fs.createWriteStream(warcPath, {
+      this._warcOutStream = fs.createWriteStream(wfp, {
         flags: &apos;a&apos;,
         encoding: &apos;utf8&apos;
       })
     } else {
-      this._warcOutStream = fs.createWriteStream(warcPath, { encoding: &apos;utf8&apos; })
+      this._warcOutStream = fs.createWriteStream(wfp, { encoding: &apos;utf8&apos; })
     }
     this._warcOutStream.on(&apos;finish&apos;, this._onFinish)
     this._warcOutStream.on(&apos;error&apos;, this._onError)
     let now = new Date().toISOString()
     this._now = now.substr(0, now.indexOf(&apos;.&apos;)) + &apos;Z&apos;
-    this._fileName = Path.basename(warcPath)
+    this._fileName = Path.basename(wfp)
   }
 
   /**
-   * @param {string} targetURI
-   * @param {{headers: string, data?: Buffer|string}} reqData
-   * @param {{headers: string, data?: Buffer|string}} resData
+   * @param {string} targetURI - The target URI for the request response record pairs
+   * @param {{headers: string, data?: Buffer|string}} reqData - The request data
+   * @param {{headers: string, data?: Buffer|string}} resData - The response data
    * @return {Promise&lt;void&gt;}
    */
   async writeRequestResponseRecords (targetURI, reqData, resData) {
@@ -233,7 +255,7 @@ class WARCWriterBase extends EventEmitter {
 
   /**
    * @desc Write arbitrary number of items to the WARC
-   * @param {Buffer[]} recordParts
+   * @param {Buffer[]} recordParts - Array of buffers to be writtern
    * @return {Promise&lt;void&gt;}
    */
   async writeRecordChunks (...recordParts) {
@@ -243,31 +265,36 @@ class WARCWriterBase extends EventEmitter {
   }
 
   /**
-   * @desc Write out the WARC-Type: info records
-   * @param {string} isPartOfV - The value of isPartOf
-   * @param {string} warcInfoDescription
-   * @param {string} ua - user agent
+   * @desc Write out the WARC-Type: info records.
+   * If the contents for the info record is an object then the objects properties (property, property value pairs)
+   * are written otherwise (when Buffer or string) the content is written as is
+   * @param {Object|Buffer|string} winfo - The contents for the WARC info record
    * @return {Promise&lt;void&gt;}
    */
-  writeWarcInfoRecord (isPartOfV, warcInfoDescription, ua) {
+  writeWarcInfoRecord (winfo) {
+    if (Buffer.isBuffer(winfo) || typeof winfo === &apos;string&apos;) {
+      return this.writeWarcRawInfoRecord(winfo)
+    }
+    if (winfo.software == null) {
+      winfo.software = `node-warc/${this._version}`
+    }
     return this.writeWarcRawInfoRecord(
-      Buffer.from(
-        warcInfoContent({
-          version: this._version,
-          isPartOfV,
-          warcInfoDescription,
-          ua
-        }),
-        &apos;utf8&apos;
-      )
+      Buffer.from(warcInfoContent(winfo), &apos;utf8&apos;)
     )
   }
 
   /**
-   * @param {string|Buffer} warcInfoContent
+   * @desc Write warc-info record
+   * @param {string|Buffer} warcInfoContent - The contents of the warc-info record
+   * @return {Promise&lt;void&gt;}
    */
   writeWarcRawInfoRecord (warcInfoContent) {
-    this._warcInfoId = uuid()
+    let recID
+    if (this._warcInfoId) {
+      recID = uuid()
+    } else {
+      this._warcInfoId = recID = uuid()
+    }
     const whct = Buffer.isBuffer(warcInfoContent)
       ? warcInfoContent
       : Buffer.from(warcInfoContent, &apos;utf8&apos;)
@@ -276,7 +303,47 @@ class WARCWriterBase extends EventEmitter {
         date: this._now,
         fileName: this._fileName,
         len: whct.length,
-        rid: this._warcInfoId
+        rid: recID
+      }),
+      &apos;utf8&apos;
+    )
+    const totalLength = wh.length + whct.length + WARCSepTSize
+    return this.writeRecordBlock(
+      Buffer.concat([wh, CRLFBuffer, whct, recordSeparatorBuffer], totalLength)
+    )
+  }
+
+  /**
+   * @desc Writes a WARC Info record containing Webrecorder/Webrecorder Player bookmark (page list)
+   * @param {string|Array&lt;string&gt;} pages - The URL of the page this WARC contains or an Array of URLs for the pages
+   * this WARC contains
+   * @return {Promise&lt;void&gt;}
+   */
+  writeWebrecorderBookmarksInfoRecord (pages) {
+    let recID
+    if (this._warcInfoId) {
+      recID = uuid()
+    } else {
+      this._warcInfoId = recID = uuid()
+    }
+    const winfoContent = {
+      software: `node-warc/${this._version}`,
+      &apos;json-metadata&apos;: JSON.stringify({
+        desc: &apos;&apos;,
+        auto_title: true,
+        type: &apos;recording&apos;,
+        pages: Array.isArray(pages)
+          ? pages.map(page =&gt; ({ timestamp: this._now, url: page }))
+          : [{ timestamp: this._now, url: pages }]
+      })
+    }
+    const whct = Buffer.from(warcInfoContent(winfoContent), &apos;utf8&apos;)
+    const wh = Buffer.from(
+      warcInfoHeader({
+        date: this._now,
+        fileName: this._fileName,
+        len: whct.length,
+        rid: recID
       }),
       &apos;utf8&apos;
     )
@@ -288,8 +355,8 @@ class WARCWriterBase extends EventEmitter {
 
   /**
    * @desc Write WARC-Type: metadata for outlinks
-   * @param {string} targetURI
-   * @param {string} outlinks
+   * @param {string} targetURI - The target URI for the metadata record
+   * @param {string} outlinks - A string containing outlink metadata
    * @return {Promise&lt;void&gt;}
    */
   writeWarcMetadataOutlinks (targetURI, outlinks) {
@@ -379,7 +446,7 @@ class WARCWriterBase extends EventEmitter {
    * The `finished` event will not be emitted until this method has been called
    */
   end () {
-    if (this._warcOutStream) {
+    if (this._warcOutStream != null) {
       this._warcOutStream.end()
     }
   }
@@ -427,7 +494,10 @@ class WARCWriterBase extends EventEmitter {
    * @return {Promise&lt;void&gt;}
    */
   _writeResponseRecord (targetURI, resId, httpHeaderString, responseData) {
-    const resHeaderContentBuffer = makeContentBuffer(httpHeaderString, responseData)
+    const resHeaderContentBuffer = makeContentBuffer(
+      httpHeaderString,
+      responseData
+    )
     const respWHeader = Buffer.from(
       warcResponseHeader({
         targetURI,
@@ -438,10 +508,16 @@ class WARCWriterBase extends EventEmitter {
       }),
       &apos;utf8&apos;
     )
-    const totalLength = respWHeader.length + resHeaderContentBuffer.length + WARCSepTSize
+    const totalLength =
+      respWHeader.length + resHeaderContentBuffer.length + WARCSepTSize
     return this.writeRecordBlock(
       Buffer.concat(
-        [respWHeader, CRLFBuffer, resHeaderContentBuffer, recordSeparatorBuffer],
+        [
+          respWHeader,
+          CRLFBuffer,
+          resHeaderContentBuffer,
+          recordSeparatorBuffer
+        ],
         totalLength
       )
     )
@@ -506,9 +582,12 @@ module.exports = WARCWriterBase
 
 /**
  * @typedef {Object} WARCGenOpts
+ * @property {string|Array&lt;string&gt;} pages - The URL of the page this WARC contains or an Array of
+ * URLs for the pages this WARC contains. Used to write a WARC Info record containing
+ * Webrecorder Player compatible bookmark list
  * @property {WARCInitOpts} warcOpts - Options for the writing of the WARC file
- * @property {?WARCInfoContent} [winfo = null] - Optional contents for the WARC info record
- * @property {?Metadata} [metadata = null] - Optional metadata contents
+ * @property {Object|Buffer|string} [winfo] - Optional contents for the WARC info record
+ * @property {Metadata} [metadata] - Optional metadata contents
  */
 </code></pre>
 

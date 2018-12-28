@@ -132,6 +132,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/utils/ensurewarcfilename.js~ensurewarcfilename",
+    "function/index.html#static-function-ensureWARCFilename",
+    "<span>ensureWARCFilename</span> <span class=\"search-result-import-path\">node-warc/lib/utils/ensureWARCFilename.js</span>",
+    "function"
+  ],
+  [
     "node-warc/lib/utils/getresbodyelectron.js~getresbodyelectron",
     "function/index.html#static-function-getResBodyElectron",
     "<span>getResBodyElectron</span> <span class=\"search-result-import-path\">node-warc/lib/utils/getResBodyElectron.js</span>",
@@ -474,6 +480,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "lib/.externs.js~iterator",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator",
+    "lib/.externs.js~Iterator",
+    "external"
+  ],
+  [
     "lib/.externs.js~page",
     "https://pptr.dev/#?product=Puppeteer&version=v1.9.0&show=api-class-page",
     "lib/.externs.js~Page",
@@ -495,6 +507,12 @@ window.esdocSearchIndex = [
     "lib/.externs.js~request",
     "https://pptr.dev/#?product=Puppeteer&version=v1.9.0&show=api-class-request",
     "lib/.externs.js~Request",
+    "external"
+  ],
+  [
+    "lib/.externs.js~symbol",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "lib/.externs.js~Symbol",
     "external"
   ],
   [
@@ -1164,18 +1182,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/requestcapturers/puppeteercdp.js~puppeteercdprequestcapturer#requestwillbesent",
-    "class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-requestWillBeSent",
-    "lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer#requestWillBeSent",
-    "member"
-  ],
-  [
-    "lib/requestcapturers/puppeteercdp.js~puppeteercdprequestcapturer#responsereceived",
-    "class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html#instance-member-responseReceived",
-    "lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer#responseReceived",
-    "member"
-  ],
-  [
     "lib/requestcapturers/remotechrome.js",
     "file/lib/requestCapturers/remoteChrome.js.html",
     "lib/requestCapturers/remoteChrome.js",
@@ -1198,18 +1204,6 @@ window.esdocSearchIndex = [
     "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-method-detach",
     "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#detach",
     "method"
-  ],
-  [
-    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#requestwillbesent",
-    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-member-requestWillBeSent",
-    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#requestWillBeSent",
-    "member"
-  ],
-  [
-    "lib/requestcapturers/remotechrome.js~remotechromerequestcapturer#responsereceived",
-    "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-member-responseReceived",
-    "lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer#responseReceived",
-    "member"
   ],
   [
     "lib/requestcapturers/requesthandler.js",
@@ -1360,6 +1354,12 @@ window.esdocSearchIndex = [
     "class/lib/utils/electronGetResError.js~ElectronGetResError.html#instance-member-rid",
     "lib/utils/electronGetResError.js~ElectronGetResError#rid",
     "member"
+  ],
+  [
+    "lib/utils/ensurewarcfilename.js",
+    "file/lib/utils/ensureWARCFilename.js.html",
+    "lib/utils/ensureWARCFilename.js",
+    "file"
   ],
   [
     "lib/utils/getresbodyelectron.js",
@@ -1800,12 +1800,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "lib/writers/warcfields.js~warcinfocontent",
-    "typedef/index.html#static-typedef-WARCInfoContent",
-    "lib/writers/warcFields.js~WARCInfoContent",
-    "typedef"
-  ],
-  [
     "lib/writers/warcfields.js~warcinfoheader",
     "typedef/index.html#static-typedef-WARCInfoHeader",
     "lib/writers/warcFields.js~WARCInfoHeader",
@@ -1926,6 +1920,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/writers/warcwriterbase.js~warcwriterbase#defaultopts",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-member-defaultOpts",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#defaultOpts",
+    "member"
+  ],
+  [
     "lib/writers/warcwriterbase.js~warcwriterbase#end",
     "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-end",
     "lib/writers/warcWriterBase.js~WARCWriterBase#end",
@@ -1942,6 +1942,12 @@ window.esdocSearchIndex = [
     "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-member-opts",
     "lib/writers/warcWriterBase.js~WARCWriterBase#opts",
     "member"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#setdefaultopts",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-setDefaultOpts",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#setDefaultOpts",
+    "method"
   ],
   [
     "lib/writers/warcwriterbase.js~warcwriterbase#writerecordblock",
@@ -1995,6 +2001,12 @@ window.esdocSearchIndex = [
     "lib/writers/warcwriterbase.js~warcwriterbase#writewarcrawinforecord",
     "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcRawInfoRecord",
     "lib/writers/warcWriterBase.js~WARCWriterBase#writeWarcRawInfoRecord",
+    "method"
+  ],
+  [
+    "lib/writers/warcwriterbase.js~warcwriterbase#writewebrecorderbookmarksinforecord",
+    "class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWebrecorderBookmarksInfoRecord",
+    "lib/writers/warcWriterBase.js~WARCWriterBase#writeWebrecorderBookmarksInfoRecord",
     "method"
   ]
 ]

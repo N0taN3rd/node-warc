@@ -43,6 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html">RequestHandler</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyHeaders">stringifyHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyRequestHeaders">stringifyRequestHeaders</a></span></span></li>
@@ -58,7 +59,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
@@ -71,7 +71,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">269/281</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">280/284</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -130,9 +130,9 @@
       <td data-ice="filePath"><span><a href="file/lib/parsers/warcParser.js.html">lib/parsers/warcParser.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/parsers/warcParser.js~WARCParser.html">WARCParser</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">10/10</span></td>
-      <td style="display: none;" data-ice="size">4376 byte</td>
+      <td style="display: none;" data-ice="size">4354 byte</td>
       <td style="display: none;" data-ice="lines">135</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/parsers/warcStreamTransform.js.html">lib/parsers/warcStreamTransform.js</a></span></td>
@@ -164,7 +164,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
       <td style="display: none;" data-ice="size">2178 byte</td>
       <td style="display: none;" data-ice="lines">62</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2018-12-07 20:00:58 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/requestCapturers/index.js.html">lib/requestCapturers/index.js</a></span></td>
@@ -175,28 +175,28 @@
       <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/puppeteer.js.html#errorLines=26,30">lib/requestCapturers/puppeteer.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/puppeteer.js.html">lib/requestCapturers/puppeteer.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html">PuppeteerRequestCapturer</a></span></td>
-      <td class="coverage"><span data-ice="coverage">84 %</span><span data-ice="coverageCount" class="coverage-count">11/13</span></td>
-      <td style="display: none;" data-ice="size">1889 byte</td>
-      <td style="display: none;" data-ice="lines">96</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">13/13</span></td>
+      <td style="display: none;" data-ice="size">2237 byte</td>
+      <td style="display: none;" data-ice="lines">105</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html#errorLines=12,13">lib/requestCapturers/puppeteerCDP.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/puppeteerCDP.js.html">lib/requestCapturers/puppeteerCDP.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/requestCapturers/puppeteerCDP.js~PuppeteerCDPRequestCapturer.html">PuppeteerCDPRequestCapturer</a></span></td>
-      <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">4/6</span></td>
-      <td style="display: none;" data-ice="size">1084 byte</td>
-      <td style="display: none;" data-ice="lines">41</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">1184 byte</td>
+      <td style="display: none;" data-ice="lines">45</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#errorLines=17,18">lib/requestCapturers/remoteChrome.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/requestCapturers/remoteChrome.js.html">lib/requestCapturers/remoteChrome.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></td>
-      <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">4/6</span></td>
-      <td style="display: none;" data-ice="size">1488 byte</td>
-      <td style="display: none;" data-ice="lines">46</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
+      <td style="display: none;" data-ice="size">1588 byte</td>
+      <td style="display: none;" data-ice="lines">50</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/requestCapturers/requestHandler.js.html">lib/requestCapturers/requestHandler.js</a></span></td>
@@ -231,6 +231,14 @@
       <td style="display: none;" data-ice="updated">2018-10-01 19:42:20 (UTC)</td>
     </tr>
 <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/utils/ensureWARCFilename.js.html">lib/utils/ensureWARCFilename.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">1586 byte</td>
+      <td style="display: none;" data-ice="lines">44</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
+    </tr>
+<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/utils/getResBodyElectron.js.html">lib/utils/getResBodyElectron.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
@@ -251,9 +259,9 @@
       <td data-ice="filePath"><span><a href="file/lib/utils/index.js.html">lib/utils/index.js</a></span></td>
       <td data-ice="identifier" class="identifiers">-</td>
       <td class="coverage"><span data-ice="coverage">-</span></td>
-      <td style="display: none;" data-ice="size">821 byte</td>
-      <td style="display: none;" data-ice="lines">16</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td style="display: none;" data-ice="size">951 byte</td>
+      <td style="display: none;" data-ice="lines">17</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/utils/isEmptyPlainObject.js.html">lib/utils/isEmptyPlainObject.js</a></span></td>
@@ -323,9 +331,9 @@
       <td data-ice="filePath"><span><a href="file/lib/writers/electron.js.html">lib/writers/electron.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/electron.js~ElectronWARCGenerator.html">ElectronWARCGenerator</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
-      <td style="display: none;" data-ice="size">3604 byte</td>
-      <td style="display: none;" data-ice="lines">116</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 19:25:33 (UTC)</td>
+      <td style="display: none;" data-ice="size">3665 byte</td>
+      <td style="display: none;" data-ice="lines">115</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/writers/index.js.html">lib/writers/index.js</a></span></td>
@@ -339,49 +347,49 @@
       <td data-ice="filePath"><span><a href="file/lib/writers/puppeteer.js.html">lib/writers/puppeteer.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/puppeteer.js~PuppeteerWARCGenerator.html">PuppeteerWARCGenerator</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
-      <td style="display: none;" data-ice="size">3349 byte</td>
+      <td style="display: none;" data-ice="size">3500 byte</td>
       <td style="display: none;" data-ice="lines">116</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 19:25:33 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/writers/puppeteerCDP.js.html">lib/writers/puppeteerCDP.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/puppeteerCDP.js~PuppeteerCDPWARCGenerator.html">PuppeteerCDPWARCGenerator</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
-      <td style="display: none;" data-ice="size">3677 byte</td>
+      <td style="display: none;" data-ice="size">3773 byte</td>
       <td style="display: none;" data-ice="lines">118</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 19:25:34 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/writers/remoteChrome.js.html">lib/writers/remoteChrome.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
-      <td style="display: none;" data-ice="size">3594 byte</td>
-      <td style="display: none;" data-ice="lines">118</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 19:25:34 (UTC)</td>
+      <td style="display: none;" data-ice="size">3748 byte</td>
+      <td style="display: none;" data-ice="lines">120</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/writers/requestLib.js.html#errorLines=21">lib/writers/requestLib.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/writers/requestLib.js.html">lib/writers/requestLib.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></td>
-      <td class="coverage"><span data-ice="coverage">83 %</span><span data-ice="coverageCount" class="coverage-count">5/6</span></td>
-      <td style="display: none;" data-ice="size">2381 byte</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">2425 byte</td>
       <td style="display: none;" data-ice="lines">78</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 20:04:41 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/writers/warcFields.js.html#errorLines=41,51">lib/writers/warcFields.js</a></span></td>
       <td data-ice="identifier" class="identifiers">-</td>
       <td class="coverage"><span data-ice="coverage">90 %</span><span data-ice="coverageCount" class="coverage-count">20/22</span></td>
-      <td style="display: none;" data-ice="size">7368 byte</td>
-      <td style="display: none;" data-ice="lines">303</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 05:41:09 (UTC)</td>
+      <td style="display: none;" data-ice="size">6755 byte</td>
+      <td style="display: none;" data-ice="lines">287</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/writers/warcWriterBase.js.html#errorLines=68">lib/writers/warcWriterBase.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/writers/warcWriterBase.js.html">lib/writers/warcWriterBase.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></td>
-      <td class="coverage"><span data-ice="coverage">96 %</span><span data-ice="coverageCount" class="coverage-count">28/29</span></td>
-      <td style="display: none;" data-ice="size">12043 byte</td>
-      <td style="display: none;" data-ice="lines">438</td>
-      <td style="display: none;" data-ice="updated">2018-11-01 19:42:19 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">32/32</span></td>
+      <td style="display: none;" data-ice="size">14775 byte</td>
+      <td style="display: none;" data-ice="lines">517</td>
+      <td style="display: none;" data-ice="updated">2018-12-06 21:43:16 (UTC)</td>
     </tr>
 </tbody>
 </table>

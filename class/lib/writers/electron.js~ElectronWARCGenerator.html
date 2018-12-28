@@ -43,6 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html">RequestHandler</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyHeaders">stringifyHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyRequestHeaders">stringifyRequestHeaders</a></span></span></li>
@@ -58,7 +59,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
@@ -88,7 +88,7 @@
 
   
   
-  <div class="flat-list" data-ice="extendsChain"><h4>Extends:</h4><div><span>eventemitter3~EventEmitter</span> &#x2192; <span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span> &#x2192; ElectronWARCGenerator</div></div>
+  <div class="flat-list" data-ice="extendsChain"><h4>Extends:</h4><div><span><a href="https://github.com/primus/eventemitter3">EventEmitter</a></span> &#x2192; <span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span> &#x2192; ElectronWARCGenerator</div></div>
   
   
   
@@ -199,7 +199,35 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-member-opts">opts</a></span></span><span class="code" data-ice="signature">: {appending: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>, gzip: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-member-defaultOpts">defaultOpts</a></span></span><span class="code" data-ice="signature">: <span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-member-opts">opts</a></span></span><span class="code" data-ice="signature">: <span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span></span>
         </p>
       </div>
       <div>
@@ -453,6 +481,35 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-setDefaultOpts">setDefaultOpts</a></span></span><span class="code" data-ice="signature">(defaultOpts: <span><a href="typedef/index.html#static-typedef-WARCFileOpts">WARCFileOpts</a></span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Set the default WARC creation options</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeRecordBlock">writeRecordBlock</a></span></span><span class="code" data-ice="signature">(recordBuffer: <span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span>&lt;<span>void</span>&gt;</span>
         </p>
       </div>
@@ -597,13 +654,13 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcInfoRecord">writeWarcInfoRecord</a></span></span><span class="code" data-ice="signature">(isPartOfV: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, warcInfoDescription: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, ua: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span>&lt;<span>void</span>&gt;</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcInfoRecord">writeWarcInfoRecord</a></span></span><span class="code" data-ice="signature">(winfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span> | <span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span>&lt;<span>void</span>&gt;</span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Write out the WARC-Type: info records</p>
+        <div data-ice="description"><p>Write out the WARC-Type: info records.</p>
 </div>
       </div>
     </td>
@@ -684,13 +741,43 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcRawInfoRecord">writeWarcRawInfoRecord</a></span></span><span class="code" data-ice="signature">(warcInfoContent: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWarcRawInfoRecord">writeWarcRawInfoRecord</a></span></span><span class="code" data-ice="signature">(warcInfoContent: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://nodejs.org/api/buffer.html">Buffer</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span>&lt;<span>void</span>&gt;</span>
         </p>
       </div>
       <div>
         
         
+        <div data-ice="description"><p>Write warc-info record</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html#instance-method-writeWebrecorderBookmarksInfoRecord">writeWebrecorderBookmarksInfoRecord</a></span></span><span class="code" data-ice="signature">(pages: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>&gt;): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span>&lt;<span>void</span>&gt;</span>
+        </p>
+      </div>
+      <div>
         
+        
+        <div data-ice="description"><p>Writes a WARC Info record containing Webrecorder/Webrecorder Player bookmark (page list)</p>
+</div>
       </div>
     </td>
     <td>
@@ -875,7 +962,7 @@ to be serialized to the WARC</p>
       <td data-ice="type" class="code"><span><a href="typedef/index.html#static-typedef-WARCGenOpts">WARCGenOpts</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Options for generating the WARC and optionally generating
-WARC info and metadata records</p>
+WARC info, WARC info + Webrecorder Player bookmark list, metadata records</p>
 </td>
     </tr>
 </tbody>
@@ -925,7 +1012,7 @@ WARC info and metadata records</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/writers/electron.js.html#lineNumber53">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/writers/electron.js.html#lineNumber52">source</a></span></span>
     </span>
   </h3>
 

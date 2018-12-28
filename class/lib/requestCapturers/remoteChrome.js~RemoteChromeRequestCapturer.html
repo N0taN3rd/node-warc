@@ -43,6 +43,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html">RemoteChromeRequestCapturer</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html">RequestHandler</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/utils/electronGetResError.js~ElectronGetResError.html">ElectronGetResError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ensureWARCFilename">ensureWARCFilename</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResBodyElectron">getResBodyElectron</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyHeaders">stringifyHeaders</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-stringifyRequestHeaders">stringifyRequestHeaders</a></span></span></li>
@@ -58,7 +59,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html">RemoteChromeWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/requestLib.js~RequestLibWARCGenerator.html">RequestLibWARCGenerator</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/writers/warcWriterBase.js~WARCWriterBase.html">WARCWriterBase</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoContent">WARCInfoContent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCInfoHeader">WARCInfoHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCMetadataHeader">WARCMetadataHeader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-WARCRequestHeader">WARCRequestHeader</a></span></span></li>
@@ -151,69 +151,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
 </tbody>
 </table>
 </div>
-<div data-ice="memberSummary"><h2>Member Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Members</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-member-requestWillBeSent">requestWillBeSent</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html#instance-member-responseReceived">responseReceived</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
+
 <div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
   <tbody>
@@ -354,7 +292,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-[Symbol.iterator]">[Symbol.iterator]</a></span></span><span class="code" data-ice="signature">(): <span>Iterator</span></span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-[Symbol.iterator]">[Symbol.iterator]</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator">Iterator</a></span></span>
         </p>
       </div>
       <div>
@@ -441,7 +379,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-entries">entries</a></span></span><span class="code" data-ice="signature">(): <span>Iterator</span></span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-entries">entries</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator">Iterator</a></span></span>
         </p>
       </div>
       <div>
@@ -557,7 +495,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           <span data-ice="generator">*</span>
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-iterateRequests">iterateRequests</a></span></span><span class="code" data-ice="signature">(): <span>Iterator</span>&lt;<span><a href="class/lib/requestCapturers/cdpRequestInfo.js~CDPRequestInfo.html">CDPRequestInfo</a></span>&gt;</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-iterateRequests">iterateRequests</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator">Iterator</a></span>&lt;<span><a href="class/lib/requestCapturers/cdpRequestInfo.js~CDPRequestInfo.html">CDPRequestInfo</a></span>&gt;</span>
         </p>
       </div>
       <div>
@@ -585,7 +523,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-keys">keys</a></span></span><span class="code" data-ice="signature">(): <span>Iterator</span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>&gt;</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-keys">keys</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator">Iterator</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>&gt;</span>
         </p>
       </div>
       <div>
@@ -758,7 +696,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-values">values</a></span></span><span class="code" data-ice="signature">(): <span>Iterator</span>&lt;<span><a href="class/lib/requestCapturers/capturedRequest.js~CapturedRequest.html">CapturedRequest</a></span>&gt;</span>
+          <span class="code" data-ice="name"><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-values">values</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator">Iterator</a></span>&lt;<span><a href="class/lib/requestCapturers/capturedRequest.js~CapturedRequest.html">CapturedRequest</a></span>&gt;</span>
         </p>
       </div>
       <div>
@@ -844,97 +782,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
   
 </div>
 </div>
-<div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-requestWillBeSent">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">requestWillBeSent</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber17">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Handles the Network.requestWillBeSent event</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-requestWillBeSent">RequestHandler#requestWillBeSent</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-responseReceived">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">responseReceived</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber18">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Handles the Network.responseReceived event</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/lib/requestCapturers/requestHandler.js~RequestHandler.html#instance-method-responseReceived">RequestHandler#responseReceived</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
 <div class="detail" data-ice="detail">
@@ -949,7 +797,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber25">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber27">source</a></span></span>
     </span>
   </h3>
 
@@ -1009,7 +857,7 @@ Controlled via <span><a href="class/lib/requestCapturers/puppeteer.js~PuppeteerR
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber35">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/requestCapturers/remoteChrome.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 

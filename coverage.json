@@ -1,7 +1,7 @@
 {
-  "coverage": "95.72%",
-  "expectCount": 281,
-  "actualCount": 269,
+  "coverage": "98.59%",
+  "expectCount": 284,
+  "actualCount": 280,
   "files": {
     "lib/parsers/_canUseRecordIterator.js": {
       "expectCount": 1,
@@ -55,27 +55,18 @@
     },
     "lib/requestCapturers/puppeteer.js": {
       "expectCount": 13,
-      "actualCount": 11,
-      "undocumentLines": [
-        26,
-        30
-      ]
+      "actualCount": 13,
+      "undocumentLines": []
     },
     "lib/requestCapturers/puppeteerCDP.js": {
       "expectCount": 6,
-      "actualCount": 4,
-      "undocumentLines": [
-        12,
-        13
-      ]
+      "actualCount": 6,
+      "undocumentLines": []
     },
     "lib/requestCapturers/remoteChrome.js": {
       "expectCount": 6,
-      "actualCount": 4,
-      "undocumentLines": [
-        17,
-        18
-      ]
+      "actualCount": 6,
+      "undocumentLines": []
     },
     "lib/requestCapturers/requestHandler.js": {
       "expectCount": 19,
@@ -95,6 +86,11 @@
     "lib/utils/electronGetResError.js": {
       "expectCount": 4,
       "actualCount": 4,
+      "undocumentLines": []
+    },
+    "lib/utils/ensureWARCFilename.js": {
+      "expectCount": 2,
+      "actualCount": 2,
       "undocumentLines": []
     },
     "lib/utils/getResBodyElectron.js": {
@@ -161,11 +157,9 @@
       "undocumentLines": []
     },
     "lib/writers/requestLib.js": {
-      "expectCount": 6,
-      "actualCount": 5,
-      "undocumentLines": [
-        21
-      ]
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
     },
     "lib/writers/warcFields.js": {
       "expectCount": 22,
@@ -176,11 +170,9 @@
       ]
     },
     "lib/writers/warcWriterBase.js": {
-      "expectCount": 29,
-      "actualCount": 28,
-      "undocumentLines": [
-        68
-      ]
+      "expectCount": 32,
+      "actualCount": 32,
+      "undocumentLines": []
     }
   }
 }
