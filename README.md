@@ -113,8 +113,8 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
       warcPath: 'myWARC.warc'
     },
     winfo: {
-      warcInfoDescription: 'I created a warc!',
-      isPartOfV: 'My awesome pywb collection'
+      description: 'I created a warc!',
+      isPartOf: 'My awesome pywb collection'
     }
   })
   await client.close()
@@ -137,8 +137,8 @@ const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
       warcPath: 'myWARC.warc'
     },
     winfo: {
-      warcInfoDescription: 'I created a warc!',
-      isPartOfV: 'My awesome pywb collection'
+      description: 'I created a warc!',
+      isPartOf: 'My awesome pywb collection'
     }
   })
   await page.close()
@@ -147,6 +147,6 @@ const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
 ```
 
 #### Note
-The generateWARC method used in the following examples is helper function for making 
+The generateWARC method used in the preceding examples is helper function for making 
 the WARC generation process simple. See its implementation for a full example 
 of WARC generation using node-warc

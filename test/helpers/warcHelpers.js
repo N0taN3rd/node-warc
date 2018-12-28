@@ -2,6 +2,19 @@ export const crlfRe = /\r\n/g
 export const idRe = /<urn:uuid:[0-9a-z]+-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+-[0-9a-z]+>/
 export const dateRe = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/
 
+export function parseKVContent (kvstring) {
+  const parts = kvstring.split('\r\n')
+  const parsed = {}
+  for (let i = 0; i < parts.length; ++i) {
+    let part = parts[i]
+    if (part) {
+      let sep = part.indexOf(': ')
+      parsed[part.substring(0, sep)] = part.substring(sep + 2)
+    }
+  }
+  return parsed
+}
+
 export function parseWARCHeader (bufferString) {
   const parts = bufferString.split('\r\n')
   let i = 0
