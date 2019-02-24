@@ -1,4 +1,9 @@
 # Changelog
+## 3.3.0 (2019-02-24)
+- **Feature**
+  - Added Request Capturer for [chrome-remote-interface-extra](https://github.com/N0taN3rd/chrome-remote-interface-extra) 
+  - Added WARC writer for [chrome-remote-interface-extra](https://github.com/N0taN3rd/chrome-remote-interface-extra) 
+
 ## 3.2.0 (2018-12-28)
 
 - **Feature**

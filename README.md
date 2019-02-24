@@ -1,5 +1,11 @@
 # node-warc
-Parse Web Archive (WARC) files or create WARC files using [Electron](https://electron.atom.io/), [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface), [Puppeteer](https://github.com/GoogleChrome/puppeteer), or [request](https://github.com/request/request)
+Parse Web Archive (WARC) files or create WARC files using 
+ - [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
+ - [chrome-remote-interface-extra](https://github.com/N0taN3rd/chrome-remote-interface-extra) 
+ - [Puppeteer](https://github.com/GoogleChrome/puppeteer)
+ - [Electron](https://electron.atom.io/)
+ - [request](https://github.com/request/request)
+
 
 Run `npm install node-warc` or `yarn add node-warc` to ge started
 
@@ -91,7 +97,7 @@ parser.start()
 
 ### Examples
 
-#### Using chrome-remote-interface
+#### Using [chrome-remote-interface](https://github.com/cyrus-and/chrome-remote-interface)
 
 ```js
 const CRI = require('chrome-remote-interface')
@@ -104,6 +110,7 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
     client.Network.enable(),
   ])
   const cap = new RemoteChromeCapturer(client.Network)
+  cap.stopCapturing()
   await client.Page.navigate({ url: 'http://example.com' });
   // actual code should wait for a better stopping condition, eg. network idle
   await client.Page.loadEventFired()
@@ -121,15 +128,51 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
 })()
 ```
 
-#### Using puppeteer
+#### Using [chrome-remote-interface-extra](https://github.com/N0taN3rd/chrome-remote-interface-extra) 
+```js
+const { CRIExtra, Events, Page } = require('chrome-remote-interface-extra')
+const { CRIExtraWARCGenerator, CRIExtraCapturer } = require('node-warc')
+
+;(async () => {
+  let client
+  try {
+    // connect to endpoint
+    client = await CRIExtra({ host: 'localhost', port: 9222 })
+    const page = await Page.create(client)
+    const cap = new CRIExtraCapturer(page, Events.Page.Request)
+    cap.stopCapturing()
+    await page.goto('https://example.com', { waitUntil: 'networkIdle' })
+    const warcGen = new CRIExtraWARCGenerator()
+    await warcGen.generateWARC(cap, {
+      warcOpts: {
+        warcPath: 'myWARC.warc'
+      },
+      winfo: {
+        description: 'I created a warc!',
+        isPartOf: 'My awesome pywb collection'
+      }
+    })
+  } catch (err) {
+    console.error(err)
+  } finally {
+    if (client) {
+      await client.close()
+    }
+  }
+})()
+```
+
+#### Using [Puppeteer](https://github.com/GoogleChrome/puppeteer)
 ```js
 const puppeteer = require('puppeteer')
+const { Events } = require('puppeteer')
 const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
 
 ;(async () => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  const cap = new PuppeteerCapturer(page)
+  const cap = new PuppeteerCapturer(page, Events.Page.Request)
+  cap.stopCapturing()
   await page.goto('http://example.com', { waitUntil: 'networkidle0' })
   const warcGen = new PuppeteerWARCGenerator()
   await warcGen.generateWARC(cap, {
@@ -150,3 +193,5 @@ const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
 The generateWARC method used in the preceding examples is helper function for making 
 the WARC generation process simple. See its implementation for a full example 
 of WARC generation using node-warc
+
+Or see one of the crawler implementations provided by [Squidwarc](https://github.com/N0taN3rd/Squidwarc/tree/master/lib/crawler).
