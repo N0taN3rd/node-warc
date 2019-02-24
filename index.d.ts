@@ -4,8 +4,8 @@ import {ReadStream} from "fs";
 import {Gunzip} from "zlib";
 import {Transform} from "stream";
 import {URL} from 'url';
-import {Page, Request, CDPSession} from "puppeteer";
 import { EventEmitter } from "eventemitter3";
+import * as puppeteer  from 'puppeteer'
 
 interface Error {
     stack?: string;
@@ -216,28 +216,47 @@ export class ElectronRequestCapturer extends RequestHandler {
 
 export class PuppeteerRequestCapturer {
     _capture: boolean;
-    _requests: Request[];
-    constructor (page?: Page);
-    attach (page: Page): void;
-    detach (page: Page): void;
+    _requests: Map<number, puppeteer.Request>;
+    _requestC: number;
+    constructor (page?: puppeteer.Page, requestEvent?: string = 'request');
+    attach (page: puppeteer.Page, requestEvent?: string = 'request'): void;
+    detach (page: puppeteer.Page, requestEvent?: string = 'request'): void;
     startCapturing(): void;
     stopCapturing(): void;
-    requestWillBeSent(r: Request): void;
-    iterateRequests(): Iterator<Request>;
-    requests(): Request[];
-    [Symbol.iterator](): Iterator<Request>;
+    requestWillBeSent(r: puppeteer.Request): void;
+    iterateRequests(): Iterator<puppeteer.Request>;
+    requests(): puppeteer.Request[];
+    [Symbol.iterator](): Iterator<puppeteer.Request>;
 }
 
 export class PuppeteerCDPRequestCapturer extends RequestHandler {
-    constructor (client?: CDPSession);
-    attach(client: CDPSession);
-    detach(client: CDPSession);
+    constructor (client?: puppeteer.CDPSession);
+    attach(client: puppeteer.CDPSession);
+    detach(client: puppeteer.CDPSession);
 }
 
 export class RemoteChromeRequestCapturer extends RequestHandler {
     constructor(network?: object);
     attach(network: object);
     detach(cdpClient: object);
+}
+
+export type CRIEPage = object
+export type CRIERequest = object
+
+export class CRIExtraRequestCapturer {
+    _capture: boolean;
+    _requests: Map<number, CRIERequest>;
+    _requestC: number;
+    constructor (page?: CRIEPage, requestEvent?: string = 'request');
+    attach (page: CRIEPage, requestEvent?: string = 'request'): void;
+    detach (page: CRIEPage, requestEvent?: string = 'request'): void;
+    startCapturing(): void;
+    stopCapturing(): void;
+    requestWillBeSent(r: CRIERequest): void;
+    iterateRequests(): Iterator<CRIERequest>;
+    requests(): CRIERequest[];
+    [Symbol.iterator](): Iterator<CRIERequest>;
 }
 
 export type WARCContentData = Buffer | string
@@ -302,12 +321,12 @@ export class ElectronWARCGenerator extends WARCWriterBase {
 
 export class PuppeteerWARCGenerator extends WARCWriterBase {
     generateWARC (capturer: PuppeteerRequestCapturer, genOpts: WARCGenOpts): Promise<NullableEr>;
-    generateWarcEntry (request: Request): Promise<void>;
+    generateWarcEntry (request: puppeteer.Request): Promise<void>;
 }
 
 export class PuppeteerCDPWARCGenerator extends WARCWriterBase {
-    generateWARC (capturer: PuppeteerCDPRequestCapturer, client: CDPSession, genOpts: WARCGenOpts): Promise<NullableEr>;
-    generateWarcEntry (nreq: CDPRequestInfo, client: CDPSession): Promise<void>;
+    generateWARC (capturer: PuppeteerCDPRequestCapturer, client: puppeteer.CDPSession, genOpts: WARCGenOpts): Promise<NullableEr>;
+    generateWarcEntry (nreq: CDPRequestInfo, client: puppeteer.CDPSession): Promise<void>;
 }
 
 export class RemoteChromeWARCGenerator extends WARCWriterBase {
@@ -317,4 +336,9 @@ export class RemoteChromeWARCGenerator extends WARCWriterBase {
 
 export class RequestLibWARCGenerator extends WARCWriterBase {
     generateWarcEntry (resp: object): Promise<void>;
+}
+
+export class CRIExtraWARCGenerator extends WARCWriterBase {
+    generateWARC (capturer: CRIExtraRequestCapturer, genOpts: WARCGenOpts): Promise<NullableEr>;
+    generateWarcEntry (request: CRIERequest): Promise<void>;
 }
