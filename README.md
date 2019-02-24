@@ -110,7 +110,7 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
     client.Network.enable(),
   ])
   const cap = new RemoteChromeCapturer(client.Network)
-  cap.stopCapturing()
+  cap.startCapturing()
   await client.Page.navigate({ url: 'http://example.com' });
   // actual code should wait for a better stopping condition, eg. network idle
   await client.Page.loadEventFired()
@@ -140,7 +140,7 @@ const { CRIExtraWARCGenerator, CRIExtraCapturer } = require('node-warc')
     client = await CRIExtra({ host: 'localhost', port: 9222 })
     const page = await Page.create(client)
     const cap = new CRIExtraCapturer(page, Events.Page.Request)
-    cap.stopCapturing()
+    cap.startCapturing()
     await page.goto('https://example.com', { waitUntil: 'networkIdle' })
     const warcGen = new CRIExtraWARCGenerator()
     await warcGen.generateWARC(cap, {
@@ -172,7 +172,7 @@ const { PuppeteerWARCGenerator, PuppeteerCapturer } = require('node-warc')
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   const cap = new PuppeteerCapturer(page, Events.Page.Request)
-  cap.stopCapturing()
+  cap.startCapturing()
   await page.goto('http://example.com', { waitUntil: 'networkidle0' })
   const warcGen = new PuppeteerWARCGenerator()
   await warcGen.generateWARC(cap, {
