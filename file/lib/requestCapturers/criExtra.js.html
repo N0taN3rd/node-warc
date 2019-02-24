@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/utils/isEmptyPlainObject.js | node-warc</title>
+  <title data-ice="title">lib/requestCapturers/criExtra.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -97,21 +97,118 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/utils/isEmptyPlainObject.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
-const isEmpty = require(&apos;lodash/isEmpty&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/requestCapturers/criExtra.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @desc chrome-remote-interface-extra request capturer
+ * @see https://github.com/N0taN3rd/chrome-remote-interface-extra
+ */
+class CRIExtraRequestCapturer {
+  /**
+   * @param {?Page} [page] - The chrome-remote-interface-extra page object
+   * @param {string} [requestEvent = &apos;request&apos;]
+   */
+  constructor (page, requestEvent = &apos;request&apos;) {
+    /**
+     * @desc To Capture Requests Or Not To Capture Requests
+     * @type {boolean}
+     * @private
+     */
+    this._capture = true
+
+    /**
+     * @desc A list of requests made
+     * @type {Map&lt;int,Request&gt;}
+     * @private
+     */
+    this._requests = new Map()
+    this._requestC = 0
+    /** @ignore */
+    this.requestWillBeSent = this.requestWillBeSent.bind(this)
+    if (page) {
+      this.attach(page, requestEvent)
+    }
+  }
+
+  /**
+   * @desc Attach (start listening for request events) the request capturerer to the page object
+   * @param {Page} page - The chrome-remote-interface-extra page object
+   * @param {string} [requestEvent = &apos;request&apos;]
+   */
+  attach (page, requestEvent = &apos;request&apos;) {
+    page.removeListener(requestEvent, this.requestWillBeSent)
+    page.on(requestEvent, this.requestWillBeSent)
+  }
+
+  /**
+   * @desc Detach (stop listening for request events) the request capturerer from the page object
+   * @param {Page} page - The puppeteer page object
+   * @param {string} [requestEvent = &apos;request&apos;]
+   */
+  detach (page, requestEvent = &apos;request&apos;) {
+    page.removeListener(requestEvent, this.requestWillBeSent)
+  }
+
+  /**
+   * @desc Sets an internal flag to begin capturing network requests. Clears Any Previously Captured Request Information
+   */
+  startCapturing () {
+    this._requestC = 0
+    this._requests.clear()
+    this._capture = true
+  }
+
+  /**
+   * @desc Sets an internal flag to stop the capturing network requests
+   */
+  stopCapturing () {
+    this._capture = false
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/@@iterator
+   * @desc Get An Iterator Over The Requests Captured
+   * @returns {Iterator&lt;Request&gt;}
+   */
+  [Symbol.iterator]() {
+    return this._requests.values()
+  }
+
+  /**
+   * @desc Remove All Requests
+   */
+  clear () {
+    this._requestC = 0
+    this._requests.clear()
+  }
+
+  /**
+   * @returns {Array&lt;Request&gt;}
+   */
+  requests () {
+    return Array.from(this._requests.values())
+  }
+
+  /**
+   * @return {Iterator&lt;Request&gt;}
+   */
+  iterateRequests () {
+    return this._requests.values()
+  }
+
+  /**
+   * @param {Request} r
+   */
+  requestWillBeSent (r) {
+    if (this._capture) {
+      this._requests.set(this._requestC++, r)
+    }
+  }
+}
 
 /**
- * @desc Test to see if a ``plain object`` is empty
- * @param {?Object} object
- * @return {boolean}
+ * @type {CRIExtraRequestCapturer}
  */
-module.exports = function isEmptyPlainObject (object) {
-  if (object == null) {
-    return true
-  }
-  return isEmpty(object)
-}
+module.exports = CRIExtraRequestCapturer
 </code></pre>
 
 </div>

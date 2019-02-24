@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/utils/isEmptyPlainObject.js | node-warc</title>
+  <title data-ice="title">lib/writers/criExtra.js | node-warc</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -97,21 +97,102 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/utils/isEmptyPlainObject.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
-const isEmpty = require(&apos;lodash/isEmpty&apos;)
+<div class="content" data-ice="content"><h1 data-ice="title">lib/writers/criExtra.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const { CRLF } = require(&apos;./warcFields&apos;)
+const WARCWriterBase = require(&apos;./warcWriterBase&apos;)
+const { noGZ, replaceContentLen } = require(&apos;./constants&apos;)
 
 /**
- * @desc Test to see if a ``plain object`` is empty
- * @param {?Object} object
- * @return {boolean}
+ * @extends {WARCWriterBase}
+ * @desc WARC Generator for use with puppeteer
+ * @see https://github.com/N0taN3rd/chrome-remote-interface-extra
  */
-module.exports = function isEmptyPlainObject (object) {
-  if (object == null) {
-    return true
+class CRIExtraWARCGenerator extends WARCWriterBase {
+  /**
+   * @param {CRIExtraRequestCapturer} capturer - The Puppeteer request capturer that contains requests
+   * to be serialized to the WARC
+   * @param {WARCGenOpts} genOpts - Options for generating the WARC and optionally generating
+   * WARC info, WARC info + Webrecorder Player bookmark list, metadata records
+   * @return {Promise&lt;void&gt;} - A Promise that resolves when WARC generation is complete
+   */
+  async generateWARC (capturer, genOpts) {
+    const { warcOpts, winfo, metadata } = genOpts
+    this.initWARC(warcOpts.warcPath, warcOpts)
+    if (winfo != null) {
+      await this.writeWarcInfoRecord(winfo)
+    }
+    if (genOpts.pages) {
+      await this.writeWebrecorderBookmarksInfoRecord(genOpts.pages)
+    }
+    if (metadata != null) {
+      await this.writeWarcMetadata(metadata.targetURI, metadata.content)
+    }
+    for (let request of capturer.iterateRequests()) {
+      try {
+        await this.generateWarcEntry(request)
+      } catch (error) {
+        /* istanbul ignore next */
+        console.error(error)
+      }
+    }
+    return new Promise(resolve =&gt; {
+      this.once(&apos;finished&apos;, resolve)
+      this.end()
+    })
   }
-  return isEmpty(object)
+
+  /**
+   * @desc Generate a WARC record
+   * @param {Request} request - A chrome-remote-interface-extra Request object
+   * @return {Promise&lt;void&gt;}
+   */
+  async generateWarcEntry (request) {
+    const url = request.url()
+    if (url.startsWith(&apos;data:&apos;)) return
+    const response = request.response()
+    let postData
+    if (request.postData()) {
+      postData = request.postData()
+    } else if (request.hasPostData()) {
+      try {
+        postData = await request.getPostData()
+      } catch (e) {}
+    }
+    const reqHTTP = request.requestLineAndHeaders(true)
+    if (response) {
+      let resHTTP = response.statusLineAndHeaders(true)
+      let body
+      let wasError = false
+      try {
+        body = await response.buffer()
+      } catch (e) {
+        wasError = true
+      }
+      if (!wasError) {
+        resHTTP = resHTTP
+          .replace(noGZ, &apos;&apos;)
+          .replace(
+            replaceContentLen,
+            `Content-Length: ${Buffer.byteLength(body, &apos;utf8&apos;)}${CRLF}`
+          )
+      } else {
+        // indicate that this record has 0 content
+        resHTTP = resHTTP.replace(replaceContentLen, `Content-Length: 0${CRLF}`)
+      }
+      return this.writeRequestResponseRecords(
+        url,
+        { headers: reqHTTP, data: postData },
+        { headers: resHTTP, data: body }
+      )
+    }
+    return this.writeRequestRecord(url, reqHTTP, postData)
+  }
 }
+
+/**
+ * @type {CRIExtraWARCGenerator}
+ */
+module.exports = CRIExtraWARCGenerator
 </code></pre>
 
 </div>

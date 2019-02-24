@@ -1,7 +1,7 @@
 {
-  "coverage": "98.59%",
-  "expectCount": 284,
-  "actualCount": 280,
+  "coverage": "96.31%",
+  "expectCount": 326,
+  "actualCount": 314,
   "files": {
     "lib/parsers/_canUseRecordIterator.js": {
       "expectCount": 1,
@@ -48,15 +48,29 @@
       "actualCount": 34,
       "undocumentLines": []
     },
+    "lib/requestCapturers/criExtra.js": {
+      "expectCount": 14,
+      "actualCount": 13,
+      "undocumentLines": [
+        24
+      ]
+    },
     "lib/requestCapturers/electron.js": {
       "expectCount": 6,
       "actualCount": 6,
       "undocumentLines": []
     },
-    "lib/requestCapturers/puppeteer.js": {
-      "expectCount": 13,
-      "actualCount": 13,
+    "lib/requestCapturers/index.js": {
+      "expectCount": 8,
+      "actualCount": 8,
       "undocumentLines": []
+    },
+    "lib/requestCapturers/puppeteer.js": {
+      "expectCount": 14,
+      "actualCount": 13,
+      "undocumentLines": [
+        23
+      ]
     },
     "lib/requestCapturers/puppeteerCDP.js": {
       "expectCount": 6,
@@ -103,6 +117,18 @@
       "actualCount": 4,
       "undocumentLines": []
     },
+    "lib/utils/index.js": {
+      "expectCount": 7,
+      "actualCount": 1,
+      "undocumentLines": [
+        6,
+        7,
+        8,
+        9,
+        16,
+        18
+      ]
+    },
     "lib/utils/isEmptyPlainObject.js": {
       "expectCount": 1,
       "actualCount": 1,
@@ -121,6 +147,11 @@
         67
       ]
     },
+    "lib/warcRecord/index.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
     "lib/warcRecord/record.js": {
       "expectCount": 28,
       "actualCount": 28,
@@ -136,9 +167,19 @@
       "actualCount": 2,
       "undocumentLines": []
     },
+    "lib/writers/criExtra.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
     "lib/writers/electron.js": {
       "expectCount": 3,
       "actualCount": 3,
+      "undocumentLines": []
+    },
+    "lib/writers/index.js": {
+      "expectCount": 6,
+      "actualCount": 6,
       "undocumentLines": []
     },
     "lib/writers/puppeteer.js": {

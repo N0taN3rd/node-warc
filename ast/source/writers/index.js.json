@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 758,
+  "end": 606,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 758,
+    "end": 606,
     "loc": {
       "start": {
         "line": 1,
@@ -29,95 +29,94 @@
     "sourceType": "module",
     "body": [
       {
-        "type": "ExportDefaultDeclaration",
-        "start": 248,
-        "end": 757,
+        "type": "ExportNamedDeclaration",
+        "start": 41,
+        "end": 94,
         "loc": {
           "start": {
             "line": 4,
             "column": 0
           },
           "end": {
-            "line": 29,
-            "column": 1
+            "line": 4,
+            "column": 53
           }
         },
+        "specifiers": [],
+        "source": null,
         "declaration": {
-          "type": "ObjectExpression",
-          "start": 263,
-          "end": 757,
+          "type": "VariableDeclaration",
+          "start": 48,
+          "end": 94,
           "loc": {
             "start": {
               "line": 4,
-              "column": 15
+              "column": 7
             },
             "end": {
-              "line": 29,
-              "column": 1
+              "line": 4,
+              "column": 53
             }
           },
-          "properties": [
+          "declarations": [
             {
-              "type": "ObjectProperty",
-              "start": 314,
-              "end": 355,
+              "type": "VariableDeclarator",
+              "start": 52,
+              "end": 94,
               "loc": {
                 "start": {
-                  "line": 8,
-                  "column": 2
+                  "line": 4,
+                  "column": 11
                 },
                 "end": {
-                  "line": 8,
-                  "column": 43
+                  "line": 4,
+                  "column": 53
                 }
               },
-              "method": false,
-              "shorthand": false,
-              "computed": false,
-              "key": {
+              "id": {
                 "type": "Identifier",
-                "start": 314,
-                "end": 332,
+                "start": 52,
+                "end": 70,
                 "loc": {
                   "start": {
-                    "line": 8,
-                    "column": 2
+                    "line": 4,
+                    "column": 11
                   },
                   "end": {
-                    "line": 8,
-                    "column": 20
+                    "line": 4,
+                    "column": 29
                   },
                   "identifierName": "ElectronWARCWriter"
                 },
                 "name": "ElectronWARCWriter",
                 "leadingComments": null
               },
-              "value": {
+              "init": {
                 "type": "CallExpression",
-                "start": 334,
-                "end": 355,
+                "start": 73,
+                "end": 94,
                 "loc": {
                   "start": {
-                    "line": 8,
-                    "column": 22
+                    "line": 4,
+                    "column": 32
                   },
                   "end": {
-                    "line": 8,
-                    "column": 43
+                    "line": 4,
+                    "column": 53
                   }
                 },
                 "callee": {
                   "type": "Identifier",
-                  "start": 334,
-                  "end": 341,
+                  "start": 73,
+                  "end": 80,
                   "loc": {
                     "start": {
-                      "line": 8,
-                      "column": 22
+                      "line": 4,
+                      "column": 32
                     },
                     "end": {
-                      "line": 8,
-                      "column": 29
+                      "line": 4,
+                      "column": 39
                     },
                     "identifierName": "require"
                   },
@@ -126,16 +125,16 @@
                 "arguments": [
                   {
                     "type": "StringLiteral",
-                    "start": 342,
-                    "end": 354,
+                    "start": 81,
+                    "end": 93,
                     "loc": {
                       "start": {
-                        "line": 8,
-                        "column": 30
+                        "line": 4,
+                        "column": 40
                       },
                       "end": {
-                        "line": 8,
-                        "column": 42
+                        "line": 4,
+                        "column": 52
                       }
                     },
                     "extra": {
@@ -144,466 +143,20 @@
                     },
                     "value": "./electron"
                   }
-                ]
+                ],
+                "trailingComments": null
               },
-              "leadingComments": [
-                {
-                  "type": "CommentBlock",
-                  "value": "*\n   * @type {ElectronWARCGenerator}\n   ",
-                  "start": 267,
-                  "end": 311,
-                  "loc": {
-                    "start": {
-                      "line": 5,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 7,
-                      "column": 5
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "ObjectProperty",
-              "start": 411,
-              "end": 460,
-              "loc": {
-                "start": {
-                  "line": 13,
-                  "column": 2
-                },
-                "end": {
-                  "line": 13,
-                  "column": 51
-                }
-              },
-              "method": false,
-              "shorthand": false,
-              "computed": false,
-              "key": {
-                "type": "Identifier",
-                "start": 411,
-                "end": 433,
-                "loc": {
-                  "start": {
-                    "line": 13,
-                    "column": 2
-                  },
-                  "end": {
-                    "line": 13,
-                    "column": 24
-                  },
-                  "identifierName": "RemoteChromeWARCWriter"
-                },
-                "name": "RemoteChromeWARCWriter",
-                "leadingComments": null
-              },
-              "value": {
-                "type": "CallExpression",
-                "start": 435,
-                "end": 460,
-                "loc": {
-                  "start": {
-                    "line": 13,
-                    "column": 26
-                  },
-                  "end": {
-                    "line": 13,
-                    "column": 51
-                  }
-                },
-                "callee": {
-                  "type": "Identifier",
-                  "start": 435,
-                  "end": 442,
-                  "loc": {
-                    "start": {
-                      "line": 13,
-                      "column": 26
-                    },
-                    "end": {
-                      "line": 13,
-                      "column": 33
-                    },
-                    "identifierName": "require"
-                  },
-                  "name": "require"
-                },
-                "arguments": [
-                  {
-                    "type": "StringLiteral",
-                    "start": 443,
-                    "end": 459,
-                    "loc": {
-                      "start": {
-                        "line": 13,
-                        "column": 34
-                      },
-                      "end": {
-                        "line": 13,
-                        "column": 50
-                      }
-                    },
-                    "extra": {
-                      "rawValue": "./remoteChrome",
-                      "raw": "'./remoteChrome'"
-                    },
-                    "value": "./remoteChrome"
-                  }
-                ]
-              },
-              "leadingComments": [
-                {
-                  "type": "CommentBlock",
-                  "value": "*\n   * @type {RemoteChromeWARCGenerator}\n   ",
-                  "start": 360,
-                  "end": 408,
-                  "loc": {
-                    "start": {
-                      "line": 10,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 12,
-                      "column": 5
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "ObjectProperty",
-              "start": 516,
-              "end": 568,
-              "loc": {
-                "start": {
-                  "line": 18,
-                  "column": 2
-                },
-                "end": {
-                  "line": 18,
-                  "column": 54
-                }
-              },
-              "method": false,
-              "shorthand": false,
-              "computed": false,
-              "key": {
-                "type": "Identifier",
-                "start": 516,
-                "end": 541,
-                "loc": {
-                  "start": {
-                    "line": 18,
-                    "column": 2
-                  },
-                  "end": {
-                    "line": 18,
-                    "column": 27
-                  },
-                  "identifierName": "PuppeteerCDPWARCGenerator"
-                },
-                "name": "PuppeteerCDPWARCGenerator",
-                "leadingComments": null
-              },
-              "value": {
-                "type": "CallExpression",
-                "start": 543,
-                "end": 568,
-                "loc": {
-                  "start": {
-                    "line": 18,
-                    "column": 29
-                  },
-                  "end": {
-                    "line": 18,
-                    "column": 54
-                  }
-                },
-                "callee": {
-                  "type": "Identifier",
-                  "start": 543,
-                  "end": 550,
-                  "loc": {
-                    "start": {
-                      "line": 18,
-                      "column": 29
-                    },
-                    "end": {
-                      "line": 18,
-                      "column": 36
-                    },
-                    "identifierName": "require"
-                  },
-                  "name": "require"
-                },
-                "arguments": [
-                  {
-                    "type": "StringLiteral",
-                    "start": 551,
-                    "end": 567,
-                    "loc": {
-                      "start": {
-                        "line": 18,
-                        "column": 37
-                      },
-                      "end": {
-                        "line": 18,
-                        "column": 53
-                      }
-                    },
-                    "extra": {
-                      "rawValue": "./puppeteerCDP",
-                      "raw": "'./puppeteerCDP'"
-                    },
-                    "value": "./puppeteerCDP"
-                  }
-                ]
-              },
-              "leadingComments": [
-                {
-                  "type": "CommentBlock",
-                  "value": "*\n   * @type {PuppeteerCDPWARCGenerator}\n   ",
-                  "start": 465,
-                  "end": 513,
-                  "loc": {
-                    "start": {
-                      "line": 15,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 17,
-                      "column": 5
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "ObjectProperty",
-              "start": 621,
-              "end": 667,
-              "loc": {
-                "start": {
-                  "line": 23,
-                  "column": 2
-                },
-                "end": {
-                  "line": 23,
-                  "column": 48
-                }
-              },
-              "method": false,
-              "shorthand": false,
-              "computed": false,
-              "key": {
-                "type": "Identifier",
-                "start": 621,
-                "end": 643,
-                "loc": {
-                  "start": {
-                    "line": 23,
-                    "column": 2
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 24
-                  },
-                  "identifierName": "PuppeteerWARCGenerator"
-                },
-                "name": "PuppeteerWARCGenerator",
-                "leadingComments": null
-              },
-              "value": {
-                "type": "CallExpression",
-                "start": 645,
-                "end": 667,
-                "loc": {
-                  "start": {
-                    "line": 23,
-                    "column": 26
-                  },
-                  "end": {
-                    "line": 23,
-                    "column": 48
-                  }
-                },
-                "callee": {
-                  "type": "Identifier",
-                  "start": 645,
-                  "end": 652,
-                  "loc": {
-                    "start": {
-                      "line": 23,
-                      "column": 26
-                    },
-                    "end": {
-                      "line": 23,
-                      "column": 33
-                    },
-                    "identifierName": "require"
-                  },
-                  "name": "require"
-                },
-                "arguments": [
-                  {
-                    "type": "StringLiteral",
-                    "start": 653,
-                    "end": 666,
-                    "loc": {
-                      "start": {
-                        "line": 23,
-                        "column": 34
-                      },
-                      "end": {
-                        "line": 23,
-                        "column": 47
-                      }
-                    },
-                    "extra": {
-                      "rawValue": "./puppeteer",
-                      "raw": "'./puppeteer'"
-                    },
-                    "value": "./puppeteer"
-                  }
-                ]
-              },
-              "leadingComments": [
-                {
-                  "type": "CommentBlock",
-                  "value": "*\n   * @type {PuppeteerWARCGenerator}\n   ",
-                  "start": 573,
-                  "end": 618,
-                  "loc": {
-                    "start": {
-                      "line": 20,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 22,
-                      "column": 5
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "ObjectProperty",
-              "start": 712,
-              "end": 755,
-              "loc": {
-                "start": {
-                  "line": 28,
-                  "column": 2
-                },
-                "end": {
-                  "line": 28,
-                  "column": 45
-                }
-              },
-              "method": false,
-              "shorthand": false,
-              "computed": false,
-              "key": {
-                "type": "Identifier",
-                "start": 712,
-                "end": 726,
-                "loc": {
-                  "start": {
-                    "line": 28,
-                    "column": 2
-                  },
-                  "end": {
-                    "line": 28,
-                    "column": 16
-                  },
-                  "identifierName": "WARCWriterBase"
-                },
-                "name": "WARCWriterBase",
-                "leadingComments": null
-              },
-              "value": {
-                "type": "CallExpression",
-                "start": 728,
-                "end": 755,
-                "loc": {
-                  "start": {
-                    "line": 28,
-                    "column": 18
-                  },
-                  "end": {
-                    "line": 28,
-                    "column": 45
-                  }
-                },
-                "callee": {
-                  "type": "Identifier",
-                  "start": 728,
-                  "end": 735,
-                  "loc": {
-                    "start": {
-                      "line": 28,
-                      "column": 18
-                    },
-                    "end": {
-                      "line": 28,
-                      "column": 25
-                    },
-                    "identifierName": "require"
-                  },
-                  "name": "require"
-                },
-                "arguments": [
-                  {
-                    "type": "StringLiteral",
-                    "start": 736,
-                    "end": 754,
-                    "loc": {
-                      "start": {
-                        "line": 28,
-                        "column": 26
-                      },
-                      "end": {
-                        "line": 28,
-                        "column": 44
-                      }
-                    },
-                    "extra": {
-                      "rawValue": "./warcWriterBase",
-                      "raw": "'./warcWriterBase'"
-                    },
-                    "value": "./warcWriterBase"
-                  }
-                ]
-              },
-              "leadingComments": [
-                {
-                  "type": "CommentBlock",
-                  "value": "*\n   * @type {WARCWriterBase}\n   ",
-                  "start": 672,
-                  "end": 709,
-                  "loc": {
-                    "start": {
-                      "line": 25,
-                      "column": 2
-                    },
-                    "end": {
-                      "line": 27,
-                      "column": 5
-                    }
-                  }
-                }
-              ]
+              "leadingComments": null,
+              "trailingComments": null
             }
           ],
+          "kind": "let",
           "leadingComments": [
             {
               "type": "CommentBlock",
-              "value": "*\n * @type {{ElectronWARCWriter: ElectronWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, WARCWriterBase: WARCWriterBase}}\n ",
+              "value": "*\n * @type {ElectronWARCGenerator}\n ",
               "start": 0,
-              "end": 247,
+              "end": 40,
               "loc": {
                 "start": {
                   "line": 1,
@@ -616,14 +169,31 @@
               }
             }
           ],
-          "trailingComments": []
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+              "start": 96,
+              "end": 140,
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 0
+                },
+                "end": {
+                  "line": 8,
+                  "column": 3
+                }
+              }
+            }
+          ]
         },
         "leadingComments": [
           {
             "type": "CommentBlock",
-            "value": "*\n * @type {{ElectronWARCWriter: ElectronWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, WARCWriterBase: WARCWriterBase}}\n ",
+            "value": "*\n * @type {ElectronWARCGenerator}\n ",
             "start": 0,
-            "end": 247,
+            "end": 40,
             "loc": {
               "start": {
                 "line": 1,
@@ -631,6 +201,972 @@
               },
               "end": {
                 "line": 3,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+            "start": 96,
+            "end": 140,
+            "loc": {
+              "start": {
+                "line": 6,
+                "column": 0
+              },
+              "end": {
+                "line": 8,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 141,
+        "end": 202,
+        "loc": {
+          "start": {
+            "line": 9,
+            "column": 0
+          },
+          "end": {
+            "line": 9,
+            "column": 61
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 148,
+          "end": 202,
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 7
+            },
+            "end": {
+              "line": 9,
+              "column": 61
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 152,
+              "end": 202,
+              "loc": {
+                "start": {
+                  "line": 9,
+                  "column": 11
+                },
+                "end": {
+                  "line": 9,
+                  "column": 61
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 152,
+                "end": 174,
+                "loc": {
+                  "start": {
+                    "line": 9,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 9,
+                    "column": 33
+                  },
+                  "identifierName": "RemoteChromeWARCWriter"
+                },
+                "name": "RemoteChromeWARCWriter",
+                "leadingComments": null
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 177,
+                "end": 202,
+                "loc": {
+                  "start": {
+                    "line": 9,
+                    "column": 36
+                  },
+                  "end": {
+                    "line": 9,
+                    "column": 61
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 177,
+                  "end": 184,
+                  "loc": {
+                    "start": {
+                      "line": 9,
+                      "column": 36
+                    },
+                    "end": {
+                      "line": 9,
+                      "column": 43
+                    },
+                    "identifierName": "require"
+                  },
+                  "name": "require"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 185,
+                    "end": 201,
+                    "loc": {
+                      "start": {
+                        "line": 9,
+                        "column": 44
+                      },
+                      "end": {
+                        "line": 9,
+                        "column": 60
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "./remoteChrome",
+                      "raw": "'./remoteChrome'"
+                    },
+                    "value": "./remoteChrome"
+                  }
+                ],
+                "trailingComments": null
+              },
+              "leadingComments": null,
+              "trailingComments": null
+            }
+          ],
+          "kind": "let",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+              "start": 96,
+              "end": 140,
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 0
+                },
+                "end": {
+                  "line": 8,
+                  "column": 3
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+              "start": 204,
+              "end": 248,
+              "loc": {
+                "start": {
+                  "line": 11,
+                  "column": 0
+                },
+                "end": {
+                  "line": 13,
+                  "column": 3
+                }
+              }
+            }
+          ]
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+            "start": 96,
+            "end": 140,
+            "loc": {
+              "start": {
+                "line": 6,
+                "column": 0
+              },
+              "end": {
+                "line": 8,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+            "start": 204,
+            "end": 248,
+            "loc": {
+              "start": {
+                "line": 11,
+                "column": 0
+              },
+              "end": {
+                "line": 13,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 249,
+        "end": 313,
+        "loc": {
+          "start": {
+            "line": 14,
+            "column": 0
+          },
+          "end": {
+            "line": 14,
+            "column": 64
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 256,
+          "end": 313,
+          "loc": {
+            "start": {
+              "line": 14,
+              "column": 7
+            },
+            "end": {
+              "line": 14,
+              "column": 64
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 260,
+              "end": 313,
+              "loc": {
+                "start": {
+                  "line": 14,
+                  "column": 11
+                },
+                "end": {
+                  "line": 14,
+                  "column": 64
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 260,
+                "end": 285,
+                "loc": {
+                  "start": {
+                    "line": 14,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 14,
+                    "column": 36
+                  },
+                  "identifierName": "PuppeteerCDPWARCGenerator"
+                },
+                "name": "PuppeteerCDPWARCGenerator",
+                "leadingComments": null
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 288,
+                "end": 313,
+                "loc": {
+                  "start": {
+                    "line": 14,
+                    "column": 39
+                  },
+                  "end": {
+                    "line": 14,
+                    "column": 64
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 288,
+                  "end": 295,
+                  "loc": {
+                    "start": {
+                      "line": 14,
+                      "column": 39
+                    },
+                    "end": {
+                      "line": 14,
+                      "column": 46
+                    },
+                    "identifierName": "require"
+                  },
+                  "name": "require"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 296,
+                    "end": 312,
+                    "loc": {
+                      "start": {
+                        "line": 14,
+                        "column": 47
+                      },
+                      "end": {
+                        "line": 14,
+                        "column": 63
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "./puppeteerCDP",
+                      "raw": "'./puppeteerCDP'"
+                    },
+                    "value": "./puppeteerCDP"
+                  }
+                ],
+                "trailingComments": null
+              },
+              "leadingComments": null,
+              "trailingComments": null
+            }
+          ],
+          "kind": "let",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+              "start": 204,
+              "end": 248,
+              "loc": {
+                "start": {
+                  "line": 11,
+                  "column": 0
+                },
+                "end": {
+                  "line": 13,
+                  "column": 3
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+              "start": 315,
+              "end": 356,
+              "loc": {
+                "start": {
+                  "line": 16,
+                  "column": 0
+                },
+                "end": {
+                  "line": 18,
+                  "column": 3
+                }
+              }
+            }
+          ]
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+            "start": 204,
+            "end": 248,
+            "loc": {
+              "start": {
+                "line": 11,
+                "column": 0
+              },
+              "end": {
+                "line": 13,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+            "start": 315,
+            "end": 356,
+            "loc": {
+              "start": {
+                "line": 16,
+                "column": 0
+              },
+              "end": {
+                "line": 18,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 357,
+        "end": 415,
+        "loc": {
+          "start": {
+            "line": 19,
+            "column": 0
+          },
+          "end": {
+            "line": 19,
+            "column": 58
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 364,
+          "end": 415,
+          "loc": {
+            "start": {
+              "line": 19,
+              "column": 7
+            },
+            "end": {
+              "line": 19,
+              "column": 58
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 368,
+              "end": 415,
+              "loc": {
+                "start": {
+                  "line": 19,
+                  "column": 11
+                },
+                "end": {
+                  "line": 19,
+                  "column": 58
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 368,
+                "end": 390,
+                "loc": {
+                  "start": {
+                    "line": 19,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 33
+                  },
+                  "identifierName": "PuppeteerWARCGenerator"
+                },
+                "name": "PuppeteerWARCGenerator",
+                "leadingComments": null
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 393,
+                "end": 415,
+                "loc": {
+                  "start": {
+                    "line": 19,
+                    "column": 36
+                  },
+                  "end": {
+                    "line": 19,
+                    "column": 58
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 393,
+                  "end": 400,
+                  "loc": {
+                    "start": {
+                      "line": 19,
+                      "column": 36
+                    },
+                    "end": {
+                      "line": 19,
+                      "column": 43
+                    },
+                    "identifierName": "require"
+                  },
+                  "name": "require"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 401,
+                    "end": 414,
+                    "loc": {
+                      "start": {
+                        "line": 19,
+                        "column": 44
+                      },
+                      "end": {
+                        "line": 19,
+                        "column": 57
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "./puppeteer",
+                      "raw": "'./puppeteer'"
+                    },
+                    "value": "./puppeteer"
+                  }
+                ],
+                "trailingComments": null
+              },
+              "leadingComments": null,
+              "trailingComments": null
+            }
+          ],
+          "kind": "let",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+              "start": 315,
+              "end": 356,
+              "loc": {
+                "start": {
+                  "line": 16,
+                  "column": 0
+                },
+                "end": {
+                  "line": 18,
+                  "column": 3
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {WARCWriterBase}\n ",
+              "start": 417,
+              "end": 450,
+              "loc": {
+                "start": {
+                  "line": 21,
+                  "column": 0
+                },
+                "end": {
+                  "line": 23,
+                  "column": 3
+                }
+              }
+            }
+          ]
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+            "start": 315,
+            "end": 356,
+            "loc": {
+              "start": {
+                "line": 16,
+                "column": 0
+              },
+              "end": {
+                "line": 18,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {WARCWriterBase}\n ",
+            "start": 417,
+            "end": 450,
+            "loc": {
+              "start": {
+                "line": 21,
+                "column": 0
+              },
+              "end": {
+                "line": 23,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 451,
+        "end": 506,
+        "loc": {
+          "start": {
+            "line": 24,
+            "column": 0
+          },
+          "end": {
+            "line": 24,
+            "column": 55
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 458,
+          "end": 506,
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 7
+            },
+            "end": {
+              "line": 24,
+              "column": 55
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 462,
+              "end": 506,
+              "loc": {
+                "start": {
+                  "line": 24,
+                  "column": 11
+                },
+                "end": {
+                  "line": 24,
+                  "column": 55
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 462,
+                "end": 476,
+                "loc": {
+                  "start": {
+                    "line": 24,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 24,
+                    "column": 25
+                  },
+                  "identifierName": "WARCWriterBase"
+                },
+                "name": "WARCWriterBase",
+                "leadingComments": null
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 479,
+                "end": 506,
+                "loc": {
+                  "start": {
+                    "line": 24,
+                    "column": 28
+                  },
+                  "end": {
+                    "line": 24,
+                    "column": 55
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 479,
+                  "end": 486,
+                  "loc": {
+                    "start": {
+                      "line": 24,
+                      "column": 28
+                    },
+                    "end": {
+                      "line": 24,
+                      "column": 35
+                    },
+                    "identifierName": "require"
+                  },
+                  "name": "require"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 487,
+                    "end": 505,
+                    "loc": {
+                      "start": {
+                        "line": 24,
+                        "column": 36
+                      },
+                      "end": {
+                        "line": 24,
+                        "column": 54
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "./warcWriterBase",
+                      "raw": "'./warcWriterBase'"
+                    },
+                    "value": "./warcWriterBase"
+                  }
+                ],
+                "trailingComments": null
+              },
+              "leadingComments": null,
+              "trailingComments": null
+            }
+          ],
+          "kind": "let",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {WARCWriterBase}\n ",
+              "start": 417,
+              "end": 450,
+              "loc": {
+                "start": {
+                  "line": 21,
+                  "column": 0
+                },
+                "end": {
+                  "line": 23,
+                  "column": 3
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+              "start": 508,
+              "end": 548,
+              "loc": {
+                "start": {
+                  "line": 26,
+                  "column": 0
+                },
+                "end": {
+                  "line": 28,
+                  "column": 3
+                }
+              }
+            }
+          ]
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {WARCWriterBase}\n ",
+            "start": 417,
+            "end": 450,
+            "loc": {
+              "start": {
+                "line": 21,
+                "column": 0
+              },
+              "end": {
+                "line": 23,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+            "start": 508,
+            "end": 548,
+            "loc": {
+              "start": {
+                "line": 26,
+                "column": 0
+              },
+              "end": {
+                "line": 28,
+                "column": 3
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 549,
+        "end": 605,
+        "loc": {
+          "start": {
+            "line": 29,
+            "column": 0
+          },
+          "end": {
+            "line": 29,
+            "column": 56
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 556,
+          "end": 605,
+          "loc": {
+            "start": {
+              "line": 29,
+              "column": 7
+            },
+            "end": {
+              "line": 29,
+              "column": 56
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 560,
+              "end": 605,
+              "loc": {
+                "start": {
+                  "line": 29,
+                  "column": 11
+                },
+                "end": {
+                  "line": 29,
+                  "column": 56
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 560,
+                "end": 581,
+                "loc": {
+                  "start": {
+                    "line": 29,
+                    "column": 11
+                  },
+                  "end": {
+                    "line": 29,
+                    "column": 32
+                  },
+                  "identifierName": "CRIExtraWARCGenerator"
+                },
+                "name": "CRIExtraWARCGenerator",
+                "leadingComments": null
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 584,
+                "end": 605,
+                "loc": {
+                  "start": {
+                    "line": 29,
+                    "column": 35
+                  },
+                  "end": {
+                    "line": 29,
+                    "column": 56
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 584,
+                  "end": 591,
+                  "loc": {
+                    "start": {
+                      "line": 29,
+                      "column": 35
+                    },
+                    "end": {
+                      "line": 29,
+                      "column": 42
+                    },
+                    "identifierName": "require"
+                  },
+                  "name": "require"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 592,
+                    "end": 604,
+                    "loc": {
+                      "start": {
+                        "line": 29,
+                        "column": 43
+                      },
+                      "end": {
+                        "line": 29,
+                        "column": 55
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "./criExtra",
+                      "raw": "'./criExtra'"
+                    },
+                    "value": "./criExtra"
+                  }
+                ]
+              },
+              "leadingComments": null
+            }
+          ],
+          "kind": "let",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+              "start": 508,
+              "end": 548,
+              "loc": {
+                "start": {
+                  "line": 26,
+                  "column": 0
+                },
+                "end": {
+                  "line": 28,
+                  "column": 3
+                }
+              }
+            }
+          ],
+          "trailingComments": []
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+            "start": 508,
+            "end": 548,
+            "loc": {
+              "start": {
+                "line": 26,
+                "column": 0
+              },
+              "end": {
+                "line": 28,
                 "column": 3
               }
             }
@@ -643,9 +1179,9 @@
   "comments": [
     {
       "type": "CommentBlock",
-      "value": "*\n * @type {{ElectronWARCWriter: ElectronWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, WARCWriterBase: WARCWriterBase}}\n ",
+      "value": "*\n * @type {ElectronWARCGenerator}\n ",
       "start": 0,
-      "end": 247,
+      "end": 40,
       "loc": {
         "start": {
           "line": 1,
@@ -659,81 +1195,81 @@
     },
     {
       "type": "CommentBlock",
-      "value": "*\n   * @type {ElectronWARCGenerator}\n   ",
-      "start": 267,
-      "end": 311,
+      "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+      "start": 96,
+      "end": 140,
       "loc": {
         "start": {
-          "line": 5,
-          "column": 2
+          "line": 6,
+          "column": 0
         },
         "end": {
-          "line": 7,
-          "column": 5
+          "line": 8,
+          "column": 3
         }
       }
     },
     {
       "type": "CommentBlock",
-      "value": "*\n   * @type {RemoteChromeWARCGenerator}\n   ",
-      "start": 360,
-      "end": 408,
+      "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+      "start": 204,
+      "end": 248,
       "loc": {
         "start": {
-          "line": 10,
-          "column": 2
+          "line": 11,
+          "column": 0
         },
         "end": {
-          "line": 12,
-          "column": 5
+          "line": 13,
+          "column": 3
         }
       }
     },
     {
       "type": "CommentBlock",
-      "value": "*\n   * @type {PuppeteerCDPWARCGenerator}\n   ",
-      "start": 465,
-      "end": 513,
+      "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+      "start": 315,
+      "end": 356,
       "loc": {
         "start": {
-          "line": 15,
-          "column": 2
+          "line": 16,
+          "column": 0
         },
         "end": {
-          "line": 17,
-          "column": 5
+          "line": 18,
+          "column": 3
         }
       }
     },
     {
       "type": "CommentBlock",
-      "value": "*\n   * @type {PuppeteerWARCGenerator}\n   ",
-      "start": 573,
-      "end": 618,
+      "value": "*\n * @type {WARCWriterBase}\n ",
+      "start": 417,
+      "end": 450,
       "loc": {
         "start": {
-          "line": 20,
-          "column": 2
+          "line": 21,
+          "column": 0
         },
         "end": {
-          "line": 22,
-          "column": 5
+          "line": 23,
+          "column": 3
         }
       }
     },
     {
       "type": "CommentBlock",
-      "value": "*\n   * @type {WARCWriterBase}\n   ",
-      "start": 672,
-      "end": 709,
+      "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+      "start": 508,
+      "end": 548,
       "loc": {
         "start": {
-          "line": 25,
-          "column": 2
+          "line": 26,
+          "column": 0
         },
         "end": {
-          "line": 27,
-          "column": 5
+          "line": 28,
+          "column": 3
         }
       }
     }
@@ -741,9 +1277,9 @@
   "tokens": [
     {
       "type": "CommentBlock",
-      "value": "*\n * @type {{ElectronWARCWriter: ElectronWARCGenerator, RemoteChromeWARCWriter: RemoteChromeWARCGenerator, PuppeteerCDPWARCGenerator: PuppeteerCDPWARCGenerator, PuppeteerWARCGenerator: PuppeteerWARCGenerator, WARCWriterBase: WARCWriterBase}}\n ",
+      "value": "*\n * @type {ElectronWARCGenerator}\n ",
       "start": 0,
-      "end": 247,
+      "end": 40,
       "loc": {
         "start": {
           "line": 1,
@@ -770,8 +1306,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 248,
-      "end": 254,
+      "start": 41,
+      "end": 47,
       "loc": {
         "start": {
           "line": 4,
@@ -785,9 +1321,9 @@
     },
     {
       "type": {
-        "label": "default",
-        "keyword": "default",
-        "beforeExpr": true,
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
@@ -797,9 +1333,9 @@
         "binop": null,
         "updateContext": null
       },
-      "value": "default",
-      "start": 255,
-      "end": 262,
+      "value": "let",
+      "start": 48,
+      "end": 51,
       "loc": {
         "start": {
           "line": 4,
@@ -807,48 +1343,7 @@
         },
         "end": {
           "line": 4,
-          "column": 14
-        }
-      }
-    },
-    {
-      "type": {
-        "label": "{",
-        "beforeExpr": true,
-        "startsExpr": true,
-        "rightAssociative": false,
-        "isLoop": false,
-        "isAssign": false,
-        "prefix": false,
-        "postfix": false,
-        "binop": null
-      },
-      "start": 263,
-      "end": 264,
-      "loc": {
-        "start": {
-          "line": 4,
-          "column": 15
-        },
-        "end": {
-          "line": 4,
-          "column": 16
-        }
-      }
-    },
-    {
-      "type": "CommentBlock",
-      "value": "*\n   * @type {ElectronWARCGenerator}\n   ",
-      "start": 267,
-      "end": 311,
-      "loc": {
-        "start": {
-          "line": 5,
-          "column": 2
-        },
-        "end": {
-          "line": 7,
-          "column": 5
+          "column": 10
         }
       }
     },
@@ -865,42 +1360,43 @@
         "binop": null
       },
       "value": "ElectronWARCWriter",
-      "start": 314,
-      "end": 332,
+      "start": 52,
+      "end": 70,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 2
+          "line": 4,
+          "column": 11
         },
         "end": {
-          "line": 8,
-          "column": 20
+          "line": 4,
+          "column": 29
         }
       }
     },
     {
       "type": {
-        "label": ":",
+        "label": "=",
         "beforeExpr": true,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
-        "isAssign": false,
+        "isAssign": true,
         "prefix": false,
         "postfix": false,
         "binop": null,
         "updateContext": null
       },
-      "start": 332,
-      "end": 333,
+      "value": "=",
+      "start": 71,
+      "end": 72,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 20
+          "line": 4,
+          "column": 30
         },
         "end": {
-          "line": 8,
-          "column": 21
+          "line": 4,
+          "column": 31
         }
       }
     },
@@ -917,16 +1413,16 @@
         "binop": null
       },
       "value": "require",
-      "start": 334,
-      "end": 341,
+      "start": 73,
+      "end": 80,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 22
+          "line": 4,
+          "column": 32
         },
         "end": {
-          "line": 8,
-          "column": 29
+          "line": 4,
+          "column": 39
         }
       }
     },
@@ -942,16 +1438,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 341,
-      "end": 342,
+      "start": 80,
+      "end": 81,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 29
+          "line": 4,
+          "column": 39
         },
         "end": {
-          "line": 8,
-          "column": 30
+          "line": 4,
+          "column": 40
         }
       }
     },
@@ -969,16 +1465,16 @@
         "updateContext": null
       },
       "value": "./electron",
-      "start": 342,
-      "end": 354,
+      "start": 81,
+      "end": 93,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 30
+          "line": 4,
+          "column": 40
         },
         "end": {
-          "line": 8,
-          "column": 42
+          "line": 4,
+          "column": 52
         }
       }
     },
@@ -994,23 +1490,40 @@
         "postfix": false,
         "binop": null
       },
-      "start": 354,
-      "end": 355,
+      "start": 93,
+      "end": 94,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 42
+          "line": 4,
+          "column": 52
+        },
+        "end": {
+          "line": 4,
+          "column": 53
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * @type {RemoteChromeWARCGenerator}\n ",
+      "start": 96,
+      "end": 140,
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 0
         },
         "end": {
           "line": 8,
-          "column": 43
+          "column": 3
         }
       }
     },
     {
       "type": {
-        "label": ",",
-        "beforeExpr": true,
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
@@ -1020,32 +1533,45 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 355,
-      "end": 356,
+      "value": "export",
+      "start": 141,
+      "end": 147,
       "loc": {
         "start": {
-          "line": 8,
-          "column": 43
+          "line": 9,
+          "column": 0
         },
         "end": {
-          "line": 8,
-          "column": 44
+          "line": 9,
+          "column": 6
         }
       }
     },
     {
-      "type": "CommentBlock",
-      "value": "*\n   * @type {RemoteChromeWARCGenerator}\n   ",
-      "start": 360,
-      "end": 408,
+      "type": {
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "let",
+      "start": 148,
+      "end": 151,
       "loc": {
         "start": {
-          "line": 10,
-          "column": 2
+          "line": 9,
+          "column": 7
         },
         "end": {
-          "line": 12,
-          "column": 5
+          "line": 9,
+          "column": 10
         }
       }
     },
@@ -1062,42 +1588,43 @@
         "binop": null
       },
       "value": "RemoteChromeWARCWriter",
-      "start": 411,
-      "end": 433,
+      "start": 152,
+      "end": 174,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 2
+          "line": 9,
+          "column": 11
         },
         "end": {
-          "line": 13,
-          "column": 24
+          "line": 9,
+          "column": 33
         }
       }
     },
     {
       "type": {
-        "label": ":",
+        "label": "=",
         "beforeExpr": true,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
-        "isAssign": false,
+        "isAssign": true,
         "prefix": false,
         "postfix": false,
         "binop": null,
         "updateContext": null
       },
-      "start": 433,
-      "end": 434,
+      "value": "=",
+      "start": 175,
+      "end": 176,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 24
+          "line": 9,
+          "column": 34
         },
         "end": {
-          "line": 13,
-          "column": 25
+          "line": 9,
+          "column": 35
         }
       }
     },
@@ -1114,16 +1641,16 @@
         "binop": null
       },
       "value": "require",
-      "start": 435,
-      "end": 442,
+      "start": 177,
+      "end": 184,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 26
+          "line": 9,
+          "column": 36
         },
         "end": {
-          "line": 13,
-          "column": 33
+          "line": 9,
+          "column": 43
         }
       }
     },
@@ -1139,16 +1666,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 442,
-      "end": 443,
+      "start": 184,
+      "end": 185,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 33
+          "line": 9,
+          "column": 43
         },
         "end": {
-          "line": 13,
-          "column": 34
+          "line": 9,
+          "column": 44
         }
       }
     },
@@ -1166,16 +1693,16 @@
         "updateContext": null
       },
       "value": "./remoteChrome",
-      "start": 443,
-      "end": 459,
+      "start": 185,
+      "end": 201,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 34
+          "line": 9,
+          "column": 44
         },
         "end": {
-          "line": 13,
-          "column": 50
+          "line": 9,
+          "column": 60
         }
       }
     },
@@ -1191,23 +1718,40 @@
         "postfix": false,
         "binop": null
       },
-      "start": 459,
-      "end": 460,
+      "start": 201,
+      "end": 202,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 50
+          "line": 9,
+          "column": 60
+        },
+        "end": {
+          "line": 9,
+          "column": 61
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * @type {PuppeteerCDPWARCGenerator}\n ",
+      "start": 204,
+      "end": 248,
+      "loc": {
+        "start": {
+          "line": 11,
+          "column": 0
         },
         "end": {
           "line": 13,
-          "column": 51
+          "column": 3
         }
       }
     },
     {
       "type": {
-        "label": ",",
-        "beforeExpr": true,
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
@@ -1217,32 +1761,45 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 460,
-      "end": 461,
+      "value": "export",
+      "start": 249,
+      "end": 255,
       "loc": {
         "start": {
-          "line": 13,
-          "column": 51
+          "line": 14,
+          "column": 0
         },
         "end": {
-          "line": 13,
-          "column": 52
+          "line": 14,
+          "column": 6
         }
       }
     },
     {
-      "type": "CommentBlock",
-      "value": "*\n   * @type {PuppeteerCDPWARCGenerator}\n   ",
-      "start": 465,
-      "end": 513,
+      "type": {
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "let",
+      "start": 256,
+      "end": 259,
       "loc": {
         "start": {
-          "line": 15,
-          "column": 2
+          "line": 14,
+          "column": 7
         },
         "end": {
-          "line": 17,
-          "column": 5
+          "line": 14,
+          "column": 10
         }
       }
     },
@@ -1259,42 +1816,43 @@
         "binop": null
       },
       "value": "PuppeteerCDPWARCGenerator",
-      "start": 516,
-      "end": 541,
+      "start": 260,
+      "end": 285,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 2
+          "line": 14,
+          "column": 11
         },
         "end": {
-          "line": 18,
-          "column": 27
+          "line": 14,
+          "column": 36
         }
       }
     },
     {
       "type": {
-        "label": ":",
+        "label": "=",
         "beforeExpr": true,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
-        "isAssign": false,
+        "isAssign": true,
         "prefix": false,
         "postfix": false,
         "binop": null,
         "updateContext": null
       },
-      "start": 541,
-      "end": 542,
+      "value": "=",
+      "start": 286,
+      "end": 287,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 27
+          "line": 14,
+          "column": 37
         },
         "end": {
-          "line": 18,
-          "column": 28
+          "line": 14,
+          "column": 38
         }
       }
     },
@@ -1311,16 +1869,16 @@
         "binop": null
       },
       "value": "require",
-      "start": 543,
-      "end": 550,
+      "start": 288,
+      "end": 295,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 29
+          "line": 14,
+          "column": 39
         },
         "end": {
-          "line": 18,
-          "column": 36
+          "line": 14,
+          "column": 46
         }
       }
     },
@@ -1336,16 +1894,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 550,
-      "end": 551,
+      "start": 295,
+      "end": 296,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 36
+          "line": 14,
+          "column": 46
         },
         "end": {
-          "line": 18,
-          "column": 37
+          "line": 14,
+          "column": 47
         }
       }
     },
@@ -1363,16 +1921,16 @@
         "updateContext": null
       },
       "value": "./puppeteerCDP",
-      "start": 551,
-      "end": 567,
+      "start": 296,
+      "end": 312,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 37
+          "line": 14,
+          "column": 47
         },
         "end": {
-          "line": 18,
-          "column": 53
+          "line": 14,
+          "column": 63
         }
       }
     },
@@ -1388,23 +1946,40 @@
         "postfix": false,
         "binop": null
       },
-      "start": 567,
-      "end": 568,
+      "start": 312,
+      "end": 313,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 53
+          "line": 14,
+          "column": 63
+        },
+        "end": {
+          "line": 14,
+          "column": 64
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * @type {PuppeteerWARCGenerator}\n ",
+      "start": 315,
+      "end": 356,
+      "loc": {
+        "start": {
+          "line": 16,
+          "column": 0
         },
         "end": {
           "line": 18,
-          "column": 54
+          "column": 3
         }
       }
     },
     {
       "type": {
-        "label": ",",
-        "beforeExpr": true,
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
@@ -1414,32 +1989,45 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 568,
-      "end": 569,
+      "value": "export",
+      "start": 357,
+      "end": 363,
       "loc": {
         "start": {
-          "line": 18,
-          "column": 54
+          "line": 19,
+          "column": 0
         },
         "end": {
-          "line": 18,
-          "column": 55
+          "line": 19,
+          "column": 6
         }
       }
     },
     {
-      "type": "CommentBlock",
-      "value": "*\n   * @type {PuppeteerWARCGenerator}\n   ",
-      "start": 573,
-      "end": 618,
+      "type": {
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "let",
+      "start": 364,
+      "end": 367,
       "loc": {
         "start": {
-          "line": 20,
-          "column": 2
+          "line": 19,
+          "column": 7
         },
         "end": {
-          "line": 22,
-          "column": 5
+          "line": 19,
+          "column": 10
         }
       }
     },
@@ -1456,42 +2044,43 @@
         "binop": null
       },
       "value": "PuppeteerWARCGenerator",
-      "start": 621,
-      "end": 643,
+      "start": 368,
+      "end": 390,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 2
+          "line": 19,
+          "column": 11
         },
         "end": {
-          "line": 23,
-          "column": 24
+          "line": 19,
+          "column": 33
         }
       }
     },
     {
       "type": {
-        "label": ":",
+        "label": "=",
         "beforeExpr": true,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
-        "isAssign": false,
+        "isAssign": true,
         "prefix": false,
         "postfix": false,
         "binop": null,
         "updateContext": null
       },
-      "start": 643,
-      "end": 644,
+      "value": "=",
+      "start": 391,
+      "end": 392,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 24
+          "line": 19,
+          "column": 34
         },
         "end": {
-          "line": 23,
-          "column": 25
+          "line": 19,
+          "column": 35
         }
       }
     },
@@ -1508,16 +2097,16 @@
         "binop": null
       },
       "value": "require",
-      "start": 645,
-      "end": 652,
+      "start": 393,
+      "end": 400,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 26
+          "line": 19,
+          "column": 36
         },
         "end": {
-          "line": 23,
-          "column": 33
+          "line": 19,
+          "column": 43
         }
       }
     },
@@ -1533,16 +2122,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 652,
-      "end": 653,
+      "start": 400,
+      "end": 401,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 33
+          "line": 19,
+          "column": 43
         },
         "end": {
-          "line": 23,
-          "column": 34
+          "line": 19,
+          "column": 44
         }
       }
     },
@@ -1560,16 +2149,16 @@
         "updateContext": null
       },
       "value": "./puppeteer",
-      "start": 653,
-      "end": 666,
+      "start": 401,
+      "end": 414,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 34
+          "line": 19,
+          "column": 44
         },
         "end": {
-          "line": 23,
-          "column": 47
+          "line": 19,
+          "column": 57
         }
       }
     },
@@ -1585,23 +2174,40 @@
         "postfix": false,
         "binop": null
       },
-      "start": 666,
-      "end": 667,
+      "start": 414,
+      "end": 415,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 47
+          "line": 19,
+          "column": 57
+        },
+        "end": {
+          "line": 19,
+          "column": 58
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * @type {WARCWriterBase}\n ",
+      "start": 417,
+      "end": 450,
+      "loc": {
+        "start": {
+          "line": 21,
+          "column": 0
         },
         "end": {
           "line": 23,
-          "column": 48
+          "column": 3
         }
       }
     },
     {
       "type": {
-        "label": ",",
-        "beforeExpr": true,
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
@@ -1611,32 +2217,45 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 667,
-      "end": 668,
+      "value": "export",
+      "start": 451,
+      "end": 457,
       "loc": {
         "start": {
-          "line": 23,
-          "column": 48
+          "line": 24,
+          "column": 0
         },
         "end": {
-          "line": 23,
-          "column": 49
+          "line": 24,
+          "column": 6
         }
       }
     },
     {
-      "type": "CommentBlock",
-      "value": "*\n   * @type {WARCWriterBase}\n   ",
-      "start": 672,
-      "end": 709,
+      "type": {
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "let",
+      "start": 458,
+      "end": 461,
       "loc": {
         "start": {
-          "line": 25,
-          "column": 2
+          "line": 24,
+          "column": 7
         },
         "end": {
-          "line": 27,
-          "column": 5
+          "line": 24,
+          "column": 10
         }
       }
     },
@@ -1653,42 +2272,43 @@
         "binop": null
       },
       "value": "WARCWriterBase",
-      "start": 712,
-      "end": 726,
+      "start": 462,
+      "end": 476,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 2
+          "line": 24,
+          "column": 11
         },
         "end": {
-          "line": 28,
-          "column": 16
+          "line": 24,
+          "column": 25
         }
       }
     },
     {
       "type": {
-        "label": ":",
+        "label": "=",
         "beforeExpr": true,
         "startsExpr": false,
         "rightAssociative": false,
         "isLoop": false,
-        "isAssign": false,
+        "isAssign": true,
         "prefix": false,
         "postfix": false,
         "binop": null,
         "updateContext": null
       },
-      "start": 726,
-      "end": 727,
+      "value": "=",
+      "start": 477,
+      "end": 478,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 16
+          "line": 24,
+          "column": 26
         },
         "end": {
-          "line": 28,
-          "column": 17
+          "line": 24,
+          "column": 27
         }
       }
     },
@@ -1705,16 +2325,16 @@
         "binop": null
       },
       "value": "require",
-      "start": 728,
-      "end": 735,
+      "start": 479,
+      "end": 486,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 18
+          "line": 24,
+          "column": 28
         },
         "end": {
-          "line": 28,
-          "column": 25
+          "line": 24,
+          "column": 35
         }
       }
     },
@@ -1730,16 +2350,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 735,
-      "end": 736,
+      "start": 486,
+      "end": 487,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 25
+          "line": 24,
+          "column": 35
         },
         "end": {
-          "line": 28,
-          "column": 26
+          "line": 24,
+          "column": 36
         }
       }
     },
@@ -1757,16 +2377,16 @@
         "updateContext": null
       },
       "value": "./warcWriterBase",
-      "start": 736,
-      "end": 754,
+      "start": 487,
+      "end": 505,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 26
+          "line": 24,
+          "column": 36
         },
         "end": {
-          "line": 28,
-          "column": 44
+          "line": 24,
+          "column": 54
         }
       }
     },
@@ -1782,22 +2402,225 @@
         "postfix": false,
         "binop": null
       },
-      "start": 754,
-      "end": 755,
+      "start": 505,
+      "end": 506,
       "loc": {
         "start": {
-          "line": 28,
-          "column": 44
+          "line": 24,
+          "column": 54
+        },
+        "end": {
+          "line": 24,
+          "column": 55
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * @type {CRIExtraWARCGenerator}\n ",
+      "start": 508,
+      "end": 548,
+      "loc": {
+        "start": {
+          "line": 26,
+          "column": 0
         },
         "end": {
           "line": 28,
-          "column": 45
+          "column": 3
         }
       }
     },
     {
       "type": {
-        "label": "}",
+        "label": "export",
+        "keyword": "export",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "export",
+      "start": 549,
+      "end": 555,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 0
+        },
+        "end": {
+          "line": 29,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "let",
+        "keyword": "let",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "let",
+      "start": 556,
+      "end": 559,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 7
+        },
+        "end": {
+          "line": 29,
+          "column": 10
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "CRIExtraWARCGenerator",
+      "start": 560,
+      "end": 581,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 11
+        },
+        "end": {
+          "line": 29,
+          "column": 32
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "=",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": true,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "=",
+      "start": 582,
+      "end": 583,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 33
+        },
+        "end": {
+          "line": 29,
+          "column": 34
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "require",
+      "start": 584,
+      "end": 591,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 35
+        },
+        "end": {
+          "line": 29,
+          "column": 42
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "(",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 591,
+      "end": 592,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 42
+        },
+        "end": {
+          "line": 29,
+          "column": 43
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./criExtra",
+      "start": 592,
+      "end": 604,
+      "loc": {
+        "start": {
+          "line": 29,
+          "column": 43
+        },
+        "end": {
+          "line": 29,
+          "column": 55
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ")",
         "beforeExpr": false,
         "startsExpr": false,
         "rightAssociative": false,
@@ -1807,16 +2630,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 756,
-      "end": 757,
+      "start": 604,
+      "end": 605,
       "loc": {
         "start": {
           "line": 29,
-          "column": 0
+          "column": 55
         },
         "end": {
           "line": 29,
-          "column": 1
+          "column": 56
         }
       }
     },
@@ -1833,8 +2656,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 758,
-      "end": 758,
+      "start": 606,
+      "end": 606,
       "loc": {
         "start": {
           "line": 30,

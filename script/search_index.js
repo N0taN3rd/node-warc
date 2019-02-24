@@ -12,10 +12,52 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/requestcapturers/index.js~cdprequestinfo",
+    "variable/index.html#static-variable-CDPRequestInfo",
+    "<span>CDPRequestInfo</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/requestcapturers/index.js~criextracapturer",
+    "variable/index.html#static-variable-CRIExtraCapturer",
+    "<span>CRIExtraCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/requestcapturers/criextra.js~criextrarequestcapturer",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html",
+    "<span>CRIExtraRequestCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/criExtra.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/writers/criextra.js~criextrawarcgenerator",
+    "class/lib/writers/criExtra.js~CRIExtraWARCGenerator.html",
+    "<span>CRIExtraWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/criExtra.js</span>",
+    "class"
+  ],
+  [
+    "node-warc/lib/writers/index.js~criextrawarcgenerator",
+    "variable/index.html#static-variable-CRIExtraWARCGenerator",
+    "<span>CRIExtraWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/requestcapturers/capturedrequest.js~capturedrequest",
     "class/lib/requestCapturers/capturedRequest.js~CapturedRequest.html",
     "<span>CapturedRequest</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/capturedRequest.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/requestcapturers/index.js~capturedrequest",
+    "variable/index.html#static-variable-CapturedRequest",
+    "<span>CapturedRequest</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/warcrecord/index.js~contentparser",
+    "variable/index.html#static-variable-ContentParser",
+    "<span>ContentParser</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecord/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/warcrecord/warccontentparsers.js~contentparser",
@@ -24,10 +66,22 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/requestcapturers/index.js~electroncapturer",
+    "variable/index.html#static-variable-ElectronCapturer",
+    "<span>ElectronCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/utils/electrongetreserror.js~electrongetreserror",
     "class/lib/utils/electronGetResError.js~ElectronGetResError.html",
     "<span>ElectronGetResError</span> <span class=\"search-result-import-path\">node-warc/lib/utils/electronGetResError.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/utils/index.js~electrongetreserror",
+    "variable/index.html#static-variable-ElectronGetResError",
+    "<span>ElectronGetResError</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/requestcapturers/electron.js~electronrequestcapturer",
@@ -42,10 +96,22 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/writers/index.js~electronwarcwriter",
+    "variable/index.html#static-variable-ElectronWARCWriter",
+    "<span>ElectronWARCWriter</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/parsers/gzipdetector.js~gzipdetector",
     "class/lib/parsers/gzipDetector.js~GzipDetector.html",
     "<span>GzipDetector</span> <span class=\"search-result-import-path\">node-warc/lib/parsers/gzipDetector.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/requestcapturers/index.js~puppeteercdpcapturer",
+    "variable/index.html#static-variable-PuppeteerCDPCapturer",
+    "<span>PuppeteerCDPCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/requestcapturers/puppeteercdp.js~puppeteercdprequestcapturer",
@@ -54,16 +120,34 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/writers/index.js~puppeteercdpwarcgenerator",
+    "variable/index.html#static-variable-PuppeteerCDPWARCGenerator",
+    "<span>PuppeteerCDPWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/writers/puppeteercdp.js~puppeteercdpwarcgenerator",
     "class/lib/writers/puppeteerCDP.js~PuppeteerCDPWARCGenerator.html",
     "<span>PuppeteerCDPWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/puppeteerCDP.js</span>",
     "class"
   ],
   [
+    "node-warc/lib/requestcapturers/index.js~puppeteercapturer",
+    "variable/index.html#static-variable-PuppeteerCapturer",
+    "<span>PuppeteerCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/requestcapturers/puppeteer.js~puppeteerrequestcapturer",
     "class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html",
     "<span>PuppeteerRequestCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/puppeteer.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/writers/index.js~puppeteerwarcgenerator",
+    "variable/index.html#static-variable-PuppeteerWARCGenerator",
+    "<span>PuppeteerWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/writers/puppeteer.js~puppeteerwarcgenerator",
@@ -78,6 +162,18 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/warcrecord/index.js~recordbuilder",
+    "variable/index.html#static-variable-RecordBuilder",
+    "<span>RecordBuilder</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecord/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/requestcapturers/index.js~remotechromecapturer",
+    "variable/index.html#static-variable-RemoteChromeCapturer",
+    "<span>RemoteChromeCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/requestcapturers/remotechrome.js~remotechromerequestcapturer",
     "class/lib/requestCapturers/remoteChrome.js~RemoteChromeRequestCapturer.html",
     "<span>RemoteChromeRequestCapturer</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/remoteChrome.js</span>",
@@ -88,6 +184,18 @@ window.esdocSearchIndex = [
     "class/lib/writers/remoteChrome.js~RemoteChromeWARCGenerator.html",
     "<span>RemoteChromeWARCGenerator</span> <span class=\"search-result-import-path\">node-warc/lib/writers/remoteChrome.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/writers/index.js~remotechromewarcwriter",
+    "variable/index.html#static-variable-RemoteChromeWARCWriter",
+    "<span>RemoteChromeWARCWriter</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/requestcapturers/index.js~requesthandler",
+    "variable/index.html#static-variable-RequestHandler",
+    "<span>RequestHandler</span> <span class=\"search-result-import-path\">node-warc/lib/requestCapturers/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/requestcapturers/requesthandler.js~requesthandler",
@@ -114,6 +222,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/warcrecord/index.js~warcrecord",
+    "variable/index.html#static-variable-WARCRecord",
+    "<span>WARCRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecord/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/warcrecord/record.js~warcrecord",
     "class/lib/warcRecord/record.js~WARCRecord.html",
     "<span>WARCRecord</span> <span class=\"search-result-import-path\">node-warc/lib/warcRecord/record.js</span>",
@@ -126,10 +240,22 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "node-warc/lib/writers/index.js~warcwriterbase",
+    "variable/index.html#static-variable-WARCWriterBase",
+    "<span>WARCWriterBase</span> <span class=\"search-result-import-path\">node-warc/lib/writers/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/writers/warcwriterbase.js~warcwriterbase",
     "class/lib/writers/warcWriterBase.js~WARCWriterBase.html",
     "<span>WARCWriterBase</span> <span class=\"search-result-import-path\">node-warc/lib/writers/warcWriterBase.js</span>",
     "class"
+  ],
+  [
+    "node-warc/lib/utils/index.js~constants",
+    "variable/index.html#static-variable-constants",
+    "<span>constants</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/utils/ensurewarcfilename.js~ensurewarcfilename",
@@ -138,10 +264,28 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "node-warc/lib/utils/index.js~ensurewarcfilename",
+    "variable/index.html#static-variable-ensureWARCFilename",
+    "<span>ensureWARCFilename</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/utils/getresbodyelectron.js~getresbodyelectron",
     "function/index.html#static-function-getResBodyElectron",
     "<span>getResBodyElectron</span> <span class=\"search-result-import-path\">node-warc/lib/utils/getResBodyElectron.js</span>",
     "function"
+  ],
+  [
+    "node-warc/lib/utils/index.js~getresbodyelectron",
+    "variable/index.html#static-variable-getResBodyElectron",
+    "<span>getResBodyElectron</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
+  ],
+  [
+    "node-warc/lib/utils/index.js~isemptyplainobject",
+    "variable/index.html#static-variable-isEmptyPlainObject",
+    "<span>isEmptyPlainObject</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
   ],
   [
     "node-warc/lib/utils/isemptyplainobject.js~isemptyplainobject",
@@ -162,10 +306,22 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "node-warc/lib/utils/index.js~stringifyheaders",
+    "variable/index.html#static-variable-stringifyHeaders",
+    "<span>stringifyHeaders</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
+  ],
+  [
     "node-warc/lib/utils/headerserializers.js~stringifyrequestheaders",
     "function/index.html#static-function-stringifyRequestHeaders",
     "<span>stringifyRequestHeaders</span> <span class=\"search-result-import-path\">node-warc/lib/utils/headerSerializers.js</span>",
     "function"
+  ],
+  [
+    "node-warc/lib/utils/index.js~stringifyrequestheaders",
+    "variable/index.html#static-variable-stringifyRequestHeaders",
+    "<span>stringifyRequestHeaders</span> <span class=\"search-result-import-path\">node-warc/lib/utils/index.js</span>",
+    "variable"
   ],
   [
     "lib/.external-ecmascript.js~array",
@@ -1050,6 +1206,90 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/requestcapturers/criextra.js",
+    "file/lib/requestCapturers/criExtra.js.html",
+    "lib/requestCapturers/criExtra.js",
+    "file"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#[symbol.iterator]",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-[Symbol.iterator]",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#[Symbol.iterator]",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#_capture",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-member-_capture",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#_capture",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#_requestc",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-member-_requestC",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#_requestC",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#_requests",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-member-_requests",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#_requests",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#attach",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-attach",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#attach",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#clear",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-clear",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#clear",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#constructor",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-constructor-constructor",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#constructor",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#detach",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-detach",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#detach",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#iteraterequests",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-iterateRequests",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#iterateRequests",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#requestwillbesent",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-requestWillBeSent",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#requestWillBeSent",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#requests",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-requests",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#requests",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#startcapturing",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-startCapturing",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#startCapturing",
+    "method"
+  ],
+  [
+    "lib/requestcapturers/criextra.js~criextrarequestcapturer#stopcapturing",
+    "class/lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer.html#instance-method-stopCapturing",
+    "lib/requestCapturers/criExtra.js~CRIExtraRequestCapturer#stopCapturing",
+    "method"
+  ],
+  [
     "lib/requestcapturers/electron.js",
     "file/lib/requestCapturers/electron.js.html",
     "lib/requestCapturers/electron.js",
@@ -1095,6 +1335,12 @@ window.esdocSearchIndex = [
     "lib/requestcapturers/puppeteer.js~puppeteerrequestcapturer#_capture",
     "class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-member-_capture",
     "lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer#_capture",
+    "member"
+  ],
+  [
+    "lib/requestcapturers/puppeteer.js~puppeteerrequestcapturer#_requestc",
+    "class/lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer.html#instance-member-_requestC",
+    "lib/requestCapturers/puppeteer.js~PuppeteerRequestCapturer#_requestC",
     "member"
   ],
   [
@@ -1678,6 +1924,24 @@ window.esdocSearchIndex = [
     "file/lib/writers/constants.js.html",
     "lib/writers/constants.js",
     "file"
+  ],
+  [
+    "lib/writers/criextra.js",
+    "file/lib/writers/criExtra.js.html",
+    "lib/writers/criExtra.js",
+    "file"
+  ],
+  [
+    "lib/writers/criextra.js~criextrawarcgenerator#generatewarc",
+    "class/lib/writers/criExtra.js~CRIExtraWARCGenerator.html#instance-method-generateWARC",
+    "lib/writers/criExtra.js~CRIExtraWARCGenerator#generateWARC",
+    "method"
+  ],
+  [
+    "lib/writers/criextra.js~criextrawarcgenerator#generatewarcentry",
+    "class/lib/writers/criExtra.js~CRIExtraWARCGenerator.html#instance-method-generateWarcEntry",
+    "lib/writers/criExtra.js~CRIExtraWARCGenerator#generateWarcEntry",
+    "method"
   ],
   [
     "lib/writers/electron.js",
