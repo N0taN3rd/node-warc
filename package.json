@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.5",
-    "@types/node": "^11.9.4",
+    "@types/node": "^11.9.5",
     "@types/puppeteer": "^1.12.1",
     "ava": "^1.2.1",
     "chalk": "^2.4.2",
