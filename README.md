@@ -101,7 +101,7 @@ parser.start()
 
 ```js
 const CRI = require('chrome-remote-interface')
-const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
+const { RemoteChromeWARCWriter, RemoteChromeCapturer } = require('node-warc')
 
 ;(async () => {
   const client = await CRI()
@@ -114,7 +114,7 @@ const { RemoteChromeWARCGenerator, RemoteChromeCapturer } = require('node-warc')
   await client.Page.navigate({ url: 'http://example.com' });
   // actual code should wait for a better stopping condition, eg. network idle
   await client.Page.loadEventFired()
-  const warcGen = new RemoteChromeWARCGenerator()
+  const warcGen = new RemoteChromeWARCWriter()
   await warcGen.generateWARC(cap, client.Network, {
     warcOpts: {
       warcPath: 'myWARC.warc'
