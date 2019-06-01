@@ -6,15 +6,32 @@ function parseWARC(files) {
     let reader = new FileReader();
 
     reader.onloadend = function() {
+        var inflator, strm, _in, len, pos = 0;
+
         var rstream = new stream.Readable();
         rstream._read = () => {};
-        rstream.push(new Uint8Array(reader.result));
+
+        const data = reader.result;
+
+        do {
+            len = data.byteLength - pos;
+            _in = new Uint8Array(data, pos, len);
+
+            inflator = new pako.Inflate();
+            strm = inflator.strm;
+            inflator.push(_in, true);
+
+            rstream.push(inflator.result);
+
+            pos += strm.next_in;
+        } while (strm.avail_in);
+
         rstream.push(null);
 
         // attempt to set large window to avoid error
-        var gunzip = rstream.pipe(zlib.createGunzip({chunkSize: 1024*1024*16, windowBits: 15, flush: zlib.Z_NO_FLUSH, finishFlush: zlib.Z_SYNC_FLUSH}));
+        //var gunzip = rstream.pipe(zlib.createGunzip({chunkSize: 1024*1024*16, windowBits: 15, flush: zlib.Z_NO_FLUSH, finishFlush: zlib.Z_SYNC_FLUSH}));
 
-        const parser = new WARCParser(gunzip);
+        const parser = new WARCParser(rstream);
         parser.on('record', record => { console.log(record) })
         parser.on('done', () => { console.log('finished') })
         parser.on('error', error => { console.error(error) })
