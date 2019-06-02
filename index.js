@@ -116,7 +116,4 @@ if (require('./lib/parsers/_canUseRecordIterator')) {
   exports.recordIterator = require('./lib/parsers/recordterator')
 }
 
-// Testing for Browser
-exports.stream = require('stream')
-exports.zlib = require('zlib')
-exports.pako = require('pako')
+
