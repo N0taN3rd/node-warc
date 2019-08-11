@@ -127,14 +127,6 @@ export class WARCRecord {
     getWARCHeader(headerKey: string): string | undefined;
 }
 
-
-export class RecordBuilder {
-    _parts: WARCRecordParts;
-    _parsingState: symbol;
-    buildRecord(): WARCRecord | null;
-    consumeLine(line: Buffer): WARCRecord | null;
-}
-
 export class ContentParser {
     static utf8BufferSlice (buf: Buffer, start: number, end: number): string;
     static bufEndPosNoCRLF (buf: Buffer, bufLen: number): number;

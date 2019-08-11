@@ -44,17 +44,17 @@
     }
   },
   "dependencies": {
-    "eventemitter3": "^3.1.2",
-    "fs-extra": "^8.0.1",
-    "lodash": "^4.17.11",
+    "eventemitter3": "^4.0.0",
+    "fs-extra": "^8.1.0",
+    "lodash": "^4.17.15",
     "untildify": "^4.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@types/fs-extra": "^7.0.0",
-    "@types/node": "^12.0.4",
-    "@types/puppeteer": "^1.12.4",
-    "ava": "^2.0.0",
+    "@types/fs-extra": "^8.0.0",
+    "@types/node": "^12.6.8",
+    "@types/puppeteer": "^1.19.0",
+    "ava": "^2.2.0",
     "chalk": "^2.4.2",
     "chrome-remote-interface-extra": "^1.1.1",
     "esdoc": "^1.1.0",
@@ -69,10 +69,10 @@
     "perfy": "^1.1.5",
     "prettier-standard": "^9.1.1",
     "pretty-time": "^1.1.0",
-    "puppeteer": "^1.17.0",
+    "puppeteer": "^1.19.0",
     "rxjs": "^6.5.2",
     "snazzy": "^8.0.0",
-    "standard": "^12.0.1"
+    "standard": "^13.1.0"
   },
   "ava": {
     "files": [
@@ -88,7 +88,7 @@
     ]
   },
   "resolutions": {
-    "**/graceful-fs": "4.1.15",
+    "**/graceful-fs": "4.2.0",
     "**/universalify": "0.1.2"
   }
 }
