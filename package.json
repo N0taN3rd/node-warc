@@ -1,6 +1,6 @@
 {
   "name": "node-warc",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Parse And Write Web Archive Records (WARC) Files",
   "main": "index.js",
   "author": {
@@ -44,39 +44,43 @@
     }
   },
   "dependencies": {
+    "@types/puppeteer": "^2.0.0",
     "eventemitter3": "^4.0.0",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
     "untildify": "^4.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.0.0",
-    "@types/node": "^12.6.8",
-    "@types/puppeteer": "^1.19.0",
-    "ava": "^2.2.0",
-    "chalk": "^2.4.2",
+    "@types/fs-extra": "^8.0.1",
+    "@types/node": "^12.12.21",
+    "ava": "^2.4.0",
+    "chalk": "^3.0.0",
     "chrome-remote-interface-extra": "^1.1.1",
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-external-ecmascript-plugin": "^1.0.0",
     "esdoc-inject-style-plugin": "^1.0.0",
-    "esdoc-node": "^1.0.4",
+    "esdoc-node": "^1.0.5",
     "esdoc-standard-plugin": "^1.0.0",
-    "gh-pages": "^2.0.1",
+    "gh-pages": "^2.1.1",
     "microtime": "^3.0.0",
     "nyc": "^14.1.1",
     "perfy": "^1.1.5",
-    "prettier-standard": "^9.1.1",
+    "prettier-standard": "^16.1.0",
     "pretty-time": "^1.1.0",
-    "puppeteer": "^1.19.0",
-    "rxjs": "^6.5.2",
+    "puppeteer": "^2.0.0",
+    "rxjs": "^6.5.3",
     "snazzy": "^8.0.0",
-    "standard": "^13.1.0"
+    "standard": "^14.3.1"
   },
   "ava": {
     "files": [
       "test/*.js"
+    ],
+    "helpers": [
+      "test/helpers/*",
+      "test/files/*"
     ],
     "sources": [
       "lib/**/*"

@@ -14,6 +14,25 @@ interface Error {
 
 export type NullableEr = Error | null
 
+/**
+ * Parses a WARC file automatically detecting if it is gzipped.
+ * @extends {EventEmitter}
+ * @example
+ *  const parser = new AutoWARCParser('<path-to-warcfile>')
+ *  parser.on('record', record => { console.log(record) })
+ *  parser.on('error', error => { console.error(error) })
+ *  parser.start()
+ * @example
+ *  const parser = new AutoWARCParser()
+ *  parser.on('record', record => { console.log(record) })
+ *  parser.on('error', error => { console.error(error) })
+ *  parser.parseWARC('<path-to-warcfile>')
+ *  @example
+ *  // requires node >= 10
+ *  for await (const record of new AutoWARCParser('<path-to-warcfile>')) {
+ *    console.log(record)
+ *  }
+ */
 export class AutoWARCParser extends EventEmitter {
     _wp?: string;
     _parsing: boolean;
@@ -61,6 +80,7 @@ export class WARCParser extends EventEmitter {
 }
 
 export class WARCStreamTransform extends Transform {
+    constructor(stream: ReadStream | Gunzip);
     _consumeChunk(chunk: Buffer, done: () => void, pushLast?: boolean): void;
     _transform(buf: Buffer, enc: string, done: () => void): void;
     _flush(done: () => void): void;
@@ -86,7 +106,7 @@ export interface RequestHTTPInfo {
     path: string;
     method: string;
     httpVersion: string;
-    headers: object;
+    headers: Map<string, string|Array<string>>;
 }
 
 export interface ResponseHTTPInfo {
@@ -94,11 +114,11 @@ export interface ResponseHTTPInfo {
     statusCode: string;
     statusReason: string;
     httpVersion: string;
-    headers: object;
+    headers: Map<string, string|Array<string>>;
 }
 
 export class WARCRecord {
-    warcHeader: object;
+    warcHeader: Map<string, string|Array<string>>;
     httpInfo?: RequestHTTPInfo | ResponseHTTPInfo;
     content: Buffer;
     warcType: string;
@@ -125,6 +145,9 @@ export class WARCRecord {
     constructor (warcParts: WARCRecordParts);
     hasWARCHeader(headerKey: string): boolean;
     getWARCHeader(headerKey: string): string | undefined;
+    warcHeadersAsBuffer(): Buffer;
+    httpPortionAsBuffer(): Buffer;
+    asBuffer(): Buffer;
 }
 
 export class ContentParser {
@@ -198,7 +221,7 @@ export class RequestHandler {
     requestWillBeSent(info: object): void;
     responseReceived(info: object): void;
     iterateRequests(): Iterator<CDPRequestInfo>;
-    [Symbol.iterator](): Iterator<[string, CapturedRequest]>;
+    [Symbol.iterator](): Iterator<CapturedRequest>;
 }
 
 export class ElectronRequestCapturer extends RequestHandler {
@@ -210,9 +233,9 @@ export class PuppeteerRequestCapturer {
     _capture: boolean;
     _requests: Map<number, puppeteer.Request>;
     _requestC: number;
-    constructor (page?: puppeteer.Page, requestEvent?: string = 'request');
-    attach (page: puppeteer.Page, requestEvent?: string = 'request'): void;
-    detach (page: puppeteer.Page, requestEvent?: string = 'request'): void;
+    constructor (page?: puppeteer.Page, requestEvent?: string);
+    attach (page: puppeteer.Page, requestEvent?: string): void;
+    detach (page: puppeteer.Page, requestEvent?: string): void;
     startCapturing(): void;
     stopCapturing(): void;
     requestWillBeSent(r: puppeteer.Request): void;
@@ -240,9 +263,9 @@ export class CRIExtraRequestCapturer {
     _capture: boolean;
     _requests: Map<number, CRIERequest>;
     _requestC: number;
-    constructor (page?: CRIEPage, requestEvent?: string = 'request');
-    attach (page: CRIEPage, requestEvent?: string = 'request'): void;
-    detach (page: CRIEPage, requestEvent?: string = 'request'): void;
+    constructor (page?: CRIEPage, requestEvent?: string);
+    attach (page: CRIEPage, requestEvent?: string): void;
+    detach (page: CRIEPage, requestEvent?: string): void;
     startCapturing(): void;
     stopCapturing(): void;
     requestWillBeSent(r: CRIERequest): void;

@@ -141,7 +141,7 @@ const { CRIExtraWARCGenerator, CRIExtraCapturer } = require('node-warc')
     const page = await Page.create(client)
     const cap = new CRIExtraCapturer(page, Events.Page.Request)
     cap.startCapturing()
-    await page.goto('https://example.com', { waitUntil: 'networkIdle' })
+    await page.goto('https://example.com', { waitUntil: 'networkidle0' })
     const warcGen = new CRIExtraWARCGenerator()
     await warcGen.generateWARC(cap, {
       warcOpts: {
